@@ -1,0 +1,128 @@
+:root {
+  font-family: "Aptos", "Segoe UI", sans-serif;
+  color: #1d302d;
+  background: #f5f7f4;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+  font-weight: 400;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-header {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 12px clamp(20px, 5vw, 72px);
+  border-bottom: 1px solid #d9e2dd;
+  background: #fff;
+}
+
+.brand,
+.primary-nav {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  gap: 10px;
+  font-size: 16px;
+}
+
+.brand-mark {
+  display: grid;
+  width: 36px;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 8px;
+  background: #1f6557;
+  color: #fff;
+  font-weight: 700;
+}
+
+.primary-nav {
+  gap: 6px;
+}
+
+.nav-link {
+  padding: 9px 12px;
+  border-radius: 6px;
+  color: #52645f;
+  font-size: 14px;
+}
+
+.nav-link:hover,
+.nav-link-active {
+  background: #e8f1ed;
+  color: #174f43;
+}
+
+.page-content {
+  width: min(100% - 40px, 1120px);
+  margin: 0 auto;
+  padding: 48px 0;
+}
+
+.page-placeholder {
+  min-height: 280px;
+  padding: 32px;
+  border: 1px solid #d9e2dd;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.page-placeholder h1 {
+  margin: 0 0 12px;
+  font-size: 24px;
+}
+
+.page-placeholder p {
+  margin: 0;
+  color: #52645f;
+}
+
+@media (max-width: 680px) {
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px 20px 10px;
+  }
+
+  .primary-nav {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .nav-link {
+    padding: 8px;
+  }
+
+  .page-content {
+    padding-top: 24px;
+  }
+
+  .page-placeholder {
+    padding: 22px;
+  }
+}
