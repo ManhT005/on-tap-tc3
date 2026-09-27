@@ -6,7 +6,7 @@ import { routes } from './router';
 const routeCases = [
   ['/', 'Home'],
   ['/learn', 'Learn'],
-  ['/learn/3', 'Lesson Detail'],
+  ['/learn/3', 'Bài 03'],
   ['/review', 'Review'],
   ['/practice', 'Practice'],
   ['/progress', 'Progress'],

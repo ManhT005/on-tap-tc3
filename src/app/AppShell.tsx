@@ -11,6 +11,9 @@ const navigationItems = [
 export function AppShell() {
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main-content">
+        Bỏ qua điều hướng
+      </a>
       <header className="app-header">
         <Link className="brand" to="/" aria-label="Ôn tiếng Hàn Trung cấp 3, trang chủ">
           <span className="brand-mark" aria-hidden="true">
@@ -33,9 +36,10 @@ export function AppShell() {
           ))}
         </nav>
       </header>
-      <main className="page-content">
+      <main id="main-content" className="page-content">
         <Outlet />
       </main>
+      <div className="toast-viewport" aria-live="polite" aria-atomic="true" />
     </div>
   );
 }
