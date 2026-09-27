@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet } from 'react-router-dom';
 
 const navigationItems = [
   { to: '/', label: 'Home', end: true },
@@ -12,14 +12,14 @@ export function AppShell() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <a className="brand" href="/" aria-label="Ôn tiếng Hàn Trung cấp 3, trang chủ">
+        <Link className="brand" to="/" aria-label="Ôn tiếng Hàn Trung cấp 3, trang chủ">
           <span className="brand-mark" aria-hidden="true">
             한
           </span>
           <span>
             Ôn tiếng Hàn <strong>TC3</strong>
           </span>
-        </a>
+        </Link>
         <nav className="primary-nav" aria-label="Điều hướng chính">
           {navigationItems.map(({ to, label, end }) => (
             <NavLink
