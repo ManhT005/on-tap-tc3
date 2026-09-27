@@ -1,0 +1,136 @@
+import { LessonContentSchema } from '../schemas';
+import { pack } from './pack';
+
+const raw = {
+  title: 'Bài 02: 대인 관계 (Quan hệ đối nhân xử thế)',
+  koreanTitle: '대인 관계',
+  objectives:
+    'Thăm hỏi người quen lâu ngày gặp lại, nhờ cậy lịch sự, từ chối khéo léo trong giao tiếp xã hội.',
+  vocabulary: [
+    pack('기본', '기본 어휘 (Thăm hỏi, Nhờ cậy & Từ chối lịch sự)', [
+      ['대인 관계', 'Quan hệ đối nhân xử thế', '사회생활의 기본인 대인 관계'],
+      ['대인 관계가 좋다', 'Quan hệ xã hội hòa nhã tốt đẹp', '사람들과 잘 어울리는 성격'],
+      ['대인 관계가 원만하다', 'Giao thiệp êm thắm suôn sẻ', '원만한 인간관계를 유지하다'],
+      ['마음이 넓다', 'Tấm lòng rộng lượng bao dung', '어머니처럼 마음이 넓으시다'],
+      ['친절하다', 'Thân thiện, tử tế', '처음 보는 사람에게도 친절하다'],
+      ['인기가 있다', 'Được mọi người yêu mến, có tiếng', '친구들 사이에서 인기가 많다'],
+      ['성격이 좋다', 'Tính tình tốt bụng', '원만하고 성격이 좋다'],
+      ['사람을 사귀다', 'Kết bạn, giao du làm quen', '새로운 사람을 적극적으로 사귀다'],
+      ['사람을 대하다', 'Đối đãi, đối xử với người khác', '상대방을 따뜻하게 대하다'],
+      ['낯을 가리다', 'E thẹn, bẽn lẽn trước người lạ', '처음 만났을 때는 낯을 가리다'],
+      ['사교성이 뛰어나다', 'Tài xã giao quan hệ xuất sắc', '사교적이고 발이 넓다'],
+      ['부탁하다', 'Nhờ cậy, nhờ vả', '부탁이 있어서 찾아왔어요'],
+      ['도움을 청하다', 'Ngỏ ý cần sự giúp đỡ', '선배에게 진로 도움을 청하다'],
+      ['부탁을 받다', 'Được đề nghị nhờ vả', '친구에게 번역 부탁을 받다'],
+      ['부탁을 들어주다', 'Chấp thuận giúp đỡ', '어려운 부탁을 흔쾌히 들어주다'],
+      ['부탁을 거절하다', 'Từ chối lời nhờ vả', '정중하게 부탁을 거절하다'],
+      ['거절을 당하다', 'Bị từ chối lời nhờ', '부탁했다가 거절을 당하다'],
+      ['양해를 구하다', 'Xin sự thông cảm lượng thứ', '사정을 설명하고 양해를 구하다'],
+      ['거절하기 곤란하다', 'Khó xử không nỡ từ chối', '은사님의 부탁이라 거절하기 곤란하다'],
+      ['유감을 표하다', 'Bày tỏ sự tiếc nuối', '도와드리지 못해 유감입니다'],
+      ['타당한 사정', 'Lý do chính đáng thỏa đáng', '타당한 사정을 설명하다'],
+      ['감사의 표시', 'Biểu lộ lòng biết ơn', '작은 선물로 감사의 표시를 하다'],
+      ['안부를 묻다', 'Hỏi thăm sức khỏe tình hình', '친구에게 안부를 묻다'],
+      ['안부를 여쭙다', 'Kính hỏi thăm (dùng cho bề trên)', '교수님께 안부를 여쭙다'],
+    ]),
+    pack('새단어', '새 단어 & 읽기 본문 (Bảng từ mới tr. 325 & Bài đọc)', [
+      ['안부를 전하다', 'Chuyển lời hỏi thăm', '부모님께 안부 좀 전해 주세요'],
+      ['안부 전화를 하다', 'Gọi điện thoại hỏi thăm', '명절에 선생님께 안부 전화 드리기'],
+      ['안부 편지를 보내다', 'Gửi thư thăm hỏi', '감사의 마음을 담아 편지 발송'],
+      ['찾아뵙다', 'Đến tận nơi chào hỏi bề trên', '연구실로 직접 찾아뵙겠습니다'],
+      ['인사를 드리다', 'Chào hỏi kính cẩn', '어르신께 큰절로 인사를 드리다'],
+      ['송별회', 'Tiệc chia tay', '유학 떠나는 친구의 송별회'],
+      ['동창회', 'Họp mặt bạn học cũ', '고등학교 동창회 참석'],
+      ['송년회', 'Tiệc tất niên cuối năm', '한 해를 마무리하는 송년 모임'],
+      ['동호회', 'CLB cùng sở thích đam mê', '사진 촬영 동호회 가입'],
+      ['회식', 'Liên hoan công ty ăn uống', '오늘 저녁에 부서 회식이 있다'],
+      ['야유회', 'Buổi picnic dã ngoại ngoài trời', '주말에 떠나는 야유회'],
+      ['정기 모임', 'Họp mặt định kỳ hàng tháng', '매월 첫째 주 정기 모임'],
+      ['뒤풀이', 'Liên hoan tăng 2 sau sự kiện', '행사 끝나고 식당에서 뒤풀이'],
+      ['회비', 'Hội phí đóng góp', '회비는 1인당 1만 원입니다'],
+      ['회비를 걷다 / 모으다', 'Thu gom tiền hội phí', '총무가 회비를 걷다'],
+      ['참석하다', 'Tham dự, có mặt', '모임에 빠짐없이 참석하다'],
+      ['불참하다', 'Vắng mặt không đến', '개인 사정으로 불참을 알리다'],
+      ['연락하다', 'Liên lạc thông báo', '참석 여부를 미리 연락해 주세요'],
+      ['취소되다', 'Bị hủy bỏ hoàn toàn', '폭우로 야유회가 취소되다'],
+      ['변경되다', 'Bị thay đổi (giờ giấc, địa điểm)', '모임 장소가 서울식당으로 변경되다'],
+      ['들르다', 'Ghé qua, tạt qua chốc lát', '퇴근하는 길에 연구실에 들르다'],
+      ['무사히 도착하다', 'Về đến nơi an toàn bình an', '호치민에 무사히 도착했습니다'],
+      ['실력', 'Thực lực, năng lực trình độ', '한국어 실력이 많이 늘었다'],
+      ['취직하다', 'Xin được việc làm đi làm', '한국 무역회사에 취직하다'],
+    ]),
+    pack('듣기', '듣기 스크립트 & 워크북 (Audio CD & Sách bài tập)', [
+      ['포기하다', 'Bỏ cuộc buông xuôi', '어려워도 포기하지 않고 해내다'],
+      ['솔직하다', 'Thẳng thắn bộc trực', '솔직하게 속마음을 털어놓다'],
+      ['어색하다', 'Ngượng ngùng không tự nhiên', '처음 만났을 때는 몹시 어색했다'],
+      ['표정을 짓다', 'Biểu cảm nét mặt', '밝은 미소의 표정을 짓다'],
+      ['현명하다', 'Khôn ngoan sáng suốt', '지혜롭고 현명하게 대처하다'],
+      ['수첩', 'Sổ tay bỏ túi ghi chép', '약속 시간을 수첩에 메모하다'],
+      ['스승의 날', 'Ngày Nhà giáo 15/5', '선생님 은혜에 감사하는 날'],
+      ['카네이션', 'Hoa cẩm chướng cài ngực', '선생님 가슴에 카네이션을 달다'],
+      ['면접시험', 'Kỳ thi phỏng vấn trực tiếp', '최종 면접시험에 합격하다'],
+      ['신입 사원', 'Nhân viên mới tuyển dụng', '대기업 신입 사원 연수'],
+      ['조직 문화', 'Văn hóa tổ chức công ty', '한국 기업의 조직 문화 적응'],
+      ['고민거리', 'Nỗi lo lắng trăn trở', '선후배 관계에서 오는 고민거리'],
+      ['심리적 부담', 'Gánh nặng tâm lý áp lực', '과도한 심리적 부담감'],
+      ['업무량', 'Khối lượng công việc', '업무량이 많아서 야근하다'],
+      ['월급 / 초봉', 'Tiền lương hàng tháng / Lương đầu', '첫 월급을 타서 부모님 선물'],
+      ['배려하다', 'Quan tâm nghĩ cho người khác', '상대방의 입장을 깊이 배려하다'],
+      ['신경 써 주시다', 'Quan tâm để ý chu đáo giùm', '신경 써 주신 덕분에 잘 끝났어요'],
+      ['염려해 주시다', 'Lo lắng bận tâm giùm cho', '선생님이 염려해 주신 덕분입니다'],
+      ['다 낫다', 'Khỏi hẳn ốm đau bệnh tật', '약 먹고 푹 잤더니 다 나았어요'],
+      ['대접하다', 'Chiêu đãi nồng hậu mời cơm', '베트남 쌀국수를 대접할게요'],
+      ['잊지 못할 추억', 'Kỷ niệm đẹp không thể quên', '한국에서 잊지 못할 소중한 추억'],
+      ['시내에 나가다', 'Đi ra trung tâm phố xá', '친구를 만나러 시내에 가는 길'],
+    ]),
+  ],
+  grammar: [
+    {
+      structure: 'Động từ + -는 길이다 (hoặc -는 길에)',
+      meaning: 'Đang trên đường làm gì / Nhân tiện trên đường...',
+      rule: 'Kết hợp chủ yếu với các động từ di chuyển: 가다, 오다, 퇴근하다, 출근하다...',
+      examples: [
+        {
+          kr: '회식이 있어서 약속 장소로 가는 길이에요.',
+          vn: 'Tôi đang trên đường đến địa điểm hẹn vì có liên hoan.',
+        },
+        {
+          kr: '퇴근하는 길에 잠깐 들를게요.',
+          vn: 'Tiện đường đi làm về tôi sẽ ghé qua một lát.',
+        },
+      ],
+    },
+    {
+      structure: 'Danh từ + 덕분에 / Động từ + -(으)ㄴ 덕분에',
+      meaning: 'Nhờ có... mà đạt được kết quả tốt',
+      rule: 'Chỉ nguyên nhân dẫn tới kết quả tích cực, tốt đẹp.',
+      distinction:
+        '⭐ TIPS: "덕분에" CHỈ DÙNG CHO KẾT QUẢ TỐT. Với kết quả xấu, phải dùng "때문에". Ví dụ: "친구 때문에 숙제를 못 했어요" (Đúng), "친구 덕분에 숙제를 못 했어요" (Sai).',
+      examples: [
+        {
+          kr: '선생님이 잘 가르쳐 주신 덕분에 한국 회사에 취직할 수 있었어요.',
+          vn: 'Nhờ thầy cô dạy dỗ tận tình mà em đã xin được việc ở công ty Hàn.',
+        },
+      ],
+    },
+    {
+      structure: '-나요 / -(으)ㄴ가요?',
+      meaning: 'Đuôi câu hỏi lịch sự, tôn trọng người nghe',
+      rule: 'Hiện tại: Động từ + -나요?, Tính từ + -(으)ㄴ가요?, Danh từ + 인가요?. Quá khứ: -았/었나요?.',
+      examples: [
+        {
+          kr: '한국의 대학교는 몇 월에 개강을 하나요?',
+          vn: 'Đại học ở Hàn Quốc khai giảng vào tháng mấy thế ạ?',
+        },
+        { kr: '회비가 얼마인가요?', vn: 'Hội phí tham gia là bao nhiêu vậy ạ?' },
+      ],
+    },
+  ],
+  culture: {
+    title: 'Lễ phép khi nhờ vả và từ chối ở Hàn Quốc',
+    content:
+      'Khi nhờ cậy người khác cần dùng lời lẽ khiêm nhường, cân nhắc kỹ hoàn cảnh của đối phương. Khi từ chối, cần bày tỏ sự tiếc nuối và nêu lý do chính đáng một cách tế nhị.',
+  },
+};
+
+export const lesson02 = LessonContentSchema.parse(raw);

@@ -1,0 +1,146 @@
+import { LessonContentSchema } from '../schemas';
+import { pack } from './pack';
+
+const raw = {
+  title: 'Bài 01: 학교생활 (Đời sống học đường)',
+  koreanTitle: '학교생활',
+  objectives:
+    'Giới thiệu bản thân, trường lớp, giải thích ý nghĩa sự kiện và lên kế hoạch học tập.',
+  vocabulary: [
+    pack('기본', '기본 어휘 (Lớp học, Học vụ & Sự kiện trường)', [
+      ['학기', 'Học kỳ', '이번 학기, 새 학기 시작'],
+      ['신학기', 'Học kỳ mới', '신학기 맞이 준비'],
+      ['과목', 'Môn học', '전공과목과 교양과목 이수'],
+      ['교양과목', 'Môn văn hóa đại cương', '교양과목 학점 취득'],
+      ['전공과목', 'Môn học chuyên ngành', '전공 45학점 이상 필수'],
+      ['학점', 'Tín chỉ', '졸업에 필요한 140학점'],
+      ['학점을 취득하다', 'Tích lũy tín chỉ', '한 학기 20학점 취득'],
+      ['전공을 선택하다', 'Chọn chuyên ngành', '2학년 말 전공 선택'],
+      ['부전공', 'Chuyên ngành phụ', '부전공 이수 신청'],
+      ['복수 전공', 'Chuyên ngành kép (song bằng)', '복수 전공으로 두 학위 취득'],
+      ['강의', 'Bài giảng', '강의를 듣다'],
+      ['강의실', 'Giảng đường, phòng học', '강의실 배정 공지'],
+      ['청강하다', 'Dự thính (nghe không lấy tín chỉ)', '교수님 강의 청강 신청'],
+      ['수강 신청하다', 'Đăng ký môn học', '인터넷 수강 신청 시스템'],
+      ['수강하다', 'Nghe giảng, học môn', '이번 학기에 4과목 수강'],
+      ['등록금', 'Học phí đại học', '등록금 고지서 발송'],
+      ['등록금을 납부하다', 'Nộp tiền học phí', '분할 납부 신청'],
+      ['장학금을 받다', 'Nhận học bổng', '성적 우수 장학금 수혜'],
+      ['장학생', 'Sinh viên nhận học bổng', '장학생 선발 명단'],
+      ['새내기 = 신입생', 'Tân sinh viên (từ thuần Hàn)', '새내기를 맞이하다'],
+      ['재학생', 'Sinh viên đang theo học', '재학생 대상 장학 공지'],
+      ['졸업생', 'Cựu sinh viên tốt nghiệp', '졸업생 취업 현황'],
+      ['입학식', 'Lễ khai giảng, nhập học', '신입생 입학식 행사'],
+      ['졸업식', 'Lễ tốt nghiệp', '학사 학위 수여 졸업식'],
+      ['체육대회', 'Đại hội thể thao', '단과대학 대항 축구 경기'],
+    ]),
+    pack('새단어', '새 단어 & 읽기 본문 (Bảng từ mới tr. 324 & Bài đọc)', [
+      ['대운동장', 'Sân vận động lớn của trường', '대운동장에서 체육대회 개최'],
+      ['축제', 'Lễ hội trường đại học', '대학교 80주년 기념 축제'],
+      ['주점을 열다', 'Mở quán ăn đêm lễ hội', '동아리에서 주점 운영'],
+      ['MT (Membership Training)', 'Dã ngoại tập thể gắn kết', '선후배 간의 화합 모임'],
+      ['학술 발표회', 'Buổi thuyết trình học thuật', '연구 논문 발표회'],
+      ['신입생 환영회', 'Tiệc chào đón tân sinh viên', '새내기를 환영하는 모임'],
+      ['졸업생 환송회', 'Tiệc tiễn sinh viên tốt nghiệp', '졸업생을 환송하기 위한 자리'],
+      ['사은회', 'Lễ tri ân thầy cô giáo', '스승의 은혜에 감사하는 자리'],
+      ['개교기념일', 'Ngày kỷ niệm thành lập trường', '개교기념일 휴교 안내'],
+      ['동아리', 'Câu lạc bộ sinh viên', '연극, 댄스, 학술 동아리'],
+      ['동아리에 가입하다', 'Gia nhập câu lạc bộ', '신입 회원으로 가입'],
+      ['학과 대표 (과대)', 'Lớp trưởng, đại diện khoa', '학생들의 의견을 수렴하는 과대표'],
+      ['학생회', 'Hội sinh viên khoa', '학생 복지 사업 추진'],
+      ['총학생회', 'Hội sinh viên toàn trường', '총학생회장 선거'],
+      ['정기 모임', 'Họp mặt định kỳ', '매주 목요일 정기 모임'],
+      ['화합을 다지다', 'Gắn kết tình đoàn kết', '선후배 간의 화합'],
+      ['대기업', 'Doanh nghiệp tập đoàn lớn', '대기업 취직 준비'],
+      ['중소기업', 'Doanh nghiệp vừa và nhỏ', '유망 중소기업 취업'],
+      ['신청 마감', 'Hết hạn nộp đơn', '기한 엄수 신청 마감'],
+      ['마감일', 'Ngày hết hạn nộp', '마감일 오후 5시까지'],
+      ['모집하다', 'Chiêu mộ, tuyển sinh', '신입 회원 20명 모집'],
+      ['자료실', 'Phòng tư liệu của khoa', '학과 자료실 이용 안내'],
+      ['열람실', 'Phòng đọc thư viện', '열람실 24시간 개방'],
+      ['휴관', 'Đóng cửa nghỉ thư viện', '공휴일 자료실 휴관'],
+      ['제시하다', 'Xuất trình, đưa ra', '도서 대출 시 학생증 제시'],
+    ]),
+    pack('듣기', '듣기 스크립트 & 워크북 (Audio CD & Sách bài tập)', [
+      ['학생증', 'Thẻ sinh viên', '학생증 발급 신청'],
+      ['반입 금지', 'Cấm mang đồ vào trong', '자료실 내 음료 반입 금지'],
+      ['지급하다', 'Chi trả, cấp phát', '등록금 전액을 지급하다'],
+      ['전액 장학금', 'Học bổng toàn phần 100%', '성적 우수자 전액 장학금'],
+      ['문학작품', 'Tác phẩm văn học', '현대 문학작품 강독'],
+      ['단편소설', 'Truyện ngắn', '한국어 단편소설 번역'],
+      ['시인', 'Nhà thơ sáng tác', '한국의 대표 현대 시인'],
+      ['시를 쓰다', 'Sáng tác bài thơ', '한국어로 시 쓰기'],
+      ['토론하다', 'Thảo luận, tranh biện', '주제 발표 후 자유 토론'],
+      ['통역', 'Thông dịch, phiên dịch nói', '한국어-베트남어 통역'],
+      ['동시통역', 'Thông dịch song song cabin', '국제회의 동시통역사'],
+      ['자원봉사', 'Tình nguyện viên', '해외 자원봉사 파견'],
+      ['봉사 활동', 'Hoạt động tình nguyện', '농촌 봉사 활동에 참여'],
+      ['최선을 다하다', 'Cố gắng hết sức mình', '기말시험에 최선을 다하다'],
+      ['국제 교류', 'Giao lưu quốc tế', '한-베 대학 간 학술 교류'],
+      ['초대장', 'Giấy mời, thiệp mời', '사은회 초대장을 발송하다'],
+      ['특히 / 특별히', 'Đặc biệt là', '문법, 특히 쓰기 영역'],
+      ['소책자를 발간하다', 'Xuất bản tập san, sách mỏng', '동아리 문집 발간'],
+      ['선발되다', 'Được tuyển chọn', '교환학생으로 선발되다'],
+      ['외부 후원', 'Tài trợ từ bên ngoài', '기업의 장학 후원금'],
+      ['조교', 'Trợ giảng khoa', '교수님 연구실 조교 근무'],
+      ['학과 사무실 (과사)', 'Văn phòng khoa', '증명서 발급 및 학사 문의'],
+    ]),
+  ],
+  grammar: [
+    {
+      structure: 'Danh từ + 밖에',
+      meaning: 'Chỉ... / ngoài... ra không còn lựa chọn nào khác',
+      rule: 'Đứng sau danh từ/phó từ biểu thị sự lựa chọn duy nhất. BẮT BUỘC ĐI VỚI VỊ TỪ PHỦ ĐỊNH (안, 못, 없다, 모르다...).',
+      distinction:
+        '⭐ TIPS: "밖에" tuyệt đối KHÔNG dùng trong câu khẳng định, mệnh lệnh (-으세요) hay rủ rê (-자).',
+      examples: [
+        { kr: '시험 시간이 5분밖에 안 남았어요.', vn: 'Thời gian thi chỉ còn lại đúng 5 phút.' },
+        {
+          kr: '보고서를 제출한 사람이 반밖에 안 돼요.',
+          vn: 'Số người nộp báo cáo chỉ được có một nửa.',
+        },
+      ],
+    },
+    {
+      structure: 'Danh từ + (이)라고 하다',
+      meaning: 'Được gọi là... / Tên là...',
+      rule: 'Sau nguyên âm dùng -라고 하다, sau phụ âm dùng -이라고 하다.',
+      examples: [
+        { kr: '저는 흐엉이라고 합니다.', vn: 'Tôi tên là Hương.' },
+        {
+          kr: '이 사람은 제 친구 조민재라고 해요.',
+          vn: 'Người này là bạn tôi, tên là Cho Min-jae.',
+        },
+      ],
+    },
+    {
+      structure: 'Động từ / Tính từ + -게 되다',
+      meaning: 'Được, bị, trở nên, thành ra...',
+      rule: 'Thể hiện sự biến đổi trạng thái do hoàn cảnh khách quan đưa lại, ngoài ý chí hay dự tính ban đầu.',
+      examples: [
+        {
+          kr: '지난 학기 성적이 좋아서 장학금을 받게 됐어요.',
+          vn: 'Do kỳ trước điểm tốt nên tôi đã được nhận học bổng.',
+        },
+      ],
+    },
+    {
+      structure: 'Động từ + -(으)ㄹ 생각이다',
+      meaning: 'Dự định làm gì...',
+      rule: 'Thể hiện kế hoạch trong tương lai. Nguyên âm dùng -ㄹ 생각이다, phụ âm dùng -을 생각이다.',
+      examples: [
+        {
+          kr: '졸업 후에 한국으로 유학을 갈 생각입니다.',
+          vn: 'Sau khi tốt nghiệp tôi dự định sang Hàn Quốc du học.',
+        },
+      ],
+    },
+  ],
+  culture: {
+    title: 'Chế độ Đại học Việt Nam và Hàn Quốc (한국과 베트남의 대학 제도)',
+    content:
+      'Tại Hàn Quốc, hệ đại học 4 năm yêu cầu khoảng 140 tín chỉ để tốt nghiệp cử nhân (학사), trong đó môn chuyên ngành (전공) tối thiểu 45 tín chỉ. Sinh viên có thể học chuyên ngành kép (복수 전공) hoặc phụ (부전공).',
+  },
+};
+
+export const lesson01 = LessonContentSchema.parse(raw);

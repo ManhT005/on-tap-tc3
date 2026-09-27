@@ -1,0 +1,176 @@
+import { LessonContentSchema } from '../schemas';
+import { pack } from './pack';
+
+const raw = {
+  title: 'Bài 11: 고민 (Nỗi lo & Tư vấn tâm lý)',
+  koreanTitle: '고민',
+  objectives: 'Tâm sự nỗi niềm, chia sẻ băn khoăn, sử dụng lối nói thân mật không kính ngữ (반말).',
+  vocabulary: [
+    pack('기본', '기본 어휘 (Tâm lý, Cảm xúc & Nỗi băn khoăn)', [
+      ['고민이 생기다', 'Nảy sinh nỗi lo âu trăn trở phiền muộn', '진로 문제로 큰 고민이 생기다'],
+      ['고민거리', 'Vấn đề băn khoăn khó xử trong lòng', '취업 준비생의 가장 큰 고민거리'],
+      [
+        '고민을 털어놓다',
+        'Trút bầu tâm sự giãi bày cởi mở',
+        '친한 친구에게 속마음 고민을 털어놓다',
+      ],
+      ['고민을 고백하다', 'Bộc bạch thổ lộ nỗi lòng kín đáo', '부모님께 숨겨온 고민을 고백하다'],
+      ['고민을 해결하다', 'Tháo gỡ giải quyết triệt để nỗi lo', '선배의 조언으로 고민을 해결하다'],
+      ['실마리를 찾다', 'Tìm thấy manh mối gỡ rối vấn đề', '해결의 실마리를 찾기 위해 대화하다'],
+      ['갈등을 겪다', 'Trải qua xung đột bất đồng quan điểm', '세대 차이로 부모님과 갈등을 겪다'],
+      [
+        '갈등이 생기다',
+        'Nảy sinh xích mích mâu thuẫn nội bộ',
+        '친구 사이에 사소한 오해로 갈등이 생기다',
+      ],
+      [
+        '갈등을 해소하다',
+        'Hóa giải dung hòa mâu thuẫn xích mích',
+        '솔직한 대화로 오랜 갈등을 해소하다',
+      ],
+      ['갈등을 극복하다', 'Vượt qua bất đồng đoàn kết hơn', '조직 내의 갈등을 현명하게 극복하다'],
+      ['자신감이 있다', 'Tràn đầy tự tin vào năng lực mình', '자신감이 있어서 면접을 잘 보다'],
+      ['자신감이 넘치다', 'Tràn trề lòng tự tin phong độ cao', '자신감 넘치는 당당한 목소리'],
+      ['자신감을 잃다', 'Đánh mất sự tự tin suy sụp tinh thần', '거듭된 불합격으로 자신감을 잃다'],
+      [
+        '자신감이 부족하다',
+        'Thiếu tự tin rụt rè nhút nhát e dè',
+        '자신감이 부족해서 발표를 망치다',
+      ],
+      [
+        '초조하다',
+        'Bồn chồn đứng ngồi không yên lo thắt ruột',
+        '합격자 발표를 앞두고 몹시 초조하다',
+      ],
+      ['애가 타다', 'Ruột gan nóng như lửa cồn cào xót xa', '연락이 닿지 않아 애가 타다'],
+      ['긴장되다', 'Căng thẳng hồi hộp tim đập chân run', '면접관 앞에 서니 몹시 긴장되다'],
+      ['손에 땀을 쥐다', 'Căng thẳng toát mồ hôi tay gay cấn', '손에 땀을 쥐게 하는 긴장감'],
+      ['두렵다', 'Lo sợ hoảng sợ trước tương lai', '새로운 도전에 대한 두려움을 떨치다'],
+      ['불안하다', 'Bất an nơm nớp lo âu chông chênh', '불확실한 미래 때문에 마음이 불안하다'],
+      ['우울증', 'Chứng bệnh trầm cảm u uất tâm lý', '우울증 극복을 위한 심리 상담 치료'],
+      ['스트레스', 'Căng thẳng áp lực thần kinh', '만병의 근원인 과도한 스트레스'],
+      [
+        '외로움을 타다',
+        'Cảm thấy cô đơn hiu quạnh trống vắng',
+        '가족과 떨어져 타향살이에 외로움을 타다',
+      ],
+      ['고독하다', 'Cô độc một mình giữa cuộc đời', '고독한 밤을 홀로 지새우다'],
+    ]),
+    pack('새단어', '새 단어 & 읽기 본문 (Bảng từ mới tr. 332 & Bài đọc)', [
+      ['상담 센터', 'Trung tâm tư vấn tâm lý hỗ trợ', '대학 내 학생 생활 상담 센터'],
+      ['상담실', 'Phòng tư vấn riêng tư kín đáo', '전문 상담실을 방문하여 면담'],
+      ['상담사', 'Chuyên viên tư vấn tâm lý giàu kinh nghiệm', '공감 능력이 뛰어난 전문 상담사'],
+      ['전문가 상담', 'Tư vấn chuyên sâu từ chuyên gia', '진로 전문가와의 1:1 심층 상담'],
+      ['상담을 받다', 'Được nhận tư vấn định hướng giúp đỡ', '학업 스트레스로 정기 상담을 받다'],
+      [
+        '조언을 구하다',
+        'Tìm kiếm xin lời khuyên từ tiền bối',
+        '인생 선배에게 진솔한 조언을 구하다',
+      ],
+      ['충고', 'Lời khuyên can chân thành đúng đắn', '친구의 따끔한 충고를 명심하다'],
+      ['진로 문제', 'Định hướng nghề nghiệp tương lai', '졸업반 학생들의 최대 관심사인 진로 문제'],
+      ['취업 문제', 'Vấn đề xin việc làm khó khăn thị trường', '청년 실업과 취업 문제 해결 방안'],
+      ['이성 문제', 'Chuyện tình cảm nam nữ hẹn hò', '이성 친구와의 갈등으로 고민하다'],
+      ['연애 상담', 'Tư vấn gỡ rối chuyện yêu đương đôi lứa', '친구들에게 털어놓는 연애 상담'],
+      [
+        '인간관계 문제',
+        'Vấn đề quan hệ đối nhân xử thế xã hội',
+        '사회생활에서 가장 힘든 인간관계 문제',
+      ],
+      ['친구 관계', 'Quan hệ bạn bè trường lớp bằng hữu', '새 학기 교우 관계 적응하기'],
+      ['경제적 문제', 'Khó khăn tài chính tiền nong eo hẹp', '학비와 생활비 마련 등 경제적 문제'],
+      ['학비 부담', 'Gánh nặng tiền học phí đại học', '장학금 신청으로 학비 부담 덜기'],
+      ['가정 문제', 'Bất hòa mâu thuẫn trong gia đình', '가정불화로 인한 심리적 상처'],
+      ['외모 문제', 'Mặc cảm tự ti băn khoăn về ngoại hình', '외모에 대한 지나친 집착과 고민'],
+      ['외모 콤플렉스', 'Mặc cảm tự ti về nhan sắc vóc dáng', '외모 콤플렉스를 당당히 극복하다'],
+      ['사소하다', 'Vụn vặt nhỏ nhặt không đáng bận tâm', '사소한 일에 너무 연연하지 마라'],
+      ['마음의 짐', 'Gánh nặng đè nặng trong tâm khảm', '속마음을 털어놓고 마음의 짐을 덜다'],
+      ['극복하다', 'Khắc phục vượt qua nghịch cảnh gian truân', '의지로 신체적 한계를 극복하다'],
+      ['저절로', 'Tự nó một cách tự nhiên theo thời gian', '시간이 흐르면 저절로 해결되다'],
+      ['부적응', 'Sự không thích nghi lạc lõng bỡ ngỡ', '새로운 학교생활 부적응 문제'],
+      [
+        '현실의 벽',
+        'Bức tường thực tế khắc nghiệt nghiệt ngã',
+        '사회에 나와 냉정한 현실의 벽에 부딪치다',
+      ],
+    ]),
+    pack('듣기', '듣기 스크립트 & 워크북 (Audio CD & Sách bài tập)', [
+      ['속마음', 'Tâm can sâu kín đáy lòng người', '가장 가까운 사람에게 속마음을 열다'],
+      [
+        '익숙해지다',
+        'Trở nên thuần thục quen thuộc tay chân',
+        '반복하여 연습하다 보면 금방 익숙해진다',
+      ],
+      ['치열하다', 'Khốc liệt gay gắt dữ dội nảy lửa', '취업 시장의 치열한 입사 경쟁'],
+      ['경쟁이 치열하다', 'Mức độ cạnh tranh vô cùng khốc liệt', '대기업 공채의 치열한 경쟁률'],
+      ['성장하다', 'Trưởng thành lớn khôn vững vàng hơn', '아픔과 실패를 딛고 한 단계 더 성장하다'],
+      ['성숙해지다', 'Chín chắn già dặn từng trải hơn', '시련을 겪으며 내면이 한층 성숙해지다'],
+      ['위로하다', 'An ủi chia sẻ vỗ về động viên', '슬픔에 빠진 친구를 따뜻하게 위로하다'],
+      ['라디오 상담실', 'Chương trình tư vấn phát thanh radio', '금요 스페셜 라디오 상담실 코너'],
+      ['사연', 'Câu chuyện hoàn cảnh gửi về chia sẻ', '청취자가 라디오에 보낸 감동 사연'],
+      [
+        '취업 준비생 (취준생)',
+        'Sinh viên đang mài giũa chờ xin việc',
+        '도서관에서 밤새는 취업 준비생',
+      ],
+      ['채용 공고', 'Thông báo tuyển dụng chính thức công ty', '하반기 대기업 신입사원 채용 공고'],
+      ['자격 요건', 'Tiêu chuẩn tư cách điều kiện ứng tuyển', '토픽 5급 이상의 지원 자격 요건'],
+      ['스펙 (Spec)', 'Bộ hồ sơ năng lực thành tích cá nhân', '어학 성적과 인턴 경력 등 스펙 쌓기'],
+      [
+        '어학연수',
+        'Du học tiếng ngắn hạn trau dồi ngôn ngữ',
+        '어학연수를 통해 실전 회화 실력 향상',
+      ],
+      ['교환학생', 'Sinh viên trao đổi văn hóa giữa 2 trường', '자매결연 대학 교환학생 파견 선발'],
+      [
+        '추천서를 써 주시다',
+        'Viết thư giới thiệu tiến cử học trò',
+        '지도교수님께서 흔쾌히 추천서를 써 주시다',
+      ],
+      ['반말', 'Lối nói thân mật không kính ngữ bạn bè', '동갑내기 친구끼리 편하게 쓰는 반말'],
+      [
+        '존댓말 (높임말)',
+        'Kính ngữ trang trọng với người lớn',
+        '어른 앞에서는 깍듯하게 존댓말 쓰기',
+      ],
+      ['개발하다', 'Phát triển khai phá tiềm năng bản thân', '자신만의 잠재 능력을 적극 개발하다'],
+      ['반영하다', 'Phản ánh đúng thực trạng nguyện vọng', '학생들의 요구를 학사 운영에 반영하다'],
+      ['반응', 'Phản ứng phản hồi từ mọi người', '새로운 제안에 대한 긍정적인 반응'],
+      ['발달하다', 'Phát triển nở rộ tiến bộ vượt bậc', '신체와 지능이 균형 있게 발달하다'],
+      ['구분되다', 'Được phân loại rạch ròi thành nhóm', '성격 유형에 따라 네 가지로 구분되다'],
+      ['권하다', 'Khuyên nhủ khuyến khích ai làm gì', '선생님께서 교환학생 지원을 권하시다'],
+    ]),
+  ],
+  grammar: [
+    {
+      structure: 'Lối nói thân mật không kính ngữ (반말)',
+      meaning: 'Cách nói thân mật giữa bạn bè thân thiết, người ít tuổi hơn',
+      rule: 'Trần thuật: Động từ + -ㄴ/는다, Tính từ + -다. Nghi vấn: -니/냐?. Rủ rê: -자. Mệnh lệnh: -아/어라.',
+      examples: [
+        {
+          kr: '요즘 고민이 많아서 잠이 안 와.',
+          vn: 'Dạo này nhiều nỗi lo quá nên tớ không ngủ được.',
+        },
+        { kr: '내일 우리 같이 영화 보러 가자!', vn: 'Mai bọn mình cùng đi xem phim đi!' },
+      ],
+    },
+    {
+      structure: 'Động từ + -다 보면',
+      meaning: 'Nếu liên tục làm gì thì dần dần sẽ...',
+      rule: 'Hành động vế trước lặp lại dẫn tới kết quả hoặc kinh nghiệm ở vế sau.',
+      examples: [
+        {
+          kr: '계속 읽다 보면 내용을 이해하게 될 거예요.',
+          vn: 'Cứ đọc liên tục nhiều lần thì bạn sẽ hiểu được nội dung thôi.',
+        },
+      ],
+    },
+  ],
+  culture: {
+    title: 'Nỗi trăn trở của sinh viên Hàn Quốc',
+    content:
+      'Thế hệ trẻ Hàn Quốc đối mặt với áp lực thi cử, xin việc (취업 준비). Nhiều trường đại học xây dựng trung tâm tư vấn tâm lý (상담 센터) để hỗ trợ sinh viên tháo gỡ áp lực.',
+  },
+};
+
+export const lesson11 = LessonContentSchema.parse(raw);
