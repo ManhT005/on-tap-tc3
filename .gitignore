@@ -1,7 +1,13 @@
-node_modules/
+﻿node_modules/
 dist/
 coverage/
+*.tsbuildinfo
 *.local
 .env*
 !.env.example
 npm-debug.log*
+
+ti_ng_h_n_t_ng_h_p_3_game_n_thi_t_ng_t_c.tsx
+phase-0-dev-guide.md
+plan.md
+system-design.md
