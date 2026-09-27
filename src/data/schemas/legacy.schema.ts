@@ -31,13 +31,20 @@ export const LegacyWritingPromptSchema = z.object({
   explanation: z.string().min(1),
 });
 
-export const LegacyReadingQuestionSchema = z.object({
-  id: z.string().min(1),
-  question: z.string().min(1),
-  options: z.array(z.string()).min(2),
-  correctIndex: z.number().int(),
-  evidence: z.string().optional(),
-});
+export const LegacyReadingQuestionSchema = z
+  .object({
+    id: z.string().min(1),
+    question: z.string().min(1),
+    options: z.array(z.string()).min(2),
+    correctIndex: z.number().int(),
+    evidence: z.string().optional(),
+  })
+  .refine(
+    (question) => question.correctIndex >= 0 && question.correctIndex < question.options.length,
+    {
+      message: 'correctIndex must point to an existing option',
+    },
+  );
 
 export const LegacyReadingPassageSchema = z.object({
   id: z.string().min(1),
