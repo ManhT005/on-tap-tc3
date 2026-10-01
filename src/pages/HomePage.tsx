@@ -1,31 +1,25 @@
 import { COURSE_STRUCTURE } from '../data/course';
+import { PageHeader } from '../components/ui/PageHeader';
+import { StatTile } from '../components/ui/StatTile';
 
 export function HomePage() {
   return (
     <section className="page-panel">
-      <header className="page-header">
-        <div>
-          <p className="eyebrow">Bắt đầu ngay</p>
-          <h1>Home</h1>
-        </div>
-        <button className="button button--primary button--lg" type="button">
-          Bắt đầu ôn từ Bài 1
-        </button>
-      </header>
+      <PageHeader
+        eyebrow="Bắt đầu ngay"
+        title="Home"
+        stacked={false}
+        action={
+          <button className="button button--primary button--lg" type="button">
+            Bắt đầu ôn từ Bài 1
+          </button>
+        }
+      />
 
       <div className="stats-grid">
-        <article className="stat-card card">
-          <span className="stat-label">Số bài học</span>
-          <strong>{COURSE_STRUCTURE.length}</strong>
-        </article>
-        <article className="stat-card card">
-          <span className="stat-label">Tổng từ vựng</span>
-          <strong>15 bài</strong>
-        </article>
-        <article className="stat-card card">
-          <span className="stat-label">Mẫu ngữ pháp</span>
-          <strong>3+ dạng</strong>
-        </article>
+        <StatTile label="Số bài học" value={COURSE_STRUCTURE.length} />
+        <StatTile label="Tổng từ vựng" value="15 bài" />
+        <StatTile label="Mẫu ngữ pháp" value="3+ dạng" />
       </div>
 
       <div className="feature-grid">

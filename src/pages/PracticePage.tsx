@@ -1,12 +1,9 @@
+import { PageHeader } from '../components/ui/PageHeader';
+
 export function PracticePage() {
   return (
     <section className="page-panel">
-      <header className="page-header page-header--stacked">
-        <div>
-          <p className="eyebrow">Luyện tập</p>
-          <h1>Practice</h1>
-        </div>
-      </header>
+      <PageHeader eyebrow="Luyện tập" title="Practice" />
 
       <div className="practice-grid">
         {['Quiz', 'Reading', 'Writing', 'Exam'].map((mode) => (

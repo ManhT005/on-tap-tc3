@@ -1,5 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { COURSE_STRUCTURE } from '../data/course';
+import { EmptyState } from '../components/ui/EmptyState';
+import { PageHeader } from '../components/ui/PageHeader';
 
 export function LessonPage() {
   const { lessonId: lessonIdParam } = useParams();
@@ -9,28 +11,32 @@ export function LessonPage() {
   if (!lesson) {
     return (
       <section className="page-panel">
-        <div className="empty-state card" role="alert">
-          <h1>Không tìm thấy bài học</h1>
-          <p>Bài học bạn đang tìm không tồn tại hoặc đường dẫn không hợp lệ.</p>
-          <Link className="button button--secondary button--md" to="/learn">
-            Quay lại Learn
-          </Link>
-        </div>
+        <EmptyState
+          title="Không tìm thấy bài học"
+          description="Bài học bạn đang tìm không tồn tại hoặc đường dẫn không hợp lệ."
+          headingLevel="h1"
+          role="alert"
+          action={
+            <Link className="button button--secondary button--md" to="/learn">
+              Quay lại Learn
+            </Link>
+          }
+        />
       </section>
     );
   }
 
   return (
     <section className="page-panel">
-      <header className="page-header page-header--stacked">
-        <div>
-          <p className="eyebrow">Bài học</p>
-          <h1>Bài {String(lesson.id).padStart(2, '0')}</h1>
-        </div>
-        <a className="button button--secondary button--md" href="/learn">
-          Quay lại Learn
-        </a>
-      </header>
+      <PageHeader
+        eyebrow="Bài học"
+        title={`Bài ${String(lesson.id).padStart(2, '0')}`}
+        action={
+          <a className="button button--secondary button--md" href="/learn">
+            Quay lại Learn
+          </a>
+        }
+      />
 
       <div className="lesson-detail card">
         <h2>{lesson.koreanTitle}</h2>
