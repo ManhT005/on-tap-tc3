@@ -291,6 +291,191 @@ a {
   background: var(--color-bg-surface);
 }
 
+.flashcard,
+.grammar-card,
+.quiz-card {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.flashcard__front {
+  min-height: 80px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.flashcard__front h3,
+.grammar-card h3,
+.quiz-card h3 {
+  margin: 0;
+}
+
+.flashcard__back,
+.flashcard__confidence {
+  display: grid;
+  gap: 10px;
+}
+
+.flashcard__back p,
+.grammar-card p,
+.quiz-card p {
+  margin: 0;
+}
+
+.flashcard__example,
+.grammar-example p + p {
+  color: var(--color-text-secondary);
+}
+
+.flashcard__confidence {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.vocabulary-card__category {
+  margin: 0 0 8px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.grammar-card__meaning {
+  font-weight: 700;
+}
+
+.grammar-card h4 {
+  margin: 0;
+}
+
+.grammar-card__mistakes ul,
+.grammar-examples {
+  display: grid;
+  gap: 10px;
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.grammar-example p {
+  margin: 0;
+}
+
+.quiz-card__options {
+  display: grid;
+  gap: 8px;
+}
+
+.quiz-option {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.quiz-option--selected {
+  border-color: var(--color-brand-primary);
+  background: var(--color-brand-soft);
+}
+
+.quiz-option--correct {
+  border-color: var(--color-success);
+}
+
+.quiz-option--wrong {
+  border-color: var(--color-danger);
+}
+
+.quiz-option__marker {
+  color: var(--color-text-secondary);
+  font-weight: 700;
+}
+
+.quiz-card__feedback {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-subtle);
+}
+
+.lesson-flow {
+  gap: 36px;
+}
+
+.lesson-flow__section {
+  display: grid;
+  gap: 18px;
+}
+
+.lesson-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lesson-section-heading h2 {
+  margin: 0;
+}
+
+.lesson-section-heading > p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  text-align: right;
+}
+
+.learning-card-grid,
+.grammar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 16px;
+}
+
+.vocabulary-pack {
+  display: grid;
+  gap: 12px;
+}
+
+.vocabulary-pack h3 {
+  margin: 0;
+}
+
+.grammar-card__mistakes ul {
+  color: var(--color-text-secondary);
+}
+
+.quiz-list {
+  display: grid;
+  gap: 16px;
+}
+
+.practice-result {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--color-success);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-surface);
+}
+
+.practice-result h3,
+.practice-result p {
+  margin: 0;
+}
+
+.form-error {
+  margin: 0;
+  color: var(--color-danger);
+}
+
 .lesson-filter {
   min-height: 40px;
   padding: 8px 12px;
@@ -525,6 +710,19 @@ a {
 
   .lesson-filter {
     flex: 0 0 auto;
+  }
+
+  .lesson-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .lesson-section-heading > p {
+    text-align: left;
+  }
+
+  .flashcard__confidence {
+    grid-template-columns: 1fr;
   }
 
   .stats-grid,

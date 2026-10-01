@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const ReviewStatusSchema = z.object({
   itemId: z.string(),
-  itemType: z.enum(['vocabulary', 'grammar']),
+  itemType: z.enum(['vocabulary', 'grammar', 'question']),
   repetitions: z.number().int().min(0),
   correctCount: z.number().int().min(0),
   wrongCount: z.number().int().min(0),
