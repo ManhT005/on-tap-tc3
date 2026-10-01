@@ -8,13 +8,14 @@ const routeCases = [
   ['/learn', 'Learn'],
   ['/learn/3', 'Bài 03'],
   ['/learn/999', 'Không tìm thấy bài học'],
+  ['/missing', 'Not Found'],
   ['/review', 'Review'],
   ['/practice', 'Practice'],
   ['/progress', 'Progress'],
 ] as const;
 
 describe.each(routeCases)('route %s', (path, title) => {
-  it(`renders the ${title} placeholder`, async () => {
+  it(`renders the ${title} page`, async () => {
     const router = createMemoryRouter(routes, { initialEntries: [path] });
 
     render(<RouterProvider router={router} />);
