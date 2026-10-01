@@ -84,10 +84,9 @@ test('E2E-P1-008 Mobile navigation stays usable without page overflow', async ({
     await navigation.getByRole('link', { name: 'Learn' }).click();
     const lessonLink = page.getByRole('link', { name: 'Mở bài học' }).first();
     await expect(lessonLink).toBeVisible();
-    const lessonLinkHeight = await lessonLink.evaluate(
-      (link) => link.getBoundingClientRect().height,
-    );
-    expect(lessonLinkHeight).toBeGreaterThanOrEqual(44);
+    await expect
+      .poll(() => lessonLink.evaluate((link) => link.getBoundingClientRect().height))
+      .toBeGreaterThanOrEqual(44);
   }
 });
 
