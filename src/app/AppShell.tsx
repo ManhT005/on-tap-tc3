@@ -36,7 +36,7 @@ export function AppShell() {
           ))}
         </nav>
       </header>
-      <main id="main-content" className="page-content">
+      <main id="main-content" className="page-content" tabIndex={-1}>
         <Outlet />
       </main>
       <div className="toast-viewport" aria-live="polite" aria-atomic="true" />

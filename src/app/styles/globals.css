@@ -40,6 +40,11 @@ a {
   text-decoration: none;
 }
 
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
 #root {
   min-height: 100vh;
 }
@@ -104,6 +109,9 @@ a {
 }
 
 .nav-link {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
   padding: 9px 12px;
   border-radius: var(--radius-md);
   color: var(--color-text-secondary);

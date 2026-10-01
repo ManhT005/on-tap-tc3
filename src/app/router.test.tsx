@@ -44,3 +44,16 @@ it('navigates to a lesson and supports back navigation without a document reload
   expect(router.state.location.pathname).toBe('/learn');
   expect(await screen.findByRole('heading', { name: 'Learn' })).toBeInTheDocument();
 });
+
+it('provides a named navigation landmark and a focusable skip-link target', () => {
+  const router = createMemoryRouter(routes, { initialEntries: ['/'] });
+
+  render(<RouterProvider router={router} />);
+
+  expect(screen.getByRole('navigation', { name: 'Điều hướng chính' })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Bỏ qua điều hướng' })).toHaveAttribute(
+    'href',
+    '#main-content',
+  );
+  expect(screen.getByRole('main')).toHaveAttribute('tabindex', '-1');
+});
