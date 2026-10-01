@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { QUIZ_BANK } from '../../data/quiz-bank';
 import { getLessons } from './course.service';
 import {
   getLessonById,
@@ -45,4 +46,13 @@ describe('learning access layer', () => {
     expect(quiz.ok && quiz.data.length).toBeGreaterThan(0);
     expect(reading.ok && reading.data.length).toBeGreaterThan(0);
   });
+
+  it.each([1, 2, 3])(
+    'provides at least eight unique practice questions for lesson %i',
+    (lessonId) => {
+      const questions = QUIZ_BANK.filter((question) => question.lessonId === lessonId);
+      expect(questions.length).toBeGreaterThanOrEqual(8);
+      expect(new Set(questions.map((question) => question.id)).size).toBe(questions.length);
+    },
+  );
 });
