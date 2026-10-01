@@ -564,6 +564,45 @@ a {
   color: var(--color-text-secondary);
 }
 
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.dashboard-tile {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 12px;
+  padding: 20px;
+}
+
+.dashboard-tile h2,
+.dashboard-tile p {
+  margin: 0;
+}
+
+.dashboard-tile > p:not(.feature-kicker) {
+  color: var(--color-text-secondary);
+}
+
+.dashboard-tile--link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.dashboard-tile__cta {
+  color: var(--color-brand-primary);
+  font-weight: 700;
+}
+
+@media (max-width: 680px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .lesson-filter {
   min-height: 40px;
   padding: 8px 12px;
