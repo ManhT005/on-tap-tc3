@@ -32,9 +32,9 @@ export function LessonPage() {
         eyebrow="Bài học"
         title={`Bài ${String(lesson.id).padStart(2, '0')}`}
         action={
-          <a className="button button--secondary button--md" href="/learn">
+          <Link className="button button--secondary button--md" to="/learn">
             Quay lại Learn
-          </a>
+          </Link>
         }
       />
 

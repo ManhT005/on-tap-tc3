@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { COURSE_STRUCTURE } from '../../data/course';
 import { EmptyState } from './EmptyState';
@@ -43,7 +44,11 @@ describe('UI primitives', () => {
       throw new Error('Expected the course structure to contain a lesson.');
     }
 
-    render(<LessonCard lesson={firstLesson} />);
+    render(
+      <MemoryRouter>
+        <LessonCard lesson={firstLesson} />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByRole('heading', { name: firstLesson.koreanTitle })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Mở bài học' })).toHaveAttribute('href', '/learn/1');

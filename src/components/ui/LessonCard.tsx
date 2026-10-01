@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { COURSE_STRUCTURE } from '../../data/course';
 import { cn } from '../../utils/cn';
 import { Badge } from './Badge';
@@ -23,9 +24,9 @@ export function LessonCard({ lesson, className }: LessonCardProps) {
         <span>{lesson.totalQuestions} câu hỏi</span>
         <span>{lesson.title}</span>
       </div>
-      <a className="button button--ghost button--sm" href={`/learn/${lesson.id}`}>
+      <Link className="button button--ghost button--sm" to={`/learn/${lesson.id}`}>
         Mở bài học
-      </a>
+      </Link>
     </Card>
   );
 }
