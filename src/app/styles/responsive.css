@@ -1,0 +1,16 @@
+@media (max-width: 680px) {
+  .primary-nav {
+    justify-content: flex-start;
+    gap: 4px;
+  }
+
+  .nav-link {
+    min-height: 44px;
+    flex: 0 0 auto;
+    padding: 8px 10px;
+  }
+
+  .button--sm {
+    min-height: 44px;
+  }
+}
