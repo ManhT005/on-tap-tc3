@@ -7,6 +7,7 @@ const routeCases = [
   ['/', 'Home'],
   ['/learn', 'Learn'],
   ['/learn/3', 'Bài 03'],
+  ['/learn/999', 'Không tìm thấy bài học'],
   ['/review', 'Review'],
   ['/practice', 'Practice'],
   ['/progress', 'Progress'],

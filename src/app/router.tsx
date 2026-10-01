@@ -1,4 +1,4 @@
-import { createBrowserRouter, useParams } from 'react-router-dom';
+import { createBrowserRouter, Link, useParams } from 'react-router-dom';
 import { COURSE_STRUCTURE } from '../data/course';
 import { AppShell } from './AppShell';
 
@@ -93,11 +93,21 @@ function LearnPage() {
 
 function LessonDetailPage() {
   const { lessonId: lessonIdParam } = useParams();
-  const lessonId = Number(lessonIdParam ?? 1);
-  const lesson = COURSE_STRUCTURE.find((item) => item.id === lessonId) ?? COURSE_STRUCTURE[0];
+  const lessonId = Number(lessonIdParam);
+  const lesson = COURSE_STRUCTURE.find((item) => item.id === lessonId);
 
   if (!lesson) {
-    return null;
+    return (
+      <section className="page-panel">
+        <div className="empty-state card" role="alert">
+          <h1>Không tìm thấy bài học</h1>
+          <p>Bài học bạn đang tìm không tồn tại hoặc đường dẫn không hợp lệ.</p>
+          <Link className="button button--secondary button--md" to="/learn">
+            Quay lại Learn
+          </Link>
+        </div>
+      </section>
+    );
   }
 
   return (
