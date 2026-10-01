@@ -1,29 +1,25 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { AppShell } from './AppShell';
-
-function Placeholder({ title }: { title: string }) {
-  return (
-    <section className="page-placeholder">
-      <h1>{title}</h1>
-      <p>Màn hình này sẽ được triển khai ở phase tiếp theo.</p>
-    </section>
-  );
-}
+import { HomePage } from '../pages/HomePage';
+import { LearnPage } from '../pages/LearnPage';
+import { LessonPage } from '../pages/LessonPage';
+import { NotFoundPage } from '../pages/NotFoundPage';
+import { PracticePage } from '../pages/PracticePage';
+import { ProgressPage } from '../pages/ProgressPage';
+import { ReviewPage } from '../pages/ReviewPage';
 
 export const routes = [
   {
     path: '/',
     element: <AppShell />,
     children: [
-      { index: true, element: <Placeholder title="Home" /> },
-      { path: 'learn', element: <Placeholder title="Learn" /> },
-      {
-        path: 'learn/:lessonId',
-        element: <Placeholder title="Lesson Detail" />,
-      },
-      { path: 'review', element: <Placeholder title="Review" /> },
-      { path: 'practice', element: <Placeholder title="Practice" /> },
-      { path: 'progress', element: <Placeholder title="Progress" /> },
+      { index: true, element: <HomePage /> },
+      { path: 'learn', element: <LearnPage /> },
+      { path: 'learn/:lessonId', element: <LessonPage /> },
+      { path: 'review', element: <ReviewPage /> },
+      { path: 'practice', element: <PracticePage /> },
+      { path: 'progress', element: <ProgressPage /> },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ];

@@ -17,6 +17,18 @@ function checkDuplicateIds(items: { id: string | number }[], file: string) {
   }
 }
 
+if (COURSE_STRUCTURE.length !== 15) {
+  issues.push(`course.ts: expected 15 lessons, got ${COURSE_STRUCTURE.length}`);
+}
+
+checkDuplicateIds(COURSE_STRUCTURE, 'course.ts');
+
+for (const lesson of COURSE_STRUCTURE) {
+  if (lesson.id < 1 || lesson.id > 15) {
+    issues.push(`course.ts: invalid lesson id ${lesson.id}`);
+  }
+}
+
 checkDuplicateIds(QUIZ_BANK, 'quiz-bank.ts');
 checkDuplicateIds(WRITING_BANK, 'writing-bank.ts');
 
@@ -24,6 +36,31 @@ const readingPassages = Object.values(READING_BANK).flat();
 const readingQuestions = readingPassages.flatMap((passage) => passage.questions);
 checkDuplicateIds(readingPassages, 'reading-bank.ts passages');
 checkDuplicateIds(readingQuestions, 'reading-bank.ts questions');
+
+for (const key of Object.keys(READING_BANK)) {
+  const lessonId = Number(key);
+
+  if (!Number.isInteger(lessonId) || lessonId < 1 || lessonId > 15) {
+    issues.push(`reading-bank.ts: invalid lesson key "${key}"`);
+  }
+
+  if (String(lessonId) !== key) {
+    issues.push(`reading-bank.ts: non-canonical lesson key "${key}"`);
+  }
+}
+
+const validLessonIds = new Set(COURSE_STRUCTURE.map((lesson) => lesson.id));
+for (const q of QUIZ_BANK) {
+  if (!validLessonIds.has(q.lessonId)) {
+    issues.push(`quiz-bank.ts: question ${q.id} points to missing lesson ${q.lessonId}`);
+  }
+}
+
+for (const prompt of WRITING_BANK) {
+  if (!validLessonIds.has(prompt.lessonId)) {
+    issues.push(`writing-bank.ts: prompt ${prompt.id} points to missing lesson ${prompt.lessonId}`);
+  }
+}
 
 const courseIds = new Set(COURSE_STRUCTURE.map((lesson) => lesson.id));
 for (let lessonId = 1; lessonId <= 15; lessonId += 1) {
