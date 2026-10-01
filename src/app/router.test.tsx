@@ -31,7 +31,7 @@ it('navigates to a lesson and supports back navigation without a document reload
 
   render(<RouterProvider router={router} />);
 
-  const firstLessonLink = screen.getAllByRole('link', { name: 'Mở bài học' })[0];
+  const firstLessonLink = (await screen.findAllByRole('link', { name: 'Mở bài học' }))[0];
   if (!firstLessonLink) {
     throw new Error('Expected Learn to render a lesson link.');
   }

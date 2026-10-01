@@ -260,6 +260,54 @@ a {
   color: var(--color-brand-hover);
 }
 
+.lesson-card__title,
+.lesson-card__importance {
+  font-size: var(--text-sm);
+}
+
+.lesson-card__progress {
+  height: 6px;
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--color-neutral-100);
+}
+
+.lesson-card__progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-brand-primary);
+}
+
+.lesson-filters {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 4px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+}
+
+.lesson-filter {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.lesson-filter--active {
+  background: var(--color-brand-soft);
+  color: var(--color-brand-hover);
+  font-weight: 700;
+}
+
 .lesson-meta {
   justify-content: space-between;
   color: var(--color-text-secondary);
@@ -469,6 +517,14 @@ a {
   .page-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .lesson-filters {
+    width: 100%;
+  }
+
+  .lesson-filter {
+    flex: 0 0 auto;
   }
 
   .stats-grid,

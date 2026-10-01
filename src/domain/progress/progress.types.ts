@@ -3,6 +3,7 @@ export type LessonProgressState = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 
 export type LessonProgress = {
   lessonId: number;
   status: Exclude<LessonProgressState, 'NOT_STARTED'>;
+  completionPercent?: number;
   startedAt: string;
   updatedAt: string;
   completedAt?: string;

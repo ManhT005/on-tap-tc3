@@ -3,6 +3,11 @@ import type { QUIZ_BANK } from '../../data/quiz-bank';
 import type { READING_BANK } from '../../data/reading-bank';
 
 export type LessonDetails = LegacyCourseEntry & LessonContent;
+export type LearningLessonSummary = LegacyCourseEntry & {
+  objectives: string;
+  vocabularyCount: number;
+  grammarCount: number;
+};
 export type LessonVocabulary = LessonContent['vocabulary'];
 export type LessonGrammar = LessonContent['grammar'];
 export type LessonQuiz = (typeof QUIZ_BANK)[number];

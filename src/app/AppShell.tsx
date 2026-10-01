@@ -1,4 +1,6 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
+import { useProgressRepository } from './providers/ProgressRepositoryProvider';
+import { Toast } from '../components/ui/Toast';
 
 const navigationItems = [
   { to: '/', label: 'Home', end: true },
@@ -9,6 +11,8 @@ const navigationItems = [
 ];
 
 export function AppShell() {
+  const { storageError } = useProgressRepository();
+
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">
@@ -39,7 +43,9 @@ export function AppShell() {
       <main id="main-content" className="page-content" tabIndex={-1}>
         <Outlet />
       </main>
-      <div className="toast-viewport" aria-live="polite" aria-atomic="true" />
+      <div className="toast-viewport">
+        {storageError ? <Toast tone="error">{storageError}</Toast> : null}
+      </div>
     </div>
   );
 }
