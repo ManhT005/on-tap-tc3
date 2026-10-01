@@ -476,6 +476,94 @@ a {
   color: var(--color-danger);
 }
 
+.review-section {
+  display: grid;
+  gap: 14px;
+}
+
+.review-section__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.review-section__heading h2 {
+  margin: 0;
+}
+
+.review-section__heading span,
+.muted-copy {
+  color: var(--color-text-secondary);
+}
+
+.review-queue {
+  display: grid;
+  gap: 16px;
+}
+
+.review-queue-item {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.review-queue-item__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.review-queue-item h2 {
+  margin: 0;
+}
+
+.review-queue-item__answer {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-subtle);
+  white-space: pre-line;
+}
+
+.review-queue-item__answer p {
+  margin: 0;
+}
+
+.review-queue-item__answer p + p {
+  color: var(--color-text-secondary);
+}
+
+.review-queue-item__confidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.recent-mistakes {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recent-mistakes li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.recent-mistakes li span + span {
+  flex: 0 0 auto;
+  color: var(--color-text-secondary);
+}
+
 .lesson-filter {
   min-height: 40px;
   padding: 8px 12px;
