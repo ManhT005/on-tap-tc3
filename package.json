@@ -21,6 +21,7 @@
     "lint": "eslint src",
     "typecheck": "tsc -b",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "prepare": "husky",
     "validate:content": "tsx scripts/validate-content.ts",
     "audit:data": "tsx scripts/data-audit.ts",
