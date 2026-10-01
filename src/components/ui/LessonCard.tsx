@@ -44,8 +44,7 @@ export function LessonCard({
       <p>{lesson.topic}</p>
       <p className="lesson-card__importance">Độ quan trọng: {lesson.importance}</p>
       <div className="lesson-meta">
-        <span>{lesson.vocabularyCount} từ vựng</span>
-        <span>{lesson.grammarCount} mẫu ngữ pháp</span>
+        <span>{lesson.totalQuestions} câu hỏi</span>
       </div>
       <div
         className="lesson-card__progress"

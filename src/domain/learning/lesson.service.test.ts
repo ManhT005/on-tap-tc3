@@ -12,8 +12,8 @@ import {
 describe('learning access layer', () => {
   it('lists all course lessons', () => {
     expect(getLessons()).toHaveLength(15);
-    expect(getLessons()[0]?.vocabularyCount).toBeGreaterThan(0);
-    expect(getLessons()[0]?.title).toContain('Đời sống học đường');
+    expect(getLessons()[0]?.koreanTitle).toBe('학교생활');
+    expect(getLessons()[0]?.totalQuestions).toBeGreaterThan(0);
   });
 
   it.each([1, 15])('loads lesson %i with its summary and content', (lessonId) => {
