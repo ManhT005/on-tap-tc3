@@ -1,6 +1,7 @@
 import type { ReviewStatus } from '../../data/schemas';
 import { LESSONS_DATA } from '../../data/lessons';
 import { QUIZ_BANK } from '../../data/quiz-bank';
+import { READING_BANK } from '../../data/reading-bank';
 
 export type ReviewPrompt = {
   prompt: string;
@@ -11,12 +12,26 @@ export type ReviewPrompt = {
 export function getReviewPrompt(item: ReviewStatus): ReviewPrompt | null {
   if (item.itemType === 'question') {
     const question = QUIZ_BANK.find((candidate) => String(candidate.id) === item.itemId);
-    if (!question) return null;
+    if (question) {
+      return {
+        prompt: question.question,
+        answer: `${question.options[question.correctIndex]}\n${question.explanation}`,
+      };
+    }
 
-    return {
-      prompt: question.question,
-      answer: `${question.options[question.correctIndex]}\n${question.explanation}`,
-    };
+    for (const passages of Object.values(READING_BANK)) {
+      for (const passage of passages) {
+        const readingQuestion = passage.questions.find((candidate) => candidate.id === item.itemId);
+        if (readingQuestion) {
+          return {
+            prompt: readingQuestion.question,
+            answer: `${readingQuestion.options[readingQuestion.correctIndex]}\n${readingQuestion.evidence ?? ''}`,
+          };
+        }
+      }
+    }
+
+    return null;
   }
 
   const vocabularyMatch = item.itemId.match(/^lesson-(\d+)-vocabulary-(\d+)-(\d+)$/);

@@ -30,7 +30,7 @@ export async function completePracticeSession(
     await repository.saveReviewItem(updated);
   }
 
-  if (session.lessonId !== undefined && result.total > 0) {
+  if (session.mode === 'lesson' && session.lessonId !== undefined && result.total > 0) {
     const existingProgress = await repository.getLessonProgress(session.lessonId);
     await repository.saveLessonProgress({
       lessonId: session.lessonId,

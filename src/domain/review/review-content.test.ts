@@ -35,6 +35,12 @@ describe('getReviewPrompt', () => {
     expect(getReviewPrompt(createItem('question', '101'))?.prompt).toContain('밖에');
   });
 
+  it('resolves reading questions by question ID', () => {
+    expect(getReviewPrompt(createItem('question', 'rq_1_1_1'))?.prompt).toContain(
+      'kéo dài bao lâu',
+    );
+  });
+
   it('returns null for stale or malformed references', () => {
     expect(getReviewPrompt(createItem('vocabulary', 'lesson-1-vocabulary-99-99'))).toBeNull();
   });

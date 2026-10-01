@@ -1,4 +1,4 @@
-export type PracticeMode = 'lesson' | 'quiz' | 'reading';
+export type PracticeMode = 'lesson' | 'quiz' | 'reading' | 'writing';
 
 export type PracticeSession = {
   id: string;

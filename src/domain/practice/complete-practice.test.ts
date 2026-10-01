@@ -63,4 +63,25 @@ describe('completePracticeSession', () => {
 
     await expect(repository.getLessonProgress(1)).resolves.toBeNull();
   });
+
+  it('does not complete the entire lesson for a standalone quiz session', async () => {
+    const repository = new MemoryProgressRepository();
+    const session = {
+      ...createPracticeSession({
+        id: 'quiz-session',
+        lessonId: 1,
+        mode: 'quiz',
+        questionIds: [1, 2],
+        startedAt: '2026-10-01T08:00:00.000Z',
+      }),
+      answers: { '1': 0, '2': 1 },
+    };
+
+    await completePracticeSession(session, questions, repository, {
+      resultId: 'quiz-result',
+      completedAt: '2026-10-01T08:10:00.000Z',
+    });
+
+    await expect(repository.getLessonProgress(1)).resolves.toBeNull();
+  });
 });
