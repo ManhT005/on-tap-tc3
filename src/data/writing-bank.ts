@@ -14,6 +14,18 @@ const raw = [
       'Sử dụng cấu trúc (이)라고 하다 (giới thiệu tên), 밖에 đi với vị từ phủ định 못하다 (chỉ biết một ít), và -(으)ㄹ 생각이다 (kế hoạch du học).',
   },
   {
+    id: 'w1_2',
+    lessonId: 1,
+    title: 'Bài 01: Thảo luận việc đăng ký môn học và nghe giảng',
+    prompt:
+      '다음 상황에 맞게 한국어로 문장을 완성하시오.\n[상황]: Giải thích rằng dù môn này có hơi khó một chút nhưng vì là môn chuyên ngành cần thiết nên tôi vẫn dự định sẽ đăng ký nghe giảng trong học kỳ này.',
+    requiredKeywords: ['어렵기는 하지만', '전공과목', '수강할 생각'],
+    modelAnswer:
+      '이 과목은 좀 어렵기는 하지만 꼭 필요한 전공과목이라서 이번 학기에 수강할 생각입니다.',
+    explanation:
+      'Sử dụng cấu trúc -기는 하지만 (tuy... nhưng...) và -(으)ㄹ 생각이다 (dự định) kết hợp từ vựng chuyên ngành 전공과목 và 수강하다.',
+  },
+  {
     id: 'w2',
     lessonId: 2,
     title: 'Bài 02: Viết email cảm ơn giáo viên',
@@ -25,6 +37,18 @@ const raw = [
       'Sử dụng cấu trúc -(으)ㄴ 덕분에 để nêu nguyên nhân mang lại kết quả tốt đẹp và kết hợp với -게 되었습니다.',
   },
   {
+    id: 'w2_2',
+    lessonId: 2,
+    title: 'Bài 02: Nhờ vả hàng xóm trong đời sống cộng đồng',
+    prompt:
+      '다음 상황에 맞게 한국어로 정중하게 문장을 작성하시오.\n[상황]: Bạn nhờ hàng xóm nhận hộ bưu phẩm khi bạn vắng nhà và đề nghị cuối tuần sẽ mua cà phê hoặc giúp đỡ lại để bù đắp.',
+    requiredKeywords: ['택배', '대신', '커피'],
+    modelAnswer:
+      '제가 집에 없을 때 택배를 대신 받아 주시면, 그 대신에 이번 주말에 맛있는 커피를 대접할게요.',
+    explanation:
+      'Sử dụng cấu trúc -(으)ㄴ/는 대신에 để biểu thị sự bù đắp, đền đáp khi tương tác giúp đỡ hàng xóm.',
+  },
+  {
     id: 'w3',
     lessonId: 3,
     title: 'Bài 03: Lời khuyên duy trì sức khỏe',
@@ -33,6 +57,18 @@ const raw = [
     requiredKeywords: ['감기', '얼른', '병원에 가는 게'],
     modelAnswer: '요즘 감기는 독하니까 얼른 병원에 가는 게 좋겠어요.',
     explanation: 'Áp dụng -는 게 좋다 để đưa ra lời khuyên thiết thực.',
+  },
+  {
+    id: 'w3_2',
+    lessonId: 3,
+    title: 'Bài 03: Hướng dẫn thói quen sinh hoạt lành mạnh',
+    prompt:
+      '다음 상황에 맞게 의사의 건강 조언을 완성하시오.\n[상황]: Bác sĩ khuyên bệnh nhân bị đau dạ dày cần ăn uống đúng giờ và chú ý không ăn đồ cay nóng vào đêm muộn.',
+    requiredKeywords: ['규칙적으로 식사하도록', '맵거나', '주의'],
+    modelAnswer:
+      '위 건강을 위해 매일 규칙적으로 식사하도록 하시고, 밤늦게 맵거나 짠 음식을 드시지 않도록 주의하세요.',
+    explanation:
+      'Sử dụng cấu trúc -도록 하다 để đưa ra chỉ dẫn, yêu cầu thực hiện thói quen lành mạnh và từ vựng y tế sức khỏe.',
   },
   {
     id: 'w4',
