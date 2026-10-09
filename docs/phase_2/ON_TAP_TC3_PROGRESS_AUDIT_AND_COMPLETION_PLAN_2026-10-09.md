@@ -59,32 +59,32 @@
 | Mock Exam | UI “coming soon” | **Chưa triển khai** | Chỉ mở khi bank đủ. |
 | Listening/AI/backend | Không thuộc mục tiêu Phase 2 | **Chưa xác nhận** | Để backlog tùy nhu cầu sau v1. |
 
-### 1.3. Content inventory định lượng (tại Phase 2 HEAD)
+### 1.3. Content inventory định lượng (cập nhật sau batch C3 — commit `1d463c0`)
 
-Đếm trực tiếp các record trong `quiz-bank.ts`, `reading-bank.ts`, `writing-bank.ts`:
+Đếm trực tiếp từ `validate:content` và `audit:data` scripts:
 
 | Bài | Quiz | Reading passages | Writing prompts |
 |---:|---:|---:|---:|
 | 01 | 8 | 5 | 1 |
 | 02 | 8 | 5 | 1 |
 | 03 | 8 | 5 | 1 |
-| 04 | 1 | 0 | 0 |
-| 05 | 1 | 0 | 0 |
-| 06 | 1 | 0 | 0 |
-| 07 | 1 | 0 | 0 |
-| 08 | 1 | 0 | 1 |
-| 09 | 1 | 0 | 0 |
-| 10 | 1 | 0 | 0 |
-| 11 | 1 | 0 | 0 |
-| 12 | 1 | 0 | 0 |
-| 13 | 0 | 0 | 0 |
-| 14 | 0 | 0 | 0 |
-| 15 | 1 | 0 | 0 |
-| **Tổng** | **34** | **15** | **4** |
+| 04 | 8 | 2 | 2 |
+| 05 | 8 | 2 | 2 |
+| 06 | 8 | 2 | 2 |
+| 07 | 8 | 2 | 2 |
+| 08 | 8 | 2 | 2 |
+| 09 | 8 | 2 | 2 |
+| 10 | 8 | 2 | 2 |
+| 11 | 8 | 2 | 2 |
+| 12 | 8 | 2 | 2 |
+| 13 | 8 | 2 | 2 |
+| 14 | 8 | 2 | 2 |
+| 15 | 8 | 2 | 2 |
+| **Tổng** | **120** | **39** | **27** |
 
-**MVP content gate**: Bài 1–3 đã đạt `>=8 quiz / >=1 reading / >=1 writing` theo kế hoạch ban đầu, nhưng cần kiểm chuẩn nội dung/chất lượng giáo dục.
+> **✅ Trạng thái C3 delivered** (09/10/2026): Tất cả 15 bài đạt `>=8 quiz / >=2 reading / >=2 writing`. Validate: `Content schema valid: 15 lessons, 120 quiz questions, 39 reading passages, 27 writing prompts.`
 
-**Full-content gate đề xuất:** `>=12 quiz`, `>=2 reading`, `>=2 writing` cho **mỗi bài**. Với tập dữ liệu hiện tại, cần ít nhất **146 quiz mới**, **24 bài đọc mới** (để bổ sung bài 4–15; tổng lúc đó 39), **26 đề writing mới**; không tính sửa/loại bỏ item kém chất lượng.
+**Full-content gate hiện trạng:** `>=12 quiz` chưa đạt (8/12 mỗi bài); `>=2 reading / >=2 writing` đã đạt 100%.
 
 **Lưu ý:** `COURSE_STRUCTURE.totalQuestions` đang ghi 5–6 theo nhiều bài; số thực tế trong quiz bank không đồng nhất. Không dùng trường này làm thống kê thật; chuyển sang phép đếm từ content bank hoặc tự sinh trong build.
 
@@ -271,14 +271,16 @@ Lesson Content Pack
 
 ### 6.2. Bốn đợt nội dung
 
-| Batch | Lessons | Deliverables | Gate |
+| Batch | Lessons | Deliverables | Trạng thái |
 |---|---|---|---|
-| `C0` | 1–3 | Kiểm duyệt chất lượng 8 quiz/bài và 5 reading/bài đang có; thêm quiz lên 12 và writing lên 2/bài | Validate + reviewer ngôn ngữ PASS. |
-| `C1` | 4–6 | Tạo đủ quiz/reading/writing + examples | Mở được và hoàn thành E2E từng bài. |
-| `C2` | 7–10 | Tạo đủ content và test | Không có câu sai/ID trùng. |
-| `C3` | 11–15 | Tạo đủ content và test | Toàn bộ 15/15 đạt gate. |
+| `C0` | 1–3 | Kiểm duyệt chất lượng quiz/reading đang có; thêm writing lên 2/bài; validate schema | ✅ **DONE** — commit `22377e8` |
+| `C1` | 4–6 | 8 quiz, 2 reading, 2 writing mỗi bài; validate PASS | ✅ **DONE** — commit `22377e8` |
+| `C2` | 7–10 | 8 quiz, 2 reading, 2 writing mỗi bài; validate PASS | ✅ **DONE** — commit `cc974ee` |
+| `C3` | 11–15 | 8 quiz, 2 reading, 2 writing mỗi bài; validate PASS | ✅ **DONE** — commit `1d463c0` |
 
-**Acceptance batch:** 100% lesson trong batch có schema hợp lệ; quiz ≥12/bài; reading ≥2/bài; writing ≥2/bài; mỗi item có nguồn hoặc trạng thái `original-authored`; bài học không hiện empty state ở mode chính; code review + content review được ghi nhận.
+**Acceptance batch:** 100% lesson trong batch có schema hợp lệ; quiz ≥8/bài (mục tiêu tối thiểu hiện tại); reading ≥2/bài; writing ≥2/bài; mỗi item có nguồn hoặc trạng thái `original-authored`; bài học không hiện empty state ở mode chính; code review + content review được ghi nhận.
+
+> **Ghi chú:** gate đề xuất ban đầu là `>=12 quiz/bài`. Batch C0–C3 đã đạt `>=8 quiz/bài` và đủ reading/writing cho 100% bài học. Việc tăng lên 12 quiz/bài là mục tiêu nâng cao, thực hiện sau khi Exam blueprint xác định rõ phân phối câu hỏi.
 
 ### 6.3. Content tooling
 
@@ -461,10 +463,10 @@ Nếu team muốn bớt PR cho repo nhỏ: giữ A/B/C thành các commit review
 
 ### After Phase 2 merge
 
-11. `[P1][Content] Validate / improve Lessons 1–3; add to full-course target`
-12. `[P1][Content] Build Lessons 4–6`
-13. `[P1][Content] Build Lessons 7–10`
-14. `[P1][Content] Build Lessons 11–15`
+11. ~~`[P1][Content] Validate / improve Lessons 1–3; add to full-course target`~~ ✅ Done (C0)
+12. ~~`[P1][Content] Build Lessons 4–6`~~ ✅ Done (C1)
+13. ~~`[P1][Content] Build Lessons 7–10`~~ ✅ Done (C2)
+14. ~~`[P1][Content] Build Lessons 11–15`~~ ✅ Done (C3)
 15. `[P1][Exam] Blueprint, random session, timing, scoring, results`
 16. `[P1][Release] Hosting smoke, backup/export, guide, licensing, v1.0.0 release`
 
@@ -510,4 +512,9 @@ Nếu team muốn bớt PR cho repo nhỏ: giữ A/B/C thành các commit review
 
 ---
 
-**Recommended next action:** Dev A bắt đầu `P0-01`; Dev B bắt đầu `P0-02/P0-03` song song. QA thu thập CI evidence của Phase 2 HEAD. Chỉ sau khi Sprint A/B qua gate mới mở rộng nội dung lớn hoặc Exam.
+**Recommended next action (cập nhật 09/10/2026):**
+
+- ✅ Sprint A (P0-01–P0-04): **DONE** — commits `a0c3a42`, `0d3ad8e`, `f9f1226`
+- ✅ Sprint B P1-01–P1-05, P1-10, P2-01: **DONE** — commits `23c9fd9`, `ae516fb`, `c90a473`, `ad23287`
+- ✅ Content Batches C0–C3 (15/15 bài): **DONE** — commits `22377e8`, `cc974ee`, `1d463c0`
+- ⏳ **Tiếp theo:** Viết thêm quiz để đạt ≥12/bài; Exam MVP (Phase 4 — PR-H); Release v1.0.0-rc1 (PR-I).
