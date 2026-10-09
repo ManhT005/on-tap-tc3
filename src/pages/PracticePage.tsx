@@ -16,6 +16,27 @@ const practiceModes: { id: PracticeMode; label: string }[] = [
 export function PracticePage() {
   const [mode, setMode] = useState<PracticeMode>('quiz');
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, currentIndex: number) => {
+    let nextIndex = -1;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      nextIndex = (currentIndex + 1) % practiceModes.length;
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      nextIndex = (currentIndex - 1 + practiceModes.length) % practiceModes.length;
+    } else if (e.key === 'Home') {
+      nextIndex = 0;
+    } else if (e.key === 'End') {
+      nextIndex = practiceModes.length - 1;
+    }
+
+    if (nextIndex >= 0) {
+      e.preventDefault();
+      const nextMode = practiceModes[nextIndex]!.id;
+      setMode(nextMode);
+      const nextTab = document.getElementById(`practice-tab-${nextMode}`);
+      nextTab?.focus();
+    }
+  };
+
   return (
     <section className="page-panel">
       <PageHeader
@@ -25,16 +46,18 @@ export function PracticePage() {
       />
 
       <div className="practice-tabs" role="tablist" aria-label="Chế độ luyện tập">
-        {practiceModes.map((item) => (
+        {practiceModes.map((item, index) => (
           <button
             key={item.id}
             id={`practice-tab-${item.id}`}
             className={mode === item.id ? 'practice-tab practice-tab--active' : 'practice-tab'}
             type="button"
             role="tab"
+            tabIndex={mode === item.id ? 0 : -1}
             aria-selected={mode === item.id}
             aria-controls={`practice-panel-${item.id}`}
             onClick={() => setMode(item.id)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
           >
             {item.label}
           </button>

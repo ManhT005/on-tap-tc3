@@ -176,4 +176,34 @@ describe('PracticePage', () => {
       accuracy: 100,
     });
   });
+
+  it('supports keyboard navigation across practice mode tabs', async () => {
+    const user = userEvent.setup();
+    renderPracticePage();
+
+    const quizTab = screen.getByRole('tab', { name: 'Quiz' });
+    const readingTab = screen.getByRole('tab', { name: 'Reading' });
+    const writingTab = screen.getByRole('tab', { name: 'Writing' });
+    const examTab = screen.getByRole('tab', { name: 'Exam' });
+
+    quizTab.focus();
+    expect(quizTab).toHaveFocus();
+    expect(quizTab).toHaveAttribute('aria-selected', 'true');
+
+    await user.keyboard('{ArrowRight}');
+    expect(readingTab).toHaveFocus();
+    expect(readingTab).toHaveAttribute('aria-selected', 'true');
+
+    await user.keyboard('{ArrowRight}');
+    expect(writingTab).toHaveFocus();
+    expect(writingTab).toHaveAttribute('aria-selected', 'true');
+
+    await user.keyboard('{End}');
+    expect(examTab).toHaveFocus();
+    expect(examTab).toHaveAttribute('aria-selected', 'true');
+
+    await user.keyboard('{Home}');
+    expect(quizTab).toHaveFocus();
+    expect(quizTab).toHaveAttribute('aria-selected', 'true');
+  });
 });
