@@ -72,4 +72,42 @@ describe('PracticePage', () => {
     await user.click(screen.getByRole('tab', { name: 'Exam' }));
     expect(screen.getByRole('button', { name: 'Sắp ra mắt' })).toBeDisabled();
   });
+
+  it('Reading practice: selecting empty lesson 4 shows empty state, selecting lesson 1 recovers', async () => {
+    const user = userEvent.setup();
+    renderPracticePage();
+
+    await user.click(screen.getByRole('tab', { name: 'Reading' }));
+    expect(await screen.findByRole('combobox', { name: 'Bài học' })).toBeInTheDocument();
+
+    // Select Lesson 4 (has no reading passages)
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '4');
+    expect(screen.getByText('Chưa có bài đọc')).toBeInTheDocument();
+    // Selector is still visible and functional
+    expect(screen.getByRole('combobox', { name: 'Bài học' })).toBeInTheDocument();
+
+    // Switch back to Lesson 1
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '1');
+    const reading = getLessonReading(1);
+    if (!reading.ok || !reading.data[0]) throw new Error('Expected lesson 1 reading');
+    expect(screen.getByRole('heading', { name: reading.data[0].title })).toBeInTheDocument();
+  });
+
+  it('Writing practice: selecting empty lesson 4 shows empty state, selecting lesson 1 recovers', async () => {
+    const user = userEvent.setup();
+    renderPracticePage();
+
+    await user.click(screen.getByRole('tab', { name: 'Writing' }));
+    expect(await screen.findByRole('combobox', { name: 'Bài học' })).toBeInTheDocument();
+
+    // Select Lesson 4 (has no writing prompt)
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '4');
+    expect(screen.getByText('Chưa có đề bài viết')).toBeInTheDocument();
+    // Selector is still visible and functional
+    expect(screen.getByRole('combobox', { name: 'Bài học' })).toBeInTheDocument();
+
+    // Switch back to Lesson 1
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '1');
+    expect(screen.getByRole('button', { name: 'Hiện bài mẫu' })).toBeInTheDocument();
+  });
 });

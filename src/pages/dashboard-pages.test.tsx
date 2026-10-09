@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { ProgressRepositoryProvider } from '../app/providers/ProgressRepositoryProvider';
 import type { ReviewStatus } from '../data/schemas';
 import type { PracticeResult } from '../domain/practice/practice.types';
@@ -108,5 +108,37 @@ describe('dashboard pages', () => {
     expect(screen.getByText('Từ vựng đã ôn')).toBeInTheDocument();
     expect(screen.getByText('Ngữ pháp đã ôn')).toBeInTheDocument();
     expect(screen.getByText('75%')).toBeInTheDocument();
+  });
+
+  it('shows a storage warning banner when storage is degraded', async () => {
+    const repository = await createSeededRepository();
+    render(
+      <ProgressRepositoryProvider repository={repository} storageStatus="degraded">
+        <MemoryRouter>
+          <ProgressPage />
+        </MemoryRouter>
+      </ProgressRepositoryProvider>,
+    );
+
+    expect(await screen.findByRole('status')).toHaveTextContent(/Bộ nhớ lâu dài không khả dụng/);
+  });
+
+  it('prioritizes error over loading skeleton when fetching progress fails', async () => {
+    const failingRepo = {
+      ...new MemoryProgressRepository(),
+      getCourseProgress: vi.fn().mockRejectedValue(new Error('Fetch failed')),
+      getLessonProgress: vi.fn().mockRejectedValue(new Error('Fetch failed')),
+    };
+    render(
+      <ProgressRepositoryProvider repository={failingRepo}>
+        <MemoryRouter>
+          <ProgressPage />
+        </MemoryRouter>
+      </ProgressRepositoryProvider>,
+    );
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Không tải được tiến độ học tập.');
+    expect(screen.getByRole('button', { name: 'Thử lại' })).toBeInTheDocument();
+    expect(screen.queryByLabelText('Đang tải tiến độ')).not.toBeInTheDocument();
   });
 });

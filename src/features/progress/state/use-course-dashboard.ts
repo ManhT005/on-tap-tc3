@@ -8,11 +8,19 @@ export type CourseDashboardData = {
   nextLessonId: number | null;
 };
 
-export function useCourseDashboard() {
+export function useCourseDashboard(reloadKey = 0) {
   const { repository } = useProgressRepository();
-  const [data, setData] = useState<CourseDashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<{
+    key: number;
+    data: CourseDashboardData | null;
+    loading: boolean;
+    error: string | null;
+  }>({
+    key: reloadKey,
+    data: null,
+    loading: true,
+    error: null,
+  });
 
   useEffect(() => {
     let active = true;
@@ -32,19 +40,35 @@ export function useCourseDashboard() {
           lessons.find((lesson) => progressByLesson.get(lesson.id)?.status === 'IN_PROGRESS') ??
           lessons.find((lesson) => progressByLesson.get(lesson.id)?.status !== 'COMPLETED');
 
-        if (active) setData({ progress, nextLessonId: nextLesson?.id ?? null });
+        if (active) {
+          setState({
+            key: reloadKey,
+            data: { progress, nextLessonId: nextLesson?.id ?? null },
+            loading: false,
+            error: null,
+          });
+        }
       })
       .catch(() => {
-        if (active) setError('Không tải được tiến độ học tập.');
-      })
-      .finally(() => {
-        if (active) setLoading(false);
+        if (active) {
+          setState({
+            key: reloadKey,
+            data: null,
+            loading: false,
+            error: 'Không tải được tiến độ học tập.',
+          });
+        }
       });
 
     return () => {
       active = false;
     };
-  }, [repository]);
+  }, [repository, reloadKey]);
 
-  return { ...data, loading, error };
+  const isCurrent = state.key === reloadKey;
+  return {
+    ...(isCurrent ? state.data : null),
+    loading: !isCurrent || state.loading,
+    error: isCurrent ? state.error : null,
+  };
 }

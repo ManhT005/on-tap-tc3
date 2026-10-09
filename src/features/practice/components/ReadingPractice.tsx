@@ -57,15 +57,6 @@ export function ReadingPractice() {
     setShowTranslation(false);
   }
 
-  if (!readingResult.ok || !passage) {
-    return (
-      <EmptyState
-        title="Chưa có bài đọc"
-        description="Bài đọc sẽ xuất hiện khi nội dung của bài học được hoàn thiện."
-      />
-    );
-  }
-
   return (
     <section className="practice-mode">
       <div className="practice-controls">
@@ -85,7 +76,7 @@ export function ReadingPractice() {
             ))}
           </select>
         </label>
-        {readingResult.data.length > 1 ? (
+        {readingResult.ok && readingResult.data.length > 1 ? (
           <label>
             Bài đọc
             <select
@@ -102,59 +93,70 @@ export function ReadingPractice() {
         ) : null}
       </div>
 
-      <article className="reading-passage card">
-        <p className="eyebrow">{passage.type}</p>
-        <h2>{passage.title}</h2>
-        <p lang="ko" className="reading-passage__text">
-          {passage.koreanText}
-        </p>
-        {showTranslation ? (
-          <p className="reading-passage__translation">{passage.vietnameseTranslation}</p>
-        ) : null}
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => setShowTranslation((visible) => !visible)}
-        >
-          {showTranslation ? 'Ẩn bản dịch' : 'Hiện bản dịch'}
-        </Button>
-      </article>
-
-      <div className="reading-questions">
-        {passage.questions.map((question) => (
-          <ReadingQuestion
-            key={question.id}
-            question={question}
-            selectedAnswer={answers[question.id]}
-            submitted={submitted}
-            onSelect={(answer) => setAnswers((current) => ({ ...current, [question.id]: answer }))}
-          />
-        ))}
-      </div>
-      {error ? (
-        <p className="form-error" role="alert">
-          {error}
-        </p>
-      ) : null}
-      {result ? (
-        <p role="status">
-          Đúng {result.correct}/{result.total} · {result.score}%
-        </p>
-      ) : null}
-      {submitted ? (
-        <Button variant="secondary" onClick={() => resetPassage()}>
-          Luyện lại bài đọc
-        </Button>
+      {!readingResult.ok || !passage ? (
+        <EmptyState
+          title="Chưa có bài đọc"
+          description="Bài đọc sẽ xuất hiện khi nội dung của bài học được hoàn thiện."
+        />
       ) : (
-        <Button
-          disabled={
-            !passage.questions.length ||
-            !passage.questions.every((question) => answers[question.id] !== undefined)
-          }
-          onClick={() => void submit()}
-        >
-          Chấm điểm bài đọc
-        </Button>
+        <>
+          <article className="reading-passage card">
+            <p className="eyebrow">{passage.type}</p>
+            <h2>{passage.title}</h2>
+            <p lang="ko" className="reading-passage__text">
+              {passage.koreanText}
+            </p>
+            {showTranslation ? (
+              <p className="reading-passage__translation">{passage.vietnameseTranslation}</p>
+            ) : null}
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowTranslation((visible) => !visible)}
+            >
+              {showTranslation ? 'Ẩn bản dịch' : 'Hiện bản dịch'}
+            </Button>
+          </article>
+
+          <div className="reading-questions">
+            {passage.questions.map((question) => (
+              <ReadingQuestion
+                key={question.id}
+                question={question}
+                selectedAnswer={answers[question.id]}
+                submitted={submitted}
+                onSelect={(answer) =>
+                  setAnswers((current) => ({ ...current, [question.id]: answer }))
+                }
+              />
+            ))}
+          </div>
+          {error ? (
+            <p className="form-error" role="alert">
+              {error}
+            </p>
+          ) : null}
+          {result ? (
+            <p role="status">
+              Đúng {result.correct}/{result.total} · {result.score}%
+            </p>
+          ) : null}
+          {submitted ? (
+            <Button variant="secondary" onClick={() => resetPassage()}>
+              Luyện lại bài đọc
+            </Button>
+          ) : (
+            <Button
+              disabled={
+                !passage.questions.length ||
+                !passage.questions.every((question) => answers[question.id] !== undefined)
+              }
+              onClick={() => void submit()}
+            >
+              Chấm điểm bài đọc
+            </Button>
+          )}
+        </>
       )}
     </section>
   );
