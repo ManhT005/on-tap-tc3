@@ -75,6 +75,8 @@ export function gradeReview(
     correctCount: item.correctCount + Number(correct),
     wrongCount: item.wrongCount + Number(!correct),
     lastReviewedAt: now.toISOString(),
+    // BUG-P2-011: Track last wrong answer time so recentMistakes sorts correctly.
+    ...(correct ? {} : { lastWrongAt: now.toISOString() }),
     nextReviewAt: schedule.nextReviewAt,
     intervalDays: schedule.intervalDays,
     confidence,

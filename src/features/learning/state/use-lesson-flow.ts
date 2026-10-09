@@ -31,6 +31,7 @@ export function useLessonFlow(lessonId: number) {
   const [startedAt] = useState(() => new Date().toISOString());
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [result, setResult] = useState<PracticeResult | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [reviewedVocabulary, setReviewedVocabulary] = useState<Set<string>>(() => new Set());
   const [loading, setLoading] = useState(() => lessonResult.ok);
   const [error, setError] = useState<string | null>(null);
@@ -140,19 +141,26 @@ export function useLessonFlow(lessonId: number) {
   }
 
   async function submitPractice() {
-    if (!quizResult.ok || result) return;
-
+    // BUG-P2-001: resultId is derived from the stable session.id (created at mount),
+    // not from createId() on every call. Combined with submitting guard this ensures
+    // idempotency: the same session cannot produce more than one result.
+    const resultId = `lesson-result-${session.id}`;
+    if (!quizResult.ok || result || submitting) return;
+    setSubmitting(true);
+    setError(null);
     try {
       const completedAt = new Date().toISOString();
       const completed = await completePracticeSession(
         { ...session, answers },
         quizResult.data.map(({ id, correctIndex }) => ({ id, correctIndex })),
         repository,
-        { resultId: createId('practice-result'), completedAt },
+        { resultId, completedAt },
       );
       setResult(completed);
     } catch {
       setError('Không lưu được kết quả luyện tập. Vui lòng thử lại.');
+    } finally {
+      setSubmitting(false);
     }
   }
 

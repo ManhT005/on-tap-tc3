@@ -14,19 +14,42 @@ function createId(prefix: string) {
 export function WritingPractice() {
   const { repository } = useProgressRepository();
   const [lessonId, setLessonId] = useState(1);
+  // BUG-P2-003: Track selected prompt by index so users can access all prompts per lesson.
+  const [promptIndex, setPromptIndex] = useState(0);
   const [response, setResponse] = useState('');
   const [showModelAnswer, setShowModelAnswer] = useState(false);
   const [selfAssessment, setSelfAssessment] = useState<boolean | null>(null);
   const [saved, setSaved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const writingResult = getLessonWriting(lessonId);
-  const prompt =
-    writingResult.ok && writingResult.data.length > 0 ? writingResult.data[0] : undefined;
+  const prompts = writingResult.ok && writingResult.data.length > 0 ? writingResult.data : [];
+  const prompt = prompts[promptIndex] ?? null;
 
   const missingKeywords = prompt
     ? prompt.requiredKeywords.filter((keyword) => !response.includes(keyword))
     : [];
+
+  function handleLessonChange(nextLessonId: number) {
+    setLessonId(nextLessonId);
+    setPromptIndex(0);
+    setResponse('');
+    setShowModelAnswer(false);
+    setSelfAssessment(null);
+    setSaved(false);
+    setError(null);
+  }
+
+  function handlePromptChange(nextIndex: number) {
+    setPromptIndex(nextIndex);
+    // Reset per-prompt state; text is not saved between prompts (BUG-P2-008: draft is local).
+    setResponse('');
+    setShowModelAnswer(false);
+    setSelfAssessment(null);
+    setSaved(false);
+    setError(null);
+  }
 
   async function saveAssessment(metRequirements: boolean) {
     if (!prompt || saved || submitting) return;
@@ -46,10 +69,15 @@ export function WritingPractice() {
       questionIds: [prompt.id],
       startedAt,
     });
+    // BUG-P2-007: Mark as SELF_ASSESSED so objective accuracy excludes this result.
     const result = scorePractice(
       { ...session, answers: { [prompt.id]: metRequirements ? 1 : 0 } },
       [{ id: prompt.id, correctIndex: 1 }],
-      { resultId: `writing-result-${sessionId}`, completedAt: new Date().toISOString() },
+      {
+        resultId: `writing-result-${sessionId}`,
+        completedAt: new Date().toISOString(),
+        assessmentType: 'SELF_ASSESSED',
+      },
     );
 
     try {
@@ -65,26 +93,39 @@ export function WritingPractice() {
 
   return (
     <section className="practice-mode writing-practice">
-      <label>
-        Bài học
-        <select
-          value={lessonId}
-          onChange={(event) => {
-            setLessonId(Number(event.target.value));
-            setResponse('');
-            setShowModelAnswer(false);
-            setSelfAssessment(null);
-            setSaved(false);
-            setError(null);
-          }}
-        >
-          {COURSE_STRUCTURE.map((lesson) => (
-            <option key={lesson.id} value={lesson.id}>
-              Bài {String(lesson.id).padStart(2, '0')}: {lesson.koreanTitle}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="practice-controls">
+        <label>
+          Bài học
+          <select
+            value={lessonId}
+            onChange={(event) => handleLessonChange(Number(event.target.value))}
+          >
+            {COURSE_STRUCTURE.map((lesson) => (
+              <option key={lesson.id} value={lesson.id}>
+                Bài {String(lesson.id).padStart(2, '0')}: {lesson.koreanTitle}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {/* BUG-P2-003: Show prompt selector when lesson has multiple writing prompts */}
+        {prompts.length > 1 ? (
+          <label>
+            Đề bài
+            <select
+              aria-label="Đề viết"
+              value={promptIndex}
+              onChange={(event) => handlePromptChange(Number(event.target.value))}
+            >
+              {prompts.map((p, index) => (
+                <option key={p.id} value={index}>
+                  {index + 1}. {p.title}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+      </div>
 
       {!prompt ? (
         <EmptyState
@@ -114,6 +155,11 @@ export function WritingPractice() {
             ) : null}
             <label className="writing-response">
               Câu trả lời của bạn
+              {/* BUG-P2-008: Clearly inform user that draft text is not saved on prompt/lesson change */}
+              <span className="muted-copy" aria-live="polite">
+                {' '}
+                (Bài viết chưa được lưu — chỉ tự đánh giá được ghi lại)
+              </span>
               <textarea
                 rows={5}
                 value={response}

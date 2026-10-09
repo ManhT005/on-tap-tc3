@@ -75,4 +75,17 @@ describe('scorePractice', () => {
       'Practice session references missing question "missing".',
     );
   });
+
+  it('BUG-P2-007: defaults assessmentType to AUTO_GRADED', () => {
+    const result = scorePractice(createSession({ q1: 0, q2: 1, q3: 2 }), questions, options);
+    expect(result.assessmentType).toBe('AUTO_GRADED');
+  });
+
+  it('BUG-P2-007: stamps SELF_ASSESSED when explicitly requested', () => {
+    const result = scorePractice(createSession({ q1: 0 }, ['q1']), questions, {
+      ...options,
+      assessmentType: 'SELF_ASSESSED',
+    });
+    expect(result.assessmentType).toBe('SELF_ASSESSED');
+  });
 });

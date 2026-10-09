@@ -1,4 +1,4 @@
-import type { PracticeResult, PracticeSession } from './practice.types';
+import type { AssessmentType, PracticeResult, PracticeSession } from './practice.types';
 
 export type ScorableQuestion = {
   id: string | number;
@@ -8,12 +8,14 @@ export type ScorableQuestion = {
 export type ScorePracticeOptions = {
   resultId: string;
   completedAt: string;
+  /** BUG-P2-007: Set to SELF_ASSESSED for Writing so it is excluded from objective accuracy. */
+  assessmentType?: AssessmentType;
 };
 
 export function scorePractice(
   session: PracticeSession,
   questions: readonly ScorableQuestion[],
-  { resultId, completedAt }: ScorePracticeOptions,
+  { resultId, completedAt, assessmentType = 'AUTO_GRADED' }: ScorePracticeOptions,
 ): PracticeResult {
   const questionById = new Map(questions.map((question) => [String(question.id), question]));
   const wrongQuestionIds: string[] = [];
@@ -39,6 +41,7 @@ export function scorePractice(
     id: resultId,
     ...(session.lessonId === undefined ? {} : { lessonId: session.lessonId }),
     mode: session.mode,
+    assessmentType,
     score: total === 0 ? 0 : Math.round((correct / total) * 100),
     correct,
     wrong,

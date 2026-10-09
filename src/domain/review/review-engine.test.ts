@@ -65,6 +65,18 @@ describe('gradeReview', () => {
     });
     expect(ReviewStatusSchema.safeParse(result).success).toBe(true);
   });
+
+  it('BUG-P2-011: sets lastWrongAt when answer is wrong', () => {
+    const result = gradeReview(createItem(), false, 1, now);
+    expect(result.lastWrongAt).toBe(now.toISOString());
+  });
+
+  it('BUG-P2-011: does not overwrite lastWrongAt when answer is correct', () => {
+    const withPriorWrong = createItem({ lastWrongAt: '2026-09-30T08:00:00.000Z' });
+    const result = gradeReview(withPriorWrong, true, 4, now);
+    // lastWrongAt should remain unchanged from the prior wrong answer
+    expect(result.lastWrongAt).toBe('2026-09-30T08:00:00.000Z');
+  });
 });
 
 describe('review queue', () => {

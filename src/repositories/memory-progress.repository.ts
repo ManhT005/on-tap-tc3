@@ -17,8 +17,12 @@ export class MemoryProgressRepository implements ProgressRepository {
     const lessons = [...this.lessons.values()];
     const reviewItems = [...this.reviewItems.values()];
     const results = [...this.practiceResults.values()];
-    const correctAnswers = results.reduce((total, result) => total + result.correct, 0);
-    const totalAnswers = results.reduce((total, result) => total + result.total, 0);
+    // BUG-P2-007: Exclude SELF_ASSESSED writing results from objective accuracy.
+    const gradedResults = results.filter(
+      (r) => (r.assessmentType ?? 'AUTO_GRADED') === 'AUTO_GRADED',
+    );
+    const correctAnswers = gradedResults.reduce((total, result) => total + result.correct, 0);
+    const totalAnswers = gradedResults.reduce((total, result) => total + result.total, 0);
     const now = this.now().toISOString();
 
     return {

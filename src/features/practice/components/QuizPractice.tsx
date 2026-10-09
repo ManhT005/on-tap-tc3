@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { COURSE_STRUCTURE } from '../../../data/course';
 import { QUIZ_BANK } from '../../../data/quiz-bank';
 import { completePracticeSession } from '../../../domain/practice/complete-practice';
@@ -15,16 +15,58 @@ function createId(prefix: string) {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
+/**
+ * BUG-P2-005: Fisher–Yates shuffle so "Tất cả bài" does not always return the same first-10.
+ * Accepts an injected rng function for deterministic testing.
+ */
+export function shuffleArray<T>(array: readonly T[], rng: () => number = Math.random): T[] {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    const temp = result[i] as T;
+    result[i] = result[j] as T;
+    result[j] = temp;
+  }
+  return result;
+}
+
+export function selectPracticeQuestions<T>(
+  bank: readonly T[],
+  count: number,
+  rng: () => number = Math.random,
+): T[] {
+  return shuffleArray(bank, rng).slice(0, count);
+}
+
 export function QuizPractice() {
   const { repository } = useProgressRepository();
   const [filter, setFilter] = useState<QuizFilter>('all');
   const [lessonId, setLessonId] = useState(1);
   const [mistakeIds, setMistakeIds] = useState<Set<string>>(() => new Set());
+  const [mistakesLoading, setMistakesLoading] = useState(false);
   const [session, setSession] = useState<PracticeSession | null>(null);
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [result, setResult] = useState<PracticeResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // BUG-P2-006: loadMistakes is a stable callback so we can call it after submit too.
+  const loadMistakes = useCallback(() => {
+    setMistakesLoading(true);
+    return repository
+      .getReviewItems()
+      .then((items) => {
+        setMistakeIds(
+          new Set(items.filter((item) => item.itemType === 'question').map((item) => item.itemId)),
+        );
+      })
+      .catch(() => {
+        setError('Không tải được danh sách câu sai.');
+      })
+      .finally(() => {
+        setMistakesLoading(false);
+      });
+  }, [repository]);
 
   useEffect(() => {
     let active = true;
@@ -60,7 +102,8 @@ export function QuizPractice() {
       return;
     }
 
-    const selectedQuestions = availableQuestions.slice(0, 10);
+    // BUG-P2-005: Shuffle the bank so every session gets a varied set of 10 questions.
+    const selectedQuestions = selectPracticeQuestions(availableQuestions, 10);
     setSession(
       createPracticeSession({
         id: createId('quiz-session'),
@@ -88,6 +131,9 @@ export function QuizPractice() {
         { resultId: `quiz-result-${session.id}`, completedAt: new Date().toISOString() },
       );
       setResult(completed);
+      // BUG-P2-006: Refresh mistake list immediately after successful submit so the
+      // Mistakes filter reflects the current session without requiring a page reload.
+      await loadMistakes();
     } catch {
       setError('Không lưu được kết quả bài quiz.');
     } finally {
@@ -143,7 +189,7 @@ export function QuizPractice() {
             </select>
           </label>
         ) : null}
-        <p>{availableQuestions.length} câu hỏi phù hợp</p>
+        <p>{mistakesLoading ? 'Đang tải...' : `${availableQuestions.length} câu hỏi phù hợp`}</p>
       </div>
 
       {error ? (
