@@ -736,6 +736,367 @@ const raw = {
       ],
     },
   ],
+  // BÀI 07: 성격 (Tính cách & Phẩm chất)
+  7: [
+    {
+      id: 'r7_1',
+      passageNumber: 1,
+      type: 'Thư đề cử & Giới thiệu',
+      title: '동아리 새 회장 추천서 (Thư đề cử chủ tịch mới cho câu lạc bộ)',
+      source: 'Authored practice based on Lesson 7 vocabulary & grammar',
+      koreanText: `한국어 토론 동아리 회원 여러분 안녕하십니까?\n다음 학기를 이끌어 갈 새로운 동아리 회장으로 2학년 김민수 학우를 적극 추천합니다.\n민수 학우는 매사에 적극적이고 성격이 밝고 활발한 편입니다. 특히 사람들과 금방 친해져서 발이 아주 넓고, 누구에게나 친형처럼 다정하게 대합니다.\n또한 동아리 활동을 하면서 힘든 고민을 털어놓는 친구들의 이야기를 잘 들어주고, 입이 무거워서 다른 사람의 비밀을 절대 퍼뜨리지 않습니다.\n책임감도 강하고 추진력도 있어서 우리 동아리를 훌륭하게 이끌어 갈 적임자라고 생각합니다. 여러분의 많은 지지 바랍니다.`,
+      vietnameseTranslation: `Xin chào các thành viên câu lạc bộ thảo luận tiếng Hàn. Tôi xin nhiệt tình đề cử bạn Kim Min-su sinh viên năm 2 làm chủ tịch mới của câu lạc bộ dẫn dắt trong kỳ tới. Min-su là người luôn tích cực trong mọi việc, tính tình tươi sáng và thuộc diện rất hoạt bát. Đặc biệt cậu ấy làm quen với mọi người rất nhanh nên quan hệ cực kỳ rộng rãi, đối xử với ai cũng trìu mến ấm áp như anh trai ruột. Ngoài ra khi sinh hoạt câu lạc bộ, cậu ấy luôn lắng nghe tâm sự khó khăn của bạn bè và rất kín miệng, tuyệt đối không bao giờ làm lộ bí mật của người khác. Tinh thần trách nhiệm cao và khả năng xúc tiến tốt khiến cậu ấy là ứng viên sáng giá. Mong mọi người ủng hộ!`,
+      keyVocabulary: [
+        { kr: '활발한 편이다', vn: 'Thuộc diện hoạt bát vui tươi' },
+        { kr: '발이 넓다', vn: 'Quen biết rộng rãi khắp nơi' },
+        { kr: '친형처럼', vn: 'Như anh trai ruột' },
+        { kr: '입이 무겁다', vn: 'Kín miệng giữ bí mật tốt' },
+        { kr: '추진력', vn: 'Năng lực thúc đẩy, xúc tiến công việc' },
+      ],
+      questions: [
+        {
+          id: 'rq_7_1_1',
+          question: 'Min-su được người viết thư nhận xét là người có tính cách như thế nào?',
+          options: [
+            'Trầm tính, ít nói và hay ngại người lạ',
+            'Hoạt bát, quan hệ rộng rãi và đối xử ấm áp với mọi người',
+            'Nóng vội và thích làm việc một mình',
+            'Kén chọn và khó gần với người mới',
+          ],
+          correctIndex: 1,
+          evidence:
+            '성격이 밝고 활발한 편입니다. 특히 발이 아주 넓고, 누구에게나 친형처럼 다정하게 대합니다.',
+        },
+        {
+          id: 'rq_7_1_2',
+          question: 'Vì sao các bạn trong câu lạc bộ yên tâm tâm sự chuyện riêng với Min-su?',
+          options: [
+            'Vì Min-su là hội trưởng khóa trước',
+            'Vì Min-su rất kín miệng, không bao giờ để lộ bí mật của người khác',
+            'Vì Min-su có học lực giỏi nhất khoa',
+            'Vì Min-su biết xem bói chỉ tay',
+          ],
+          correctIndex: 1,
+          evidence: '입이 무거워서 다른 사람의 비밀을 절대 퍼뜨리지 않습니다.',
+        },
+      ],
+    },
+    {
+      id: 'r7_2',
+      passageNumber: 2,
+      type: 'Văn hóa đối chiếu',
+      title: "한국인의 '빨리빨리' 문화와 성격 (Văn hóa 'Palli Palli' và tính cách người Hàn)",
+      source: 'Authored practice based on Lesson 7 culture note',
+      koreanText: `외국인들이 한국에 와서 가장 먼저 배우는 말 중 하나가 바로 '빨리빨리'입니다.\n한국 사람들은 성격이 급한 편이어서 식당에서 음식이 늦게 나오거나 인터넷 속도가 느리면 답답해합니다. 엘리베이터를 탈 때도 닫힘 버튼을 여러 번 누르는 모습을 흔히 볼 수 있습니다.\n이러한 급한 성격과 '빨리빨리' 문화는 짧은 시간 안에 눈부신 경제 성장을 이루어 내는 데 큰 원동력이 되었습니다.\n하지만 한편으로는 현대인들에게 스트레스와 조급함을 주는 단점도 있습니다. 그럼에도 불구하고 한국인들은 정이 많아서 어려운 이웃을 보면 발을 벗고 나서서 도와주는 따뜻한 면모도 함께 지니고 있습니다.`,
+      vietnameseTranslation: `Một trong những câu nói đầu tiên mà người nước ngoài học được khi đến Hàn Quốc chính là 'Palli Palli' (nhanh lên nhanh lên). Người Hàn Quốc thuộc diện tính tình nóng vội nên nếu ở quán ăn đồ ra chậm hoặc tốc độ mạng chậm thì cảm thấy rất bứt rứt. Khi đi thang máy, người ta cũng thường bấm nút đóng cửa liên tục. Tính cách khẩn trương này chính là động lực to lớn giúp Hàn Quốc đạt được sự tăng trưởng kinh tế thần kỳ trong thời gian ngắn. Tuy nhiên nó cũng mang lại mặt trái là căng thẳng và áp lực vội vã. Dù vậy, người Hàn lại rất giàu tình cảm (정이 많다), luôn xắn tay áo nhiệt tình lăn xả giúp đỡ khi thấy người hoạn nạn.`,
+      keyVocabulary: [
+        { kr: '성격이 급한 편이다', vn: 'Thuộc diện tính tình nóng vội hấp tấp' },
+        { kr: '답답하다', vn: 'Bứt rứt khó chịu ngột ngạt' },
+        { kr: '원동력', vn: 'Động lực cốt lõi thúc đẩy' },
+        { kr: '정이 많다', vn: 'Giàu tình cảm sâu nặng ấm áp' },
+        { kr: '발을 벗고 나서다', vn: 'Xắn tay áo nhiệt tình lăn xả giúp' },
+      ],
+      questions: [
+        {
+          id: 'rq_7_2_1',
+          question: 'Văn hóa "빨리빨리" đã đóng vai trò tích cực gì đối với đất nước Hàn Quốc?',
+          options: [
+            'Giúp bảo tồn nguyên vẹn các di tích cổ xưa',
+            'Là động lực to lớn thúc đẩy tăng trưởng kinh tế vượt bậc trong thời gian ngắn',
+            'Giảm bớt áp lực thi cử cho học sinh sinh viên',
+            'Khiến mọi người không cần sử dụng internet nữa',
+          ],
+          correctIndex: 1,
+          evidence:
+            "이러한 급한 성격과 '빨리빨리' 문화는 짧은 시간 안에 눈부신 경제 성장을 이루어 내는 데 큰 원동력이 되었습니다.",
+        },
+        {
+          id: 'rq_7_2_2',
+          question:
+            'Phẩm chất ấm áp nào của người Hàn được tác giả nhắc đến để cân bằng với tính cách vội vã?',
+          options: [
+            'Tính cách rất thích nói chuyện hài hước',
+            'Lòng giàu tình cảm (정이 많다) và sẵn sàng lăn xả giúp người gặp khó khăn',
+            'Thói quen luôn đến sớm 30 phút trong mọi cuộc hẹn',
+            'Khả năng ghi nhớ tốt mọi số điện thoại',
+          ],
+          correctIndex: 1,
+          evidence:
+            '한국인들은 정이 많아서 어려운 이웃을 보면 발을 벗고 나서서 도와주는 따뜻한 면모도 지니고 있습니다.',
+        },
+      ],
+    },
+  ],
+  // BÀI 08: 실수 (Sai sót & Khắc phục)
+  8: [
+    {
+      id: 'r8_1',
+      passageNumber: 1,
+      type: 'Email xin lỗi & giải thích',
+      title: '약속 지각 사과 및 사유 안내 (Email xin lỗi và giải thích việc đến muộn)',
+      source: 'Authored practice based on Lesson 8 vocabulary & grammar',
+      koreanText: `수진 씨에게.\n오늘 중요한 스터디 모임에 30분이나 늦어서 정말 죄송합니다.\n오늘 아침에 집에서 제시간에 출발했는데, 지하철 2호선 열차에 갑자기 고장이 나는 바람에 중간에 한참 동안 멈춰 서 있었습니다.\n휴대전화 배터리마저 다 닳는 바람에 미리 연락을 드리지 못했습니다. 제가 미리 충전해 두지 않은 것도 큰 부주의였습니다.\n저 때문에 스터디 진행에 큰 차질이 생기게 되어 진심으로 고개 숙여 사과드립니다.\n다음 모임부터는 이런 돌발 상황에 대비하여 30분 일찍 출발하도록 하겠습니다. 너그럽게 양해해 주시면 감사하겠습니다.`,
+      vietnameseTranslation: `Gửi Su-jin. Hôm nay mình trễ buổi học nhóm quan trọng những 30 phút, thực sự rất xin lỗi cậu. Sáng nay mình đã xuất phát đúng giờ, nhưng do đoàn tàu điện ngầm tuyến số 2 bất ngờ bị hỏng nên tàu đã phải dừng lại giữa chừng suốt một lúc lâu. Lại thêm điện thoại của mình bị hết sạch pin ngoài ý muốn nên đã không thể gọi điện báo trước được. Việc mình không sạc pin chu đáo từ trước cũng là một sơ suất lớn. Vì mình mà tiến độ học nhóm bị ảnh hưởng, mình xin chân thành cúi đầu xin lỗi mọi người. Từ buổi sau mình sẽ chuẩn bị xuất phát sớm 30 phút để ứng phó với các tình huống bất ngờ. Rất mong cậu lượng thứ thông cảm.`,
+      keyVocabulary: [
+        { kr: '고장이 나는 바람에', vn: 'Do bị hỏng hóc bất ngờ (dẫn đến sự cố)' },
+        { kr: '배터리가 다 닳다', vn: 'Pin cạn kiệt hết sạch' },
+        { kr: '차질이 생기다', vn: 'Bị gián đoạn, xảy ra trục trặc kế hoạch' },
+        { kr: '사과드립니다', vn: 'Xin gửi lời xin lỗi chân thành' },
+        { kr: '출발하도록 하겠습니다', vn: 'Sẽ cố gắng xuất phát (cam kết sửa sai)' },
+      ],
+      questions: [
+        {
+          id: 'rq_8_1_1',
+          question: 'Nguyên nhân trực tiếp khiến người viết bị mắc kẹt trên đường đi là gì?',
+          options: [
+            'Do ngủ quên không nghe chuông báo thức',
+            'Do tàu điện ngầm tuyến 2 bất ngờ bị sự cố hỏng hóc',
+            'Do bị nhầm lẫn lịch học nhóm',
+            'Do thời tiết mưa bão không đi được xe buýt',
+          ],
+          correctIndex: 1,
+          evidence:
+            '지하철 2호선 열차에 갑자기 고장이 나는 바람에 중간에 한참 동안 멈춰 서 있었습니다.',
+        },
+        {
+          id: 'rq_8_1_2',
+          question: 'Người viết cam kết sẽ làm gì để không tái phạm sai sót trong những lần sau?',
+          options: [
+            'Sẽ đổi sang nhóm học khác',
+            'Sẽ xuất phát sớm hơn 30 phút để đề phòng tình huống bất ngờ',
+            'Sẽ mua thêm 2 chiếc điện thoại mới',
+            'Sẽ đi taxi thay vì đi tàu điện ngầm',
+          ],
+          correctIndex: 1,
+          evidence: '다음 모임부터는 이런 돌발 상황에 대비하여 30분 일찍 출발하도록 하겠습니다.',
+        },
+      ],
+    },
+    {
+      id: 'r8_2',
+      passageNumber: 2,
+      type: 'Kỹ năng sống & Lời khuyên',
+      title: '직장에서 실수를 줄이는 세 가지 습관 (Ba thói quen giảm bớt sai sót nơi công sở)',
+      source: 'Authored practice based on Lesson 8 vocabulary & grammar',
+      koreanText: `누구나 사회생활을 하면서 실수를 저지를 수 있습니다. 그러나 실수를 어떻게 대처하느냐에 따라 신뢰받는 사람이 될 수도 있고 무능한 사람으로 낙인찍힐 수도 있습니다.\n첫째, 건망증을 줄이려면 상사나 동료의 지시를 들을 때 즉시 수첩에 메모하는 습관을 들여야 합니다. 사람은 누구나 중요한 내용을 깜빡하기 쉽기 때문입니다.\n둘째, 중요한 서류를 작성하는 중에는 휴대전화나 메신저 알림을 끄고 일에만 집중해야 착각이나 오탈자를 막을 수 있습니다.\n셋째, 실수를 저질렀을 때는 변명하거나 핑계를 대지 말고 솔직하게 잘못을 인정하고 정중히 사과해야 합니다. 그리고 같은 실수를 반복하지 않도록 해결책을 찾아 명심해야 합니다.`,
+      vietnameseTranslation: `Bất kỳ ai trong đời sống xã hội cũng có thể mắc phải sai sót. Tuy nhiên tùy thuộc vào cách ứng phó với sai lầm mà bạn có thể trở thành người đáng tin cậy hay bị coi là người thiếu năng lực. Thứ nhất, để giảm chứng đãng trí, khi nghe chỉ thị từ cấp trên hay đồng nghiệp hãy rèn thói quen ghi chép ngay vào sổ tay, bởi con người rất dễ quên khuấy đi những điều quan trọng. Thứ hai, khi đang trong quá trình soạn thảo tài liệu quan trọng, hãy tắt chuông thông báo điện thoại để tập trung tránh ngộ nhận và lỗi chính tả. Thứ ba, khi lỡ phạm sai lầm, đừng bao che hay viện cớ mà hãy thẳng thắn nhận lỗi và tạ lỗi lịch thiệp, đồng thời khắc cốt ghi tâm giải pháp để không lặp lại lỗi đó.`,
+      keyVocabulary: [
+        { kr: '실수를 저지르다', vn: 'Phạm phải sai lầm sơ suất' },
+        { kr: '깜빡하기 쉽다', vn: 'Dễ bị quên khuấy đi trong chốc lát' },
+        { kr: '작성하는 중에', vn: 'Trong quá trình đang soạn thảo' },
+        { kr: '핑계를 대다', vn: 'Viện cớ đùn đẩy trách nhiệm' },
+        { kr: '잘못을 인정하다', vn: 'Thẳng thắn nhận lỗi về mình' },
+      ],
+      questions: [
+        {
+          id: 'rq_8_2_1',
+          question:
+            'Theo bài viết, thói quen nào giúp giảm thiểu chứng hay quên (건망증) khi làm việc?',
+          options: [
+            'Học thuộc lòng mọi chỉ thị trong đầu',
+            'Ghi chép ngay lập tức vào sổ tay khi nhận lời dặn dò',
+            'Chỉ nhận việc đơn giản, từ chối việc khó',
+            'Nhờ đồng nghiệp làm thay các phần quan trọng',
+          ],
+          correctIndex: 1,
+          evidence:
+            '건망증을 줄이려면 상사나 동료의 지시를 들을 때 즉시 수첩에 메모하는 습관을 들여야 합니다.',
+        },
+        {
+          id: 'rq_8_2_2',
+          question: 'Khi lỡ mắc sai sót, thái độ đúng đắn nhất được khuyên là gì?',
+          options: [
+            'Im lặng đợi mọi người quên đi',
+            'Tìm một lý do khách quan để biện bạch đổ lỗi',
+            'Thẳng thắn thừa nhận lỗi, xin lỗi chân thành và tìm cách không tái phạm',
+            'Lập tức xin nghỉ việc sang công ty khác',
+          ],
+          correctIndex: 2,
+          evidence: '변명하거나 핑계를 대지 말고 솔직하게 잘못을 인정하고 정중히 사과해야 합니다.',
+        },
+      ],
+    },
+  ],
+  // BÀI 09: 이사 (Chuyển nhà & Cư trú)
+  9: [
+    {
+      id: 'r9_1',
+      passageNumber: 1,
+      type: 'Thông tin môi giới BĐS',
+      title: '대학가 풀옵션 원룸 임대 안내 (Thông tin cho thuê phòng trọ full nội thất gần trường)',
+      source: 'Authored practice based on Lesson 9 vocabulary & grammar',
+      koreanText: `[보람부동산 추천 매물]\n대학교 정문에서 도보 5분 거리에 위치한 풀옵션 원룸을 소개합니다.\n이 방은 남향집이어서 낮 동안 햇볕이 아주 잘 들고 통풍이 잘되어 쾌적합니다. 에어컨, 세탁기, 냉장고, 가스레인지가 완비되어 있어 몸만 들어오시면 됩니다.\n보증금은 500만 원이고 월세는 45만 원입니다. 관리비 5만 원에는 인터넷과 수도 요금이 포함되어 있습니다.\n학교 기숙사에 비해서 개인 사생활이 보장되고 훨씬 조용하며 자유롭습니다. 한국 부동산 계약서를 쓸 줄 모르는 외국인 유학생도 친절하게 공인중개사가 도와드립니다. 관심 있으신 분은 언제든지 연락 주세요!`,
+      vietnameseTranslation: `[Tin nhà tốt từ Bất động sản Boram]\nXin giới thiệu phòng trọ studio full nội thất cách cổng chính trường đại học 5 phút đi bộ. Căn phòng này là nhà hướng Nam nên ban ngày đón ánh nắng chan hòa ấm áp, thông gió thoáng mát dễ chịu. Nội thất đã trang bị đầy đủ điều hòa, máy giặt, tủ lạnh, bếp ga nên chỉ việc xách vali vào ở. Tiền đặt cọc là 5.000.000 won và tiền thuê hàng tháng là 450.000 won. Tiền phí quản lý 50.000 won đã bao gồm internet và tiền nước. So với ký túc xá trường học, căn phòng này bảo đảm sự riêng tư, yên tĩnh và tự do hơn nhiều. Du học sinh nước ngoài chưa biết cách làm hợp đồng thuê nhà tiếng Hàn sẽ được chuyên viên môi giới hỗ trợ tận tình. Xin liên hệ bất kỳ lúc nào!`,
+      keyVocabulary: [
+        { kr: '남향집', vn: 'Nhà quay hướng Nam chan hòa ánh nắng' },
+        { kr: '햇볕이 잘 들다', vn: 'Ánh nắng rọi vào ấm áp sáng sủa' },
+        { kr: '보증금과 월세', vn: 'Tiền cọc và tiền thuê hàng tháng' },
+        { kr: '기숙사에 비해서', vn: 'So với ký túc xá trường học' },
+        { kr: '계약서를 쓸 줄 모르다', vn: 'Không biết cách viết hợp đồng' },
+      ],
+      questions: [
+        {
+          id: 'rq_9_1_1',
+          question: 'Ưu điểm về vị trí và ánh sáng của căn phòng này là gì?',
+          options: [
+            'Cách trường 30 phút đi xe buýt, hướng Bắc râm mát',
+            'Cách cổng trường 5 phút đi bộ, nhà hướng Nam đón nắng ấm chan hòa',
+            'Ở trên tầng thượng không có cửa sổ',
+            'Nằm ở tầng hầm nên tránh được nắng nóng mùa hè',
+          ],
+          correctIndex: 1,
+          evidence:
+            '대학교 정문에서 도보 5분 거리에 위치... 남향집이어서 낮 동안 햇볕이 아주 잘 들고',
+        },
+        {
+          id: 'rq_9_1_2',
+          question: 'So với việc ở ký túc xá trường học, căn phòng này có điểm mạnh gì?',
+          options: [
+            'Giá tiền rẻ hơn gấp ba lần',
+            'Bảo đảm sự riêng tư, yên tĩnh và sinh hoạt tự do hơn',
+            'Được ăn miễn phí ba bữa mỗi ngày',
+            'Có xe đưa đón sinh viên tận nơi',
+          ],
+          correctIndex: 1,
+          evidence: '학교 기숙사에 비해서 개인 사생활이 보장되고 훨씬 조용하며 자유롭습니다.',
+        },
+      ],
+    },
+    {
+      id: 'r9_2',
+      passageNumber: 2,
+      type: 'Văn hóa đời sống',
+      title: '한국의 집들이 문화와 특별한 선물 (Văn hóa tiệc tân gia và những món quà đặc biệt)',
+      source: 'Authored practice based on Lesson 9 culture note',
+      koreanText: `한국에서는 새로운 집으로 이사를 하고 나면 친한 요구나 친구들을 초대하여 '집들이'를 합니다. 집주인은 정성스럽게 음식을 장만하여 손님을 대접하고 새집을 구경시켜 줍니다.\n이때 집들이에 초대받은 손님들은 빈손으로 가지 않고 특별한 의미가 담긴 선물을 준비합니다.\n가장 대표적인 집들이 선물은 '세제'와 '두루마리 휴지'입니다. 세제에서 거품이 풍성하게 일어나는 것처럼 재산이 불어나고 부자가 되기를 바라는 마음을 담고 있습니다.\n그리고 두루마리 휴지는 술술 잘 풀리는 것처럼 앞으로 모든 일이 순조롭게 잘 풀리기를 기원하는 뜻입니다. 이처럼 한국의 집들이 선물에는 상대방의 행복과 번영을 바라는 따뜻한 정이 깃들어 있습니다.`,
+      vietnameseTranslation: `Ở Hàn Quốc, sau khi chuyển đến nhà mới, người ta thường mời bạn bè người thân đến tổ chức tiệc mừng nhà mới gọi là 'Jipdeuri' (tiệc tân gia). Chủ nhà chuẩn bị đồ ăn chu đáo thiết đãi khách và dẫn đi tham quan các phòng. Khách được mời đến tiệc tân gia không bao giờ đi tay không mà mang theo những món quà gửi gắm ý nghĩa đặc biệt. Hai món quà tiêu biểu nhất là 'bột giặt' và 'giấy vệ sinh cuộn'. Bột giặt mang ý nghĩa chúc cho tài sản của gia chủ sinh sôi nảy nở nhanh chóng như những bọt xà phòng trắng xóa. Còn cuộn giấy vệ sinh dễ rút ra biểu thị lời chúc cho mọi công việc trong tương lai đều được hanh thông suôn sẻ không vướng mắc. Những món quà ấy chứa chan tình cảm ấm áp chúc phúc cho gia đình mới.`,
+      keyVocabulary: [
+        { kr: '집들이', vn: 'Tiệc mừng nhà mới tân gia' },
+        { kr: '손님을 대접하다', vn: 'Chiêu đãi tiếp đón khách chu đáo' },
+        { kr: '세제', vn: 'Bột giặt, chất tẩy rửa tạo bọt' },
+        { kr: '두루마리 휴지', vn: 'Cuộn giấy vệ sinh tròn' },
+        { kr: '술술 풀리다', vn: 'Trôi chảy, hanh thông suôn sẻ' },
+      ],
+      questions: [
+        {
+          id: 'rq_9_2_1',
+          question: 'Vì sao người Hàn Quốc thường tặng bột giặt (세제) trong tiệc tân gia?',
+          options: [
+            'Vì gia chủ chưa kịp mua đồ dùng giặt giũ',
+            'Tượng trưng cho lời chúc tài lộc và của cải sinh sôi nảy nở như bọt xà phòng',
+            'Vì bột giặt là đồ đắt tiền nhất trong siêu thị',
+            'Để gia chủ dọn sạch nhà cửa ngay sau bữa tiệc',
+          ],
+          correctIndex: 1,
+          evidence:
+            '세제에서 거품이 풍성하게 일어나는 것처럼 재산이 불어나고 부자가 되기를 바라는 마음을 담고 있습니다.',
+        },
+        {
+          id: 'rq_9_2_2',
+          question: 'Món quà cuộn giấy vệ sinh (두루마리 휴지) mang thông điệp gì tốt đẹp?',
+          options: [
+            'Chúc cho gia đình sống lâu trăm tuổi',
+            'Chúc cho mọi công việc hanh thông, giải quyết êm xuôi suôn sẻ',
+            'Chúc cho con cái học giỏi thi đỗ',
+            'Chúc cho nhà cửa lúc nào cũng mát mẻ',
+          ],
+          correctIndex: 1,
+          evidence:
+            '두루마리 휴지는 술술 잘 풀리는 것처럼 앞으로 모든 일이 순조롭게 잘 풀리기를 기원하는 뜻입니다.',
+        },
+      ],
+    },
+  ],
+  // BÀI 10: 여행 (Du lịch & Trải nghiệm)
+  10: [
+    {
+      id: 'r10_1',
+      passageNumber: 1,
+      type: 'Lịch trình du lịch văn hóa',
+      title: '천년 고도 경주 2박 3일 역사 기행 (Chuyến đi văn hóa lịch sử Gyeongju 3 ngày 2 đêm)',
+      source: 'Authored practice based on Lesson 10 vocabulary & grammar',
+      koreanText: `이번 가을 방학을 맞아 신라 천년의 수도였던 경주로 2박 3일 여행 일정을 짰습니다.\n첫째 날에는 서울역에서 KTX 고속열차 표를 예매하여 신경주역으로 출발할 생각입니다. 도착 후 유네스코 세계 문화유산인 불국사와 석굴암을 답사하며 신라 시대의 뛰어난 불교 예술을 관람할 예정입니다.\n둘째 날에는 시내에 있는 첨성대와 대릉원을 둘러보고, 해 질 무렵에는 동궁과 월지(안압지)의 아름다운 야경을 감상할까 합니다.\n친구가 숙소 위치가 편리하냐고 물어봤는데, 버스 터미널 바로 근처에 깔끔한 게스트하우스를 미리 예약해 두어서 이동하기에 아주 좋습니다. 마지막 날에는 유명한 황남빵을 사 들고 귀국할 준비를 할 것입니다.`,
+      vietnameseTranslation: `Nhân kỳ nghỉ mùa thu lần này, tôi đã lên lịch trình 3 ngày 2 đêm đi Gyeongju - cố đô ngàn năm của vương triều Shilla. Ngày đầu tiên, tôi dự định đặt vé tàu cao tốc KTX từ ga Seoul đến ga Singyeongju. Sau khi đến nơi, tôi sẽ tham quan Chùa Bulguksa và Hang Phật Seokguram - di sản văn hóa thế giới UNESCO để chiêm ngưỡng nghệ thuật Phật giáo đỉnh cao thời Shilla. Ngày thứ hai, tôi sẽ dạo quanh đài thiên văn Cheomseongdae và lăng mộ Daereungwon, đến lúc hoàng hôn đang tính sẽ thưởng ngoạn cảnh đêm lung linh tại Donggung & Wolji (hồ Anapji). Bạn tôi đã hỏi thăm chỗ nghỉ có tiện lợi không, và tôi đã đặt trước một guesthouse sạch sẽ ngay gần bến xe buýt nên việc di chuyển rất thuận tiện. Ngày cuối cùng tôi sẽ mua bánh Hwangnam nổi tiếng rồi chuẩn bị về nước.`,
+      keyVocabulary: [
+        { kr: '일정을 짜다', vn: 'Lập lịch trình chi tiết chuyến đi' },
+        { kr: '예매하다', vn: 'Đặt mua trước vé tàu xe' },
+        { kr: '세계 문화유산', vn: 'Di sản văn hóa thế giới UNESCO' },
+        { kr: '감상할까 하다', vn: 'Đang tính sẽ thưởng ngoạn (cân nhắc ý định)' },
+        { kr: '편리하냐고 물어보다', vn: 'Hỏi xem có tiện lợi hay không (câu hỏi gián tiếp)' },
+      ],
+      questions: [
+        {
+          id: 'rq_10_1_1',
+          question: 'Phương tiện di chuyển được người viết chọn từ Seoul đến Gyeongju là gì?',
+          options: [
+            'Máy bay nội địa bay thẳng',
+            'Tàu cao tốc KTX đặt vé trước tại ga Seoul',
+            'Xe buýt chạy đêm',
+            'Tự lái xe ô tô gia đình',
+          ],
+          correctIndex: 1,
+          evidence: '서울역에서 KTX 고속열차 표를 예매하여 신경주역으로 출발할 생각입니다.',
+        },
+        {
+          id: 'rq_10_1_2',
+          question:
+            'Địa danh nào tại Gyeongju được miêu tả là di sản thế giới UNESCO trong lịch trình?',
+          options: [
+            'Bến xe buýt trung tâm Gyeongju',
+            'Chùa Bulguksa và Động Seokguram',
+            'Cửa hàng bánh Hwangnam',
+            'Nhà ga xe lửa Singyeongju',
+          ],
+          correctIndex: 1,
+          evidence: '유네스코 세계 문화유산인 불국사와 석굴암을 답사하며',
+        },
+      ],
+    },
+    {
+      id: 'r10_2',
+      passageNumber: 2,
+      type: 'Kinh nghiệm du lịch tự túc',
+      title: '제주도 알뜰 자유여행 준비 요령 (Mẹo chuẩn bị du lịch tự do tiết kiệm tại đảo Jeju)',
+      source: 'Authored practice based on Lesson 10 vocabulary & grammar',
+      koreanText: `제주도는 한국에서 가장 아름다운 휴양지로 사계절 내내 많은 관광객들이 찾습니다. 하지만 7~8월 여름 성수기에는 항공권과 숙박 요금이 매우 비쌉니다.\n그래서 저는 이번 10월 가을 비수기에 친구와 함께 제주도로 자유여행을 떠날까 합니다.\n성수기에 비해서 항공료도 반값으로 저렴하고 관광지도 덜 붐비기 때문입니다. 두 달 전에 저비용 항공사 왕복 항공권을 미리 예매해 두어서 여행 비용을 크게 절약할 수 있었습니다.\n친구가 제주도에서 렌터카를 운전할 줄 아냐고 물어보길래 국제운전면허증이 있다고 대답했습니다. 해안 도로를 따라 드라이브하며 한라산과 에메랄드빛 바다를 만끽할 생각을 하니 벌써부터 가슴이 설렙니다.`,
+      vietnameseTranslation: `Đảo Jeju là khu nghỉ dưỡng đẹp nhất tại Hàn Quốc, bốn mùa đều đón đông đảo khách du lịch. Tuy nhiên vào mùa cao điểm tháng 7-8 mùa hè, giá vé máy bay và phòng khách sạn rất đắt đỏ. Vì vậy tôi đang tính sẽ cùng bạn đi du lịch tự do đảo Jeju vào mùa thấp điểm tháng 10 mùa thu này. So với mùa cao điểm, giá vé máy bay rẻ chỉ bằng một nửa và các điểm tham quan cũng ít chen chúc hơn. Đặt trước vé máy bay khứ hồi giá rẻ từ hai tháng trước đã giúp tôi tiết kiệm được rất nhiều chi phí. Bạn tôi hỏi tôi có biết lái xe thuê tự lái ở đảo Jeju không, tôi đã trả lời là có bằng lái quốc tế rồi. Nghĩ đến cảnh vi vu dọc theo những cung đường biển ngắm núi Hallasan và đại dương xanh ngọc bích, lòng tôi đã rộn ràng từ bây giờ.`,
+      keyVocabulary: [
+        { kr: '성수기와 비수기', vn: 'Mùa cao điểm đắt đỏ và mùa vắng khách giá rẻ' },
+        { kr: '떠날까 하다', vn: 'Đang tính sẽ lên đường đi (dự định)' },
+        { kr: '왕복 항공권', vn: 'Vé máy bay khứ hồi' },
+        { kr: '운전할 줄 아냐고 물어보다', vn: 'Hỏi xem có biết lái xe hay không' },
+        { kr: '자유여행', vn: 'Du lịch tự túc khám phá' },
+      ],
+      questions: [
+        {
+          id: 'rq_10_2_1',
+          question:
+            'Vì sao người viết lại chọn đi du lịch Jeju vào mùa thấp điểm tháng 10 thay vì mùa hè?',
+          options: [
+            'Vì mùa hè đảo Jeju đóng cửa không đón khách',
+            'Vì giá vé máy bay rẻ hơn và các điểm tham quan bớt đông đúc chen chúc',
+            'Vì tháng 10 mới có các chuyến bay thẳng',
+            'Vì người viết không thích biển',
+          ],
+          correctIndex: 1,
+          evidence: '성수기에 비해서 항공료도 반값으로 저렴하고 관광지도 덜 붐비기 때문입니다.',
+        },
+        {
+          id: 'rq_10_2_2',
+          question: 'Người bạn đã hỏi người viết điều gì liên quan đến chuyến đi Jeju?',
+          options: [
+            'Hỏi xem đã đổi bao nhiêu tiền ngoại tệ',
+            'Hỏi xem có biết lái xe thuê tự lái ở đảo Jeju hay không',
+            'Hỏi xem có mang theo hộ chiếu không',
+            'Hỏi xem mùa thu có hoa cải dầu nở không',
+          ],
+          correctIndex: 1,
+          evidence:
+            '친구가 제주도에서 렌터카를 운전할 줄 아냐고 물어보길래 국제운전면허증이 있다고 대답했습니다.',
+        },
+      ],
+    },
+  ],
 };
 
 export const READING_BANK = LegacyReadingDatabaseSchema.parse(raw);

@@ -118,6 +118,89 @@ const raw = [
     explanation:
       '가계부를 쓰다 = ghi sổ chi tiêu; 적금 = tiết kiệm tích lũy; 절약하다 = tiết kiệm căn cơ.',
   },
+  {
+    id: 'w11',
+    lessonId: 7,
+    title: 'Bài 07: Tự giới thiệu tính cách của bản thân',
+    prompt:
+      '다음 상황에 맞게 자신의 성격을 소개하는 문장을 완성하시오.\n[상황]: Tự giới thiệu bản thân thuộc tuýp người trầm tính (조용한 편이다) nhưng làm việc rất tỉ mỉ (꼼꼼하다), và đối với nhiệm vụ được giao thì làm hết mình như một chuyên gia (전문가처럼).',
+    requiredKeywords: ['조용한 편', '꼼꼼한', '전문가처럼'],
+    modelAnswer:
+      '저는 평소에 말수가 적고 조용한 편이지만 일을 할 때는 꼼꼼한 성격입니다. 맡은 일은 전문가처럼 최선을 다해 처리합니다.',
+    explanation:
+      'Sử dụng -(으)ㄴ/는 편이다 để nhận định tính cách, tính từ 꼼꼼하다 để miêu tả phong cách làm việc, và 처럼 để so sánh thái độ chuyên nghiệp.',
+  },
+  {
+    id: 'w12',
+    lessonId: 7,
+    title: 'Bài 07: Khen ngợi một người bạn tốt',
+    prompt:
+      '다음 상황에 맞게 친구를 칭찬하는 글을 완성하시오.\n[상황]: Khen ngợi bạn mình là người quen biết rộng rãi (발이 넓다), kín miệng giữ bí mật (입이 무겁다) và cảm thán về tấm lòng tốt bụng của bạn ấy bằng đuôi cảm thán -군요.',
+    requiredKeywords: ['발이 넓고', '입이 무겁', '착하군요'],
+    modelAnswer:
+      '제 친구 민호는 발이 넓고 사람들과 잘 어울리는데도 입이 무거워서 믿을 수 있어요. 항상 남을 배려하는 마음씨가 정말 착하군요!',
+    explanation:
+      'Sử dụng các quán ngữ cơ thể về tính cách (발이 넓다, 입이 무겁다) kết hợp đuôi cảm thán -군요 để khen ngợi bạn bè.',
+  },
+  {
+    id: 'w13',
+    lessonId: 8,
+    title: 'Bài 08: Xin lỗi vì làm vỡ đồ và cam kết đền bù',
+    prompt:
+      '다음 상황에 맞게 정중하게 사과하고 보상하겠다는 메시지를 완성하시오.\n[상황]: Bạn lỡ tay làm trượt rơi vỡ chiếc cốc của bạn mình. Hãy giải thích do trượt tay và hứa sẽ mua chiếc cốc mới giống hệt để đền, sử dụng cấu trúc -는 바람에 và -도록 하다.',
+    requiredKeywords: ['미끄러지는 바람에', '깨뜨려서', '사 드리도록'],
+    modelAnswer:
+      '손이 미끄러지는 바람에 소중한 컵을 바닥에 떨어뜨려 깨뜨려서 정말 미안해. 내일 똑같은 컵으로 새로 사 드리도록 할게.',
+    explanation:
+      '-는 바람에 chỉ nguyên nhân bất ngờ ngoài ý muốn dẫn đến kết quả xấu (làm vỡ cốc); -도록 하다 chỉ quyết tâm chuộc lỗi.',
+  },
+  {
+    id: 'w14',
+    lessonId: 9,
+    title: 'Bài 09: So sánh hai hình thức thuê nhà Jeonse và Wolse',
+    prompt:
+      '다음 주제에 대해 한국어로 의견을 작성하시오.\n[주제]: So sánh hai hình thức thuê nhà Jeonse (전세) và thuê theo tháng (월세), sử dụng cấu trúc "에 비해서" và từ vựng về chi phí (보증금, 부담을 줄이다).',
+    requiredKeywords: ['월세에 비해서', '보증금이 큰', '부담을 줄일'],
+    modelAnswer:
+      '전세는 월세에 비해서 매달 나가는 방세가 없어서 생활비 부담을 줄일 수 있어요. 하지만 계약할 때 처음에 내야 하는 보증금이 아주 큰 편이에요.',
+    explanation:
+      'Dùng danh từ + 에 비해서 để so sánh tiêu chuẩn chi phí giữa hai hình thức thuê nhà đặc trưng tại Hàn Quốc.',
+  },
+  {
+    id: 'w15',
+    lessonId: 9,
+    title: 'Bài 09: Nhờ bạn hướng dẫn cách làm hợp đồng thuê nhà',
+    prompt:
+      '다음 상황에 맞게 친구에게 도움을 요청하는 메시지를 작성하시오.\n[상황]: Bạn tìm được căn phòng ưng ý nhưng chưa biết cách làm hợp đồng thuê nhà bằng tiếng Hàn. Hãy nhờ bạn đi cùng đến văn phòng bất động sản, sử dụng cấu trúc -(으)ㄹ 줄 모르다.',
+    requiredKeywords: ['계약서를 쓸 줄 몰라', '부동산', '도와줄 수 있어'],
+    modelAnswer:
+      '마음에 드는 원룸을 찾았는데 저는 아직 한국어로 계약서를 쓸 줄 몰라요. 내일 부동산 중개소에 같이 가서 도와줄 수 있어요?',
+    explanation:
+      'Dùng -(으)ㄹ 줄 모르다 để diễn đạt không biết cách thực hiện thủ tục hợp đồng nhà và đưa ra lời nhờ vả lịch sự.',
+  },
+  {
+    id: 'w16',
+    lessonId: 10,
+    title: 'Bài 10: Chia sẻ dự định cho kỳ nghỉ tới',
+    prompt:
+      '다음 상황에 맞게 여행 계획을 이야기하는 글을 작성하시오.\n[상황]: Bạn đang cân nhắc kỳ nghỉ này sẽ đi du lịch đảo Jeju cùng gia đình, sử dụng cấu trúc -(으)ㄹ까 하다 và từ vựng về đặt vé (비행기 표를 예매하다, 숙소).',
+    requiredKeywords: ['갈까 해요', '비행기 표를 예매', '숙소'],
+    modelAnswer:
+      '이번 여름휴가에는 가족과 함께 제주도로 여행을 갈까 해요. 성수기가 되기 전에 미리 비행기 표를 예매하고 깨끗한 숙소를 예약해 두었어요.',
+    explanation: '-(으)ㄹ까 하다 diễn đạt ý định đang tính toán, dự trù cho chuyến du lịch.',
+  },
+  {
+    id: 'w17',
+    lessonId: 10,
+    title: 'Bài 10: Tường thuật lại câu hỏi của bạn bè về chuyến đi',
+    prompt:
+      '다음 상황에 맞게 친구의 질문을 다른 사람에게 전달하시오.\n[상황]: Bạn bè hỏi bạn rằng chuyến du lịch vừa rồi có vui không và đồ ăn có ngon không, sử dụng cấu trúc tường thuật câu hỏi gián tiếp -(으)냐고 묻다/하다.',
+    requiredKeywords: ['재미있었냐고', '음식이 맛있냐고', '물어봤어요'],
+    modelAnswer:
+      '친구가 저에게 지난번 경주 여행이 재미있었냐고 물어봤어요. 그리고 현지 음식이 맛있냐고도 물어봤어요.',
+    explanation:
+      'Sử dụng -(으)냐고 묻다 để tường thuật lại câu hỏi về trải nghiệm quá khứ (-았/었냐고) và tính từ trạng thái (맛있냐고).',
+  },
 ];
 
 export const WRITING_BANK = raw.map((item) => LegacyWritingPromptSchema.parse(item));

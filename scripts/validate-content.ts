@@ -159,7 +159,7 @@ for (let lessonId = 1; lessonId <= 15; lessonId += 1) {
 // Coverage warnings (separate from fatal schema issues)
 for (let lessonId = 1; lessonId <= 15; lessonId += 1) {
   const quizCount = QUIZ_BANK.filter((q) => q.lessonId === lessonId).length;
-  const readingCount = (READING_BANK[lessonId as keyof typeof READING_BANK] ?? []).length;
+  const readingCount = (READING_BANK[String(lessonId)] ?? []).length;
   const writingCount = WRITING_BANK.filter((p) => p.lessonId === lessonId).length;
 
   if (quizCount === 0) {

@@ -124,11 +124,9 @@ describe('dashboard pages', () => {
   });
 
   it('prioritizes error over loading skeleton when fetching progress fails', async () => {
-    const failingRepo = {
-      ...new MemoryProgressRepository(),
-      getCourseProgress: vi.fn().mockRejectedValue(new Error('Fetch failed')),
-      getLessonProgress: vi.fn().mockRejectedValue(new Error('Fetch failed')),
-    };
+    const failingRepo = new MemoryProgressRepository();
+    vi.spyOn(failingRepo, 'getCourseProgress').mockRejectedValue(new Error('Fetch failed'));
+    vi.spyOn(failingRepo, 'getLessonProgress').mockRejectedValue(new Error('Fetch failed'));
     render(
       <ProgressRepositoryProvider repository={failingRepo}>
         <MemoryRouter>
