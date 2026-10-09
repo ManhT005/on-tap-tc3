@@ -56,7 +56,9 @@ export function useLessonFlow(lessonId: number) {
           await repository.saveLessonProgress({
             lessonId,
             status: 'IN_PROGRESS',
-            completionPercent: progress?.completionPercent ?? 0,
+            completionPercent: progress?.completionPercent
+              ? Math.max(progress.completionPercent, 25)
+              : 25,
             startedAt: progress?.startedAt ?? startedAt,
             updatedAt: new Date().toISOString(),
           });
@@ -84,6 +86,25 @@ export function useLessonFlow(lessonId: number) {
     };
   }, [lessonId, lessonResult.ok, repository, startedAt]);
 
+  async function advanceLessonProgress(targetPercent: number) {
+    try {
+      const current = await repository.getLessonProgress(lessonId);
+      if (
+        current &&
+        current.status === 'IN_PROGRESS' &&
+        (current.completionPercent ?? 0) < targetPercent
+      ) {
+        await repository.saveLessonProgress({
+          ...current,
+          completionPercent: targetPercent,
+          updatedAt: new Date().toISOString(),
+        });
+      }
+    } catch {
+      // Non-critical progress advancement
+    }
+  }
+
   async function markVocabularyForReview(itemId: string) {
     try {
       const existing = (await repository.getReviewItems()).find(
@@ -93,6 +114,7 @@ export function useLessonFlow(lessonId: number) {
         await repository.saveReviewItem(createReviewStatus(itemId, 'vocabulary', new Date()));
       }
       setReviewedVocabulary((current) => new Set(current).add(itemId));
+      await advanceLessonProgress(50);
     } catch {
       setError('Không lưu được mục từ vựng cần ôn.');
     }
@@ -107,6 +129,7 @@ export function useLessonFlow(lessonId: number) {
       const initial = existing ?? createReviewStatus(itemId, 'vocabulary', now);
       await repository.saveReviewItem(gradeReview(initial, true, confidence, now));
       setReviewedVocabulary((current) => new Set(current).add(itemId));
+      await advanceLessonProgress(50);
     } catch {
       setError('Không lưu được mức độ ghi nhớ.');
     }

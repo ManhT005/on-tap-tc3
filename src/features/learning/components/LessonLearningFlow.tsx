@@ -92,6 +92,20 @@ export function LessonLearningFlow({ lessonId }: { lessonId: number }) {
         </p>
       ) : null}
 
+      <div className="learning-checklist" role="region" aria-label="Tiến độ bài học">
+        <span className="learning-checklist__item">
+          {reviewedVocabulary.size > 0 ? '✅' : '⚪'} 01 Nhớ lại & Từ vựng (
+          {reviewedVocabulary.size} từ đã xem)
+        </span>
+        <span className="learning-checklist__item">
+          ✅ 02 Ngữ pháp ({grammarResult.data.length} cấu trúc)
+        </span>
+        <span className="learning-checklist__item">
+          {result ? '✅' : allAnswered ? '🟡' : '⚪'} 03 Luyện tập ({Object.keys(answers).length}/
+          {quizResult.data.length} câu)
+        </span>
+      </div>
+
       <section className="lesson-flow__section" aria-labelledby="recall-title">
         <div className="lesson-section-heading">
           <div>
@@ -193,9 +207,17 @@ export function LessonLearningFlow({ lessonId }: { lessonId: number }) {
                 </Link>
               </div>
             ) : (
-              <Button disabled={!allAnswered} onClick={() => void submitPractice()}>
-                Hoàn thành bài học
-              </Button>
+              <>
+                {reviewedVocabulary.size === 0 ? (
+                  <p className="muted-copy" role="note">
+                    💡 Gợi ý: Hãy thử tự nhớ một vài từ vựng ở phần 01 trước khi hoàn thành bài học
+                    để tăng hiệu quả ghi nhớ.
+                  </p>
+                ) : null}
+                <Button disabled={!allAnswered} onClick={() => void submitPractice()}>
+                  Hoàn thành bài học
+                </Button>
+              </>
             )}
           </div>
         ) : (

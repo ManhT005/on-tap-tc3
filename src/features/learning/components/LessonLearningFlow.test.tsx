@@ -25,9 +25,11 @@ describe('LessonLearningFlow', () => {
     expect(
       await screen.findByRole('heading', { name: 'Nhớ lại trước khi xem' }),
     ).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Tiến độ bài học' })).toBeInTheDocument();
     await waitFor(async () => {
       await expect(repository.getLessonProgress(1)).resolves.toMatchObject({
         status: 'IN_PROGRESS',
+        completionPercent: 25,
       });
     });
 
@@ -38,6 +40,13 @@ describe('LessonLearningFlow', () => {
     if (!confidenceButton)
       throw new Error('Expected a confidence button after revealing the card.');
     await user.click(confidenceButton);
+
+    await waitFor(async () => {
+      await expect(repository.getLessonProgress(1)).resolves.toMatchObject({
+        status: 'IN_PROGRESS',
+        completionPercent: 50,
+      });
+    });
 
     for (const question of quizResult.data) {
       const group = screen.getByRole('group', { name: `Đáp án cho câu ${question.id}` });
