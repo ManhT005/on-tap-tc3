@@ -485,6 +485,257 @@ const raw = {
       ],
     },
   ],
+  // BÀI 04: 쇼핑 (Mua sắm & Dịch vụ)
+  4: [
+    {
+      id: 'r4_1',
+      passageNumber: 1,
+      type: 'Phàn nàn & Đổi trả',
+      title: '백화점 고객 서비스 센터 (Trung tâm dịch vụ khách hàng trung tâm thương mại)',
+      source: 'Authored practice based on Lesson 4 vocabulary & grammar',
+      koreanText: `고객: 안녕하세요. 지난주에 여기서 바지를 샀는데 집에 와서 보니까 한쪽 소매가 찢어져 있었어요.\n직원: 불편을 드려서 정말 죄송합니다. 영수증은 가지고 계세요?\n고객: 네, 여기 있어요. 상표도 아직 안 뗐어요.\n직원: 감사합니다. 확인해 보겠습니다. 교환이나 환불 중에 어떤 걸 원하세요?\n고객: 같은 스타일로 교환하고 싶은데, 허리가 좀 끼는 것 같아서 한 치수 큰 걸로 바꿔 주세요.\n직원: 네, 알겠습니다. 영수증과 상표가 있으니까 교환이 가능합니다. 잠시만 기다려 주세요.`,
+      vietnameseTranslation: `Khách: Xin chào. Tuần trước tôi mua cái quần ở đây, nhưng khi về nhà nhìn lại thấy một ống tay bị rách rồi. Nhân viên: Thật sự xin lỗi vì sự bất tiện này. Bạn có mang theo hóa đơn không? Khách: Có, đây ạ. Nhãn mác vẫn chưa tháo ra. Nhân viên: Cảm ơn bạn. Tôi sẽ xác nhận. Bạn muốn đổi hay hoàn tiền? Khách: Tôi muốn đổi sang kiểu dáng tương tự, nhưng vì vòng eo hơi chật nên hãy đổi sang size lớn hơn một bậc. Nhân viên: Được ạ. Vì có hóa đơn và nhãn mác nên có thể đổi. Vui lòng chờ một chút.`,
+      keyVocabulary: [
+        { kr: '소매가 찢어지다', vn: 'Ống tay áo bị rách' },
+        { kr: '영수증', vn: 'Hóa đơn mua hàng' },
+        { kr: '상표를 안 떼다', vn: 'Chưa tháo nhãn mác' },
+        { kr: '교환하다', vn: 'Đổi sang hàng khác' },
+        { kr: '허리가 끼다', vn: 'Vòng eo bị chật' },
+      ],
+      questions: [
+        {
+          id: 'rq_4_1_1',
+          question: 'Tại sao khách hàng đến trung tâm dịch vụ?',
+          options: [
+            'Vì quần mua tuần trước bị rách ống tay',
+            'Vì muốn hoàn tiền do không thích màu sắc',
+            'Vì hàng chưa được giao đến nhà',
+            'Vì bị tính tiền sai giá',
+          ],
+          correctIndex: 0,
+          evidence: '집에 와서 보니까 한쪽 소매가 찢어져 있었어요.',
+        },
+        {
+          id: 'rq_4_1_2',
+          question: 'Điều kiện nào đã đáp ứng để khách được đổi hàng?',
+          options: [
+            'Mua trên 1 triệu won',
+            'Có hóa đơn và nhãn mác còn nguyên',
+            'Là thành viên VIP của cửa hàng',
+            'Mua trong ngày có chương trình khuyến mãi',
+          ],
+          correctIndex: 1,
+          evidence: '영수증과 상표가 있으니까 교환이 가능합니다.',
+        },
+      ],
+    },
+    {
+      id: 'r4_2',
+      passageNumber: 2,
+      type: 'Quảng cáo & Khuyến mãi',
+      title: '창립 기념 특별 세일 안내 (Thông báo đợt giảm giá đặc biệt kỷ niệm thành lập)',
+      source: 'Authored practice based on Lesson 4 vocabulary',
+      koreanText: `○○백화점 창립 35주년 기념 특별 세일\n기간: 이번 주 토요일~다음 주 일요일 (10일간)\n대상 품목: 숙녀복, 신사복, 아동복, 등산복 전 품목\n할인율: 20~50% 대폭 할인 (일부 명품 제외)\n결제 방법: 일시불 또는 3개월 무이자 할부 가능\n특전: 5만 원 이상 구매 시 무료 배송 서비스 제공, 포인트 2배 적립\n교환·환불: 구매일로부터 7일 이내, 영수증 및 상표 지참 시 가능\n문의: ○○백화점 고객센터 1588-XXXX`,
+      vietnameseTranslation: `Đợt giảm giá đặc biệt kỷ niệm 35 năm thành lập trung tâm thương mại ○○. Thời gian: từ thứ Bảy tuần này đến Chủ Nhật tuần sau (10 ngày). Đối tượng: toàn bộ hàng thời trang nữ, nam, trẻ em, đồ leo núi. Tỷ lệ giảm: 20-50% (ngoại trừ một số hàng hiệu). Thanh toán: trả một lần hoặc trả góp 3 tháng không lãi suất. Ưu đãi: mua từ 50.000 won miễn phí giao hàng, tích điểm gấp đôi. Đổi trả: trong vòng 7 ngày từ ngày mua, cần có hóa đơn và nhãn mác.`,
+      keyVocabulary: [
+        { kr: '창립 기념 세일', vn: 'Giảm giá kỷ niệm thành lập' },
+        { kr: '무이자 할부', vn: 'Trả góp không lãi suất' },
+        { kr: '포인트 적립', vn: 'Tích lũy điểm thưởng' },
+        { kr: '구매일로부터', vn: 'Tính từ ngày mua' },
+      ],
+      questions: [
+        {
+          id: 'rq_4_2_1',
+          question: 'Chương trình giảm giá này kéo dài bao nhiêu ngày?',
+          options: ['5 ngày', '7 ngày', '10 ngày', '2 tuần'],
+          correctIndex: 2,
+          evidence: '이번 주 토요일~다음 주 일요일 (10일간)',
+        },
+        {
+          id: 'rq_4_2_2',
+          question: 'Điều kiện để được miễn phí giao hàng là gì?',
+          options: [
+            'Mua bất kỳ sản phẩm nào',
+            'Mua từ 50.000 won trở lên',
+            'Phải thanh toán bằng tiền mặt',
+            'Là thành viên từ 3 năm trở lên',
+          ],
+          correctIndex: 1,
+          evidence: '5만 원 이상 구매 시 무료 배송 서비스 제공',
+        },
+      ],
+    },
+  ],
+  // BÀI 05: 요리 (Ẩm thực & Nấu ăn)
+  5: [
+    {
+      id: 'r5_1',
+      passageNumber: 1,
+      type: 'Công thức nấu ăn',
+      title: '비빔밥 만드는 방법 (Cách làm cơm trộn Bibimbap)',
+      source: 'Authored practice based on Lesson 5 vocabulary & grammar',
+      koreanText: `비빔밥은 한국의 대표적인 영양 음식으로 만드는 방법이 간단합니다.\n먼저 밥을 짓고 나서 여러 가지 나물을 준비합니다. 시금치, 콩나물, 당근 등을 각각 볶거나 무쳐서 준비합니다.\n당근은 채썰고 나서 팬에 기름을 두르고 살짝 볶아 주세요.\n다음으로 소고기를 간장과 참기름으로 재워 두었다가 볶고 나서 따뜻한 밥 위에 모든 재료를 색깔별로 예쁘게 올려 줍니다.\n마지막으로 달걀 프라이를 만들고 나서 비빔밥 위에 얹고 고추장을 넣어 맛있게 비비면 완성입니다.\n고추장 양념이 매콤하고 달콤하며 참기름의 고소한 풍미가 어우러져 식욕을 자극합니다.`,
+      vietnameseTranslation: `Bibimbap là món ăn bổ dưỡng tiêu biểu của Hàn Quốc và cách làm khá đơn giản. Trước tiên, nấu cơm xong rồi chuẩn bị các loại rau củ khác nhau. Rau chân vịt, giá đỗ, cà rốt... mỗi loại được xào hoặc trộn riêng. Cắt cà rốt thành sợi rồi láng dầu vào chảo và xào sơ qua. Tiếp theo, ướp thịt bò với nước tương và dầu mè, để ngấm rồi xào xong mới bày tất cả nguyên liệu theo màu sắc lên trên cơm nóng. Cuối cùng, rán trứng xong rồi đặt lên trên và cho tương ớt vào trộn đều là xong. Hương vị cay ngọt của tương ớt kết hợp mùi bùi béo của dầu mè kích thích vị giác tuyệt vời.`,
+      keyVocabulary: [
+        { kr: '나물을 무치다', vn: 'Trộn gỏi rau' },
+        { kr: '채썰다', vn: 'Thái sợi' },
+        { kr: '기름을 두르다', vn: 'Láng dầu vào chảo' },
+        { kr: '재워 두다', vn: 'Ướp để ngấm gia vị' },
+        { kr: '고추장 양념', vn: 'Sốt tương ớt' },
+      ],
+      questions: [
+        {
+          id: 'rq_5_1_1',
+          question: 'Theo bài đọc, thứ tự nào đúng khi làm Bibimbap?',
+          options: [
+            'Cho tương ớt → nấu cơm → chuẩn bị rau → rán trứng',
+            'Nấu cơm → chuẩn bị rau → xào thịt → rán trứng → bày và trộn',
+            'Rán trứng trước → chuẩn bị rau → nấu cơm → trộn',
+            'Xào thịt trước → nấu cơm → thêm rau → trộn ngay',
+          ],
+          correctIndex: 1,
+          evidence:
+            '먼저 밥을 짓고 나서 나물을 준비... 볶고 나서 밥 위에... 달걀 프라이를 만들고 나서 얹고',
+        },
+        {
+          id: 'rq_5_1_2',
+          question: 'Hương vị của Bibimbap được miêu tả như thế nào?',
+          options: [
+            'Ngọt ngào và thơm dầu oliu',
+            'Cay ngọt của tương ớt kết hợp bùi béo của dầu mè',
+            'Thanh đạm và không gia vị',
+            'Mặn và chua như kim chi',
+          ],
+          correctIndex: 1,
+          evidence: '고추장 양념이 매콤하고 달콤하며 참기름의 고소한 풍미가 어우러져',
+        },
+      ],
+    },
+    {
+      id: 'r5_2',
+      passageNumber: 2,
+      type: 'Bài viết chia sẻ',
+      title: '한국 음식 배우기 (Học nấu ăn Hàn Quốc)',
+      source: 'Authored practice based on Lesson 5 vocabulary & grammar',
+      koreanText: `저는 요리를 배운 지 6개월밖에 안 되었지만 요즘 한국 음식 만들기에 푹 빠졌습니다.\n지난 주말에는 처음으로 혼자 김치찌개를 만들어 보았습니다. 먼저 돼지고기와 묵은 김치를 볶다가 물을 붓고 끓였습니다.\n국물 맛을 보니 좀 싱거워서 국간장으로 간을 맞추었습니다. 마지막으로 두부를 넣고 나서 약한 불에서 5분 더 끓이니 맛있게 완성되었습니다.\n처음에는 간을 맞추는 것이 가장 어려웠는데, 여러 번 해 보다가 이제는 자연스럽게 할 수 있게 되었습니다.\n앞으로는 갈비찜이나 잡채도 만들어 볼 생각입니다.`,
+      vietnameseTranslation: `Tôi mới học nấu ăn được 6 tháng thôi nhưng dạo này đang mê say học nấu món Hàn. Cuối tuần vừa rồi tôi đã lần đầu tiên tự nấu canh kim chi một mình. Trước tiên, đang xào thịt lợn với kim chi cũ thì đổ nước vào đun sôi. Nếm canh thấy hơi nhạt nên tôi nêm thêm nước tương canh cho vừa. Cuối cùng, cho đậu phụ vào rồi đun thêm 5 phút lửa nhỏ thì xong. Ban đầu, việc nêm nếm gia vị là khó nhất, nhưng sau khi làm đi làm lại thì giờ đã làm quen tay rồi. Sắp tới tôi dự định thử làm sườn hầm và miến xào.`,
+      keyVocabulary: [
+        { kr: '묵은 김치', vn: 'Kim chi đã ngâm lâu' },
+        { kr: '끓이다', vn: 'Đun sôi sùng sục' },
+        { kr: '국물이 싱겁다', vn: 'Canh bị nhạt' },
+        { kr: '간을 맞추다', vn: 'Nêm gia vị cho vừa' },
+        { kr: '볶다가', vn: 'Đang xào thì (bị gián đoạn)' },
+      ],
+      questions: [
+        {
+          id: 'rq_5_2_1',
+          question: 'Người viết đã xử lý vấn đề canh bị nhạt bằng cách nào?',
+          options: [
+            'Thêm ớt bột để tăng vị',
+            'Nêm thêm nước tương canh',
+            'Cho thêm đậu phụ vào',
+            'Đun thêm lâu hơn',
+          ],
+          correctIndex: 1,
+          evidence: '국물 맛을 보니 좀 싱거워서 국간장으로 간을 맞추었습니다.',
+        },
+        {
+          id: 'rq_5_2_2',
+          question: 'Người viết gặp khó khăn gì nhất khi mới học nấu ăn?',
+          options: [
+            'Cách thái sợi rau củ',
+            'Cách nêm nếm gia vị cho vừa',
+            'Cách đun sôi canh đúng cách',
+            'Cách chọn nguyên liệu tươi',
+          ],
+          correctIndex: 1,
+          evidence: '처음에는 간을 맞추는 것이 가장 어려웠는데',
+        },
+      ],
+    },
+  ],
+  // BÀI 06: 은행 (Giao dịch ngân hàng)
+  6: [
+    {
+      id: 'r6_1',
+      passageNumber: 1,
+      type: 'Hội thoại ngân hàng',
+      title: '은행 창구에서 (Tại quầy giao dịch ngân hàng)',
+      source: 'Authored practice based on Lesson 6 vocabulary & grammar',
+      koreanText: `직원: 어서 오세요. 무엇을 도와드릴까요?\n고객: 안녕하세요. 통장을 새로 만들려면 어떻게 해야 해요?\n직원: 신분증을 복사하는 동안 먼저 신청서를 작성해 주시면 됩니다. 신분증은 지참하셨어요?\n고객: 네, 여권 가지고 왔어요.\n직원: 감사합니다. 비밀번호는 4자리로 설정하시면 되는데, 쉽게 잊어버리기 쉬우니까 꼭 메모해 두세요.\n고객: 인터넷 뱅킹도 신청하고 싶은데요.\n직원: 물론이죠. 통장 개설과 동시에 신청하실 수 있습니다. 공인인증서도 함께 발급해 드릴게요.\n고객: 감사합니다. 그리고 매달 공과금을 자동으로 내려면 어떻게 해야 해요?\n직원: 자동이체 서비스를 신청하시면 됩니다. 신청서 하나 더 작성해 주시겠어요?`,
+      vietnameseTranslation: `Nhân viên: Xin chào, tôi có thể giúp gì cho bạn? Khách: Xin chào. Nếu muốn mở tài khoản mới thì phải làm thế nào? Nhân viên: Trong khi tôi photo thẻ căn cước, bạn vui lòng điền trước đơn đăng ký. Bạn có mang theo CMND không? Khách: Có, tôi mang hộ chiếu. Nhân viên: Cảm ơn. Mật khẩu đặt 4 chữ số, vì dễ quên nên nhớ ghi lại nhé. Khách: Tôi cũng muốn đăng ký Internet Banking. Nhân viên: Được chứ, có thể đăng ký cùng lúc mở tài khoản, tôi sẽ cấp luôn chứng thư số. Khách: Cảm ơn. Ngoài ra, nếu muốn thanh toán tiền dịch vụ công hàng tháng tự động thì làm thế nào? Nhân viên: Bạn đăng ký dịch vụ chuyển khoản tự động nhé. Bạn điền thêm một đơn nữa được không?`,
+      keyVocabulary: [
+        { kr: '통장을 만들려면', vn: 'Nếu muốn mở tài khoản thì' },
+        { kr: '신분증을 복사하는 동안', vn: 'Trong khi photo thẻ căn cước' },
+        { kr: '잊어버리기 쉽다', vn: 'Dễ bị quên' },
+        { kr: '자동이체', vn: 'Chuyển khoản tự động' },
+        { kr: '공인인증서', vn: 'Chứng thư số' },
+      ],
+      questions: [
+        {
+          id: 'rq_6_1_1',
+          question: 'Khách hàng cần làm gì trong khi nhân viên photo thẻ căn cước?',
+          options: [
+            'Đợi tại quầy mà không làm gì',
+            'Điền vào đơn đăng ký',
+            'Thiết lập mật khẩu',
+            'Tải ứng dụng ngân hàng',
+          ],
+          correctIndex: 1,
+          evidence: '신분증을 복사하는 동안 먼저 신청서를 작성해 주시면 됩니다.',
+        },
+        {
+          id: 'rq_6_1_2',
+          question: 'Nhân viên đã khuyên khách hàng về mật khẩu như thế nào?',
+          options: [
+            'Dùng ngày sinh nhật cho dễ nhớ',
+            'Đặt 6 chữ số để an toàn hơn',
+            'Vì dễ quên nên nhớ ghi lại',
+            'Không cần thiết lập mật khẩu',
+          ],
+          correctIndex: 2,
+          evidence: '쉽게 잊어버리기 쉬우니까 꼭 메모해 두세요.',
+        },
+      ],
+    },
+    {
+      id: 'r6_2',
+      passageNumber: 2,
+      type: 'Bài viết giới thiệu',
+      title: '스마트한 재테크 습관 (Thói quen quản lý tài chính thông minh)',
+      source: 'Authored practice based on Lesson 6 vocabulary',
+      koreanText: `매달 첫 번째 주에 저는 가계부를 정리합니다. 한 달 동안 수입과 지출을 꼼꼼하게 기록해 두면 불필요한 소비를 줄이기 쉽습니다.\n저의 재테크 방법은 간단합니다. 월급이 들어오면 바로 적금 통장으로 이체를 해 두는 거예요. 그렇게 하지 않으면 어느새 써버리기 쉽거든요.\n저는 매달 월급의 30%를 정기 적금에 넣고, 20%는 비상금으로 별도의 통장에 넣어 둡니다.\n또한 공과금과 인터넷 요금은 자동이체로 설정해 두어서 날짜를 잊어버리기 쉬운 걱정을 덜었습니다.\n이렇게 꾸준히 절약하다 보면 1년 후에 얼마나 모을 수 있을지 기대가 됩니다.`,
+      vietnameseTranslation: `Mỗi tuần đầu tiên của tháng tôi đều tổng kết sổ chi tiêu gia đình. Nếu ghi chép kỹ lưỡng thu nhập và chi tiêu trong một tháng thì dễ cắt giảm những chi tiêu không cần thiết. Phương pháp quản lý tài chính của tôi rất đơn giản: khi lương về là chuyển ngay sang sổ tiết kiệm. Không làm vậy thì rất dễ tiêu hết không hay. Mỗi tháng tôi gửi 30% lương vào tiết kiệm định kỳ và 20% vào tài khoản quỹ dự phòng riêng. Ngoài ra tôi đặt tiền dịch vụ công và phí internet chuyển khoản tự động để không lo quên ngày thanh toán. Cứ kiên trì tiết kiệm như vậy, tôi rất kỳ vọng sau 1 năm sẽ để dành được bao nhiêu.`,
+      keyVocabulary: [
+        { kr: '가계부를 정리하다', vn: 'Tổng kết sổ chi tiêu gia đình' },
+        { kr: '수입과 지출', vn: 'Thu nhập và chi tiêu' },
+        { kr: '비상금', vn: 'Quỹ dự phòng khẩn cấp' },
+        { kr: '자동이체로 설정하다', vn: 'Thiết lập chuyển khoản tự động' },
+        { kr: '잊어버리기 쉽다', vn: 'Dễ bị quên' },
+      ],
+      questions: [
+        {
+          id: 'rq_6_2_1',
+          question: 'Người viết dùng bao nhiêu phần trăm lương để gửi tiết kiệm định kỳ?',
+          options: ['20%', '30%', '50%', '70%'],
+          correctIndex: 1,
+          evidence: '매달 월급의 30%를 정기 적금에 넣고',
+        },
+        {
+          id: 'rq_6_2_2',
+          question: 'Lý do nào khiến người viết đặt tiền dịch vụ chuyển khoản tự động?',
+          options: [
+            'Vì muốn tiết kiệm phí giao dịch',
+            'Vì ngân hàng yêu cầu bắt buộc',
+            'Để không lo quên ngày thanh toán',
+            'Vì không có điện thoại thông minh',
+          ],
+          correctIndex: 2,
+          evidence: '날짜를 잊어버리기 쉬운 걱정을 덜었습니다.',
+        },
+      ],
+    },
+  ],
 };
 
 export const READING_BANK = LegacyReadingDatabaseSchema.parse(raw);
