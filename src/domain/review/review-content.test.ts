@@ -41,7 +41,27 @@ describe('getReviewPrompt', () => {
     );
   });
 
+  it('resolves vocabulary from stable word-based review ID', () => {
+    expect(
+      getReviewPrompt(createItem('vocabulary', `lesson-1-vocab-${encodeURIComponent('학기')}`)),
+    ).toMatchObject({
+      prompt: '학기',
+      answer: 'Học kỳ',
+    });
+  });
+
+  it('resolves grammar from stable structure-based review ID', () => {
+    expect(
+      getReviewPrompt(
+        createItem('grammar', `lesson-1-grammar-${encodeURIComponent('Danh từ + 밖에')}`),
+      ),
+    )?.toMatchObject({
+      prompt: 'Danh từ + 밖에',
+    });
+  });
+
   it('returns null for stale or malformed references', () => {
     expect(getReviewPrompt(createItem('vocabulary', 'lesson-1-vocabulary-99-99'))).toBeNull();
+    expect(getReviewPrompt(createItem('vocabulary', 'lesson-1-vocab-nonexistent-word'))).toBeNull();
   });
 });

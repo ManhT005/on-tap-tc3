@@ -34,31 +34,80 @@ export function getReviewPrompt(item: ReviewStatus): ReviewPrompt | null {
     return null;
   }
 
-  const vocabularyMatch = item.itemId.match(/^lesson-(\d+)-vocabulary-(\d+)-(\d+)$/);
-  if (item.itemType === 'vocabulary' && vocabularyMatch) {
-    const [, lessonId, packIndex, itemIndex] = vocabularyMatch;
-    const vocabulary =
-      LESSONS_DATA[Number(lessonId)]?.vocabulary[Number(packIndex)]?.items[Number(itemIndex)];
-    if (!vocabulary) return null;
+  if (item.itemType === 'vocabulary') {
+    const stableVocabMatch = item.itemId.match(/^lesson-(\d+)-vocab-(.+)$/);
+    if (stableVocabMatch) {
+      const [, lessonIdStr, encodedWord] = stableVocabMatch;
+      const lesson = LESSONS_DATA[Number(lessonIdStr)];
+      if (lesson) {
+        let decodedWord = encodedWord;
+        try {
+          decodedWord = decodeURIComponent(encodedWord);
+        } catch {
+          // ignore malformed URI component and use raw
+        }
+        for (const pack of lesson.vocabulary) {
+          const found = pack.items.find((vocab) => vocab.kr === decodedWord);
+          if (found) {
+            return {
+              prompt: found.kr,
+              answer: found.vn,
+              example: found.note,
+            };
+          }
+        }
+      }
+    }
 
-    return {
-      prompt: vocabulary.kr,
-      answer: vocabulary.vn,
-      example: vocabulary.note,
-    };
+    const vocabularyMatch = item.itemId.match(/^lesson-(\d+)-vocabulary-(\d+)-(\d+)$/);
+    if (vocabularyMatch) {
+      const [, lessonId, packIndex, itemIndex] = vocabularyMatch;
+      const vocabulary =
+        LESSONS_DATA[Number(lessonId)]?.vocabulary[Number(packIndex)]?.items[Number(itemIndex)];
+      if (!vocabulary) return null;
+
+      return {
+        prompt: vocabulary.kr,
+        answer: vocabulary.vn,
+        example: vocabulary.note,
+      };
+    }
   }
 
-  const grammarMatch = item.itemId.match(/^lesson-(\d+)-grammar-(\d+)$/);
-  if (item.itemType === 'grammar' && grammarMatch) {
-    const [, lessonId, grammarIndex] = grammarMatch;
-    const grammar = LESSONS_DATA[Number(lessonId)]?.grammar[Number(grammarIndex)];
-    if (!grammar) return null;
-
-    return {
-      prompt: grammar.structure,
-      answer: `${grammar.meaning}\n${grammar.rule}`,
-      example: grammar.examples[0]?.kr,
-    };
+  if (item.itemType === 'grammar') {
+    const stableGrammarMatch = item.itemId.match(/^lesson-(\d+)-grammar-(.+)$/);
+    if (stableGrammarMatch) {
+      const [, lessonIdStr, identifier] = stableGrammarMatch;
+      const lesson = LESSONS_DATA[Number(lessonIdStr)];
+      if (lesson) {
+        // First check if identifier is a numeric index
+        if (/^\d+$/.test(identifier)) {
+          const grammar = lesson.grammar[Number(identifier)];
+          if (grammar) {
+            return {
+              prompt: grammar.structure,
+              answer: `${grammar.meaning}\n${grammar.rule}`,
+              example: grammar.examples[0]?.kr,
+            };
+          }
+        }
+        // Otherwise search by structure text
+        let decoded = identifier;
+        try {
+          decoded = decodeURIComponent(identifier);
+        } catch {
+          // ignore
+        }
+        const grammar = lesson.grammar.find((g) => g.structure === decoded);
+        if (grammar) {
+          return {
+            prompt: grammar.structure,
+            answer: `${grammar.meaning}\n${grammar.rule}`,
+            example: grammar.examples[0]?.kr,
+          };
+        }
+      }
+    }
   }
 
   return null;

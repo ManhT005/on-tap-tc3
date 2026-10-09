@@ -47,4 +47,35 @@ describe('ReviewPage', () => {
     });
     expect(screen.getByText('1 lần sai')).toBeInTheDocument();
   });
+
+  it('displays an informative warning when orphan review items cannot be resolved', async () => {
+    const now = new Date('2026-10-01T08:00:00.000Z');
+    const repository = new MemoryProgressRepository(() => now);
+    await repository.saveReviewItem({
+      itemId: 'lesson-1-vocabulary-99-99',
+      itemType: 'vocabulary',
+      repetitions: 1,
+      correctCount: 1,
+      wrongCount: 0,
+      lastReviewedAt: '2026-10-01T07:50:00.000Z',
+      nextReviewAt: now.toISOString(),
+      intervalDays: 0,
+      confidence: 2,
+      box: 1,
+    });
+
+    render(
+      <ProgressRepositoryProvider repository={repository}>
+        <MemoryRouter>
+          <ReviewPage />
+        </MemoryRouter>
+      </ProgressRepositoryProvider>,
+    );
+
+    expect(
+      await screen.findByText(/1 mục ôn tập không tìm thấy nội dung tương ứng/i),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText('0 mục')).toHaveLength(2);
+    expect(screen.getByText('Bạn đã ôn hết mục đến hạn')).toBeInTheDocument();
+  });
 });

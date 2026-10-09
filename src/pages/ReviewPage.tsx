@@ -5,7 +5,7 @@ import { ReviewQueueItem } from '../components/learning/ReviewQueueItem';
 import { useReviewQueue } from '../features/review/state/use-review-queue';
 
 export function ReviewPage() {
-  const { dueItems, recentMistakes, loading, error, grade } = useReviewQueue();
+  const { dueItems, recentMistakes, loading, error, orphanCount, grade } = useReviewQueue();
   const validDueItems = dueItems.filter(
     (entry): entry is typeof entry & { content: NonNullable<typeof entry.content> } =>
       entry.content !== null,
@@ -22,6 +22,13 @@ export function ReviewPage() {
       {error ? (
         <p className="form-error" role="alert">
           {error}
+        </p>
+      ) : null}
+
+      {orphanCount > 0 ? (
+        <p className="muted-copy" role="note">
+          ℹ️ {orphanCount} mục ôn tập không tìm thấy nội dung tương ứng (có thể do nội dung đã thay
+          đổi). Các mục này không ảnh hưởng đến tiến độ.
         </p>
       ) : null}
 

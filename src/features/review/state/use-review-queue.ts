@@ -45,9 +45,13 @@ export function useReviewQueue() {
     }
   }
 
+  const dueItemsWithContent = dueItems.map((item) => ({ item, content: getReviewPrompt(item) }));
+  const orphanCount = dueItemsWithContent.filter((entry) => entry.content === null).length;
+
   return {
-    dueItems: dueItems.map((item) => ({ item, content: getReviewPrompt(item) })),
+    dueItems: dueItemsWithContent,
     recentMistakes: recentMistakes.map((item) => ({ item, content: getReviewPrompt(item) })),
+    orphanCount,
     loading,
     error,
     grade,
