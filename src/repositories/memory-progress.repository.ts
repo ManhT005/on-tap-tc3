@@ -1,7 +1,7 @@
 import type { ReviewStatus } from '../data/schemas';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
-import type { ProgressRepository } from './progress.repository';
+import type { PracticeCompletionCommand, ProgressRepository } from './progress.repository';
 
 export class MemoryProgressRepository implements ProgressRepository {
   private readonly lessons = new Map<number, LessonProgress>();
@@ -52,5 +52,20 @@ export class MemoryProgressRepository implements ProgressRepository {
 
   async savePracticeResult(result: PracticeResult): Promise<void> {
     this.practiceResults.set(result.id, result);
+  }
+
+  async commitPracticeCompletion(command: PracticeCompletionCommand): Promise<void> {
+    // Idempotency: if a result with this ID already exists, skip entirely.
+    if (this.practiceResults.has(command.result.id)) return;
+
+    this.practiceResults.set(command.result.id, command.result);
+
+    for (const item of command.reviewUpdates) {
+      this.reviewItems.set(`${item.itemType}:${item.itemId}`, item);
+    }
+
+    if (command.lessonProgress) {
+      this.lessons.set(command.lessonProgress.lessonId, command.lessonProgress);
+    }
   }
 }

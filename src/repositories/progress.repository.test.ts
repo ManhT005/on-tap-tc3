@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { ReviewStatus } from '../data/schemas';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { LessonProgress } from '../domain/progress/progress.types';
-import type { ProgressRepository } from './progress.repository';
+import type { PracticeCompletionCommand, ProgressRepository } from './progress.repository';
 import { MemoryProgressRepository } from './memory-progress.repository';
 import { withMemoryFallback } from './resilient-progress.repository';
 import { IndexedDbProgressRepository } from './indexeddb/indexeddb-progress.repository';
@@ -50,6 +50,31 @@ const practiceResult: PracticeResult = {
   completedAt: '2026-09-30T10:00:00.000Z',
 };
 
+const reviewUpdate: ReviewStatus = {
+  itemId: 'q5',
+  itemType: 'question',
+  repetitions: 1,
+  correctCount: 0,
+  wrongCount: 1,
+  lastReviewedAt: '2026-09-30T10:00:00.000Z',
+  nextReviewAt: '2026-09-30T10:10:00.000Z',
+  intervalDays: 0,
+  confidence: 1,
+  box: 0,
+};
+
+function createCompletionCommand(
+  overrides: Partial<PracticeCompletionCommand> = {},
+): PracticeCompletionCommand {
+  return {
+    sessionId: 'session-1',
+    result: practiceResult,
+    reviewUpdates: [reviewUpdate],
+    lessonProgress,
+    ...overrides,
+  };
+}
+
 describe('IndexedDbProgressRepository', () => {
   it('persists lesson progress and reads it from a new repository instance', async () => {
     const firstRepository = createRepository();
@@ -95,6 +120,74 @@ describe('IndexedDbProgressRepository', () => {
     });
     await repository.close();
   });
+
+  it('commits practice result, review updates, and lesson progress atomically', async () => {
+    const repository = createRepository();
+    const command = createCompletionCommand();
+
+    await repository.commitPracticeCompletion(command);
+
+    const results = (await repository.getCourseProgress()).practiceSessions;
+    expect(results).toBe(1);
+
+    const reviewItems = await repository.getReviewItems();
+    expect(reviewItems).toHaveLength(1);
+    expect(reviewItems[0]!.itemId).toBe('q5');
+
+    const progress = await repository.getLessonProgress(1);
+    expect(progress?.status).toBe('COMPLETED');
+    await repository.close();
+  });
+
+  it('is idempotent — duplicate commit with the same result ID is a no-op', async () => {
+    const repository = createRepository();
+    const command = createCompletionCommand();
+
+    await repository.commitPracticeCompletion(command);
+    // Submit again with same result ID
+    await repository.commitPracticeCompletion({
+      ...command,
+      reviewUpdates: [{ ...reviewUpdate, wrongCount: 999 }],
+    });
+
+    const reviewItems = await repository.getReviewItems();
+    expect(reviewItems).toHaveLength(1);
+    // Original data should be preserved, not overwritten.
+    expect(reviewItems[0]!.wrongCount).toBe(1);
+
+    const courseProgress = await repository.getCourseProgress();
+    expect(courseProgress.practiceSessions).toBe(1);
+    await repository.close();
+  });
+});
+
+describe('MemoryProgressRepository', () => {
+  it('commits practice completion atomically', async () => {
+    const repository = new MemoryProgressRepository();
+    const command = createCompletionCommand();
+
+    await repository.commitPracticeCompletion(command);
+
+    const courseProgress = await repository.getCourseProgress();
+    expect(courseProgress.practiceSessions).toBe(1);
+
+    const reviewItems = await repository.getReviewItems();
+    expect(reviewItems).toHaveLength(1);
+
+    const progress = await repository.getLessonProgress(1);
+    expect(progress?.status).toBe('COMPLETED');
+  });
+
+  it('is idempotent — duplicate commit is a no-op', async () => {
+    const repository = new MemoryProgressRepository();
+    const command = createCompletionCommand();
+
+    await repository.commitPracticeCompletion(command);
+    await repository.commitPracticeCompletion(command);
+
+    const courseProgress = await repository.getCourseProgress();
+    expect(courseProgress.practiceSessions).toBe(1);
+  });
 });
 
 describe('withMemoryFallback', () => {
@@ -106,6 +199,7 @@ describe('withMemoryFallback', () => {
       getReviewItems: vi.fn(),
       saveReviewItem: vi.fn(),
       savePracticeResult: vi.fn(),
+      commitPracticeCompletion: vi.fn(),
     };
     const fallback = new MemoryProgressRepository();
     const onError = vi.fn();
@@ -115,5 +209,29 @@ describe('withMemoryFallback', () => {
     await repository.saveLessonProgress(lessonProgress);
     await expect(repository.getLessonProgress(1)).resolves.toEqual(lessonProgress);
     expect(onError).toHaveBeenCalledOnce();
+  });
+
+  it('delegates commitPracticeCompletion to fallback on primary failure', async () => {
+    const primary: ProgressRepository = {
+      getCourseProgress: vi.fn(),
+      getLessonProgress: vi.fn(),
+      saveLessonProgress: vi.fn(),
+      getReviewItems: vi.fn(),
+      saveReviewItem: vi.fn(),
+      savePracticeResult: vi.fn(),
+      commitPracticeCompletion: vi.fn().mockRejectedValue(new Error('IndexedDB unavailable')),
+    };
+    const fallback = new MemoryProgressRepository();
+    const onError = vi.fn();
+    const repository = withMemoryFallback(primary, fallback, { onError });
+
+    const command = createCompletionCommand();
+    await repository.commitPracticeCompletion(command);
+
+    // Should have fallen back to memory
+    expect(onError).toHaveBeenCalledOnce();
+
+    const courseProgress = await fallback.getCourseProgress();
+    expect(courseProgress.practiceSessions).toBe(1);
   });
 });

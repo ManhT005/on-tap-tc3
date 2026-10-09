@@ -1,7 +1,7 @@
 import type { ReviewStatus } from '../data/schemas';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
-import type { ProgressRepository } from './progress.repository';
+import type { PracticeCompletionCommand, ProgressRepository } from './progress.repository';
 
 export type ResilientProgressRepositoryOptions = {
   onError?: (error: unknown) => void;
@@ -59,6 +59,11 @@ export function withMemoryFallback(
       run(
         () => primary.savePracticeResult(result),
         () => fallback.savePracticeResult(result),
+      ),
+    commitPracticeCompletion: (command: PracticeCompletionCommand): Promise<void> =>
+      run(
+        () => primary.commitPracticeCompletion(command),
+        () => fallback.commitPracticeCompletion(command),
       ),
   };
 }

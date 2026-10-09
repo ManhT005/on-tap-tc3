@@ -1,7 +1,7 @@
 import type { ReviewStatus } from '../../data/schemas';
 import type { PracticeResult } from '../../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../../domain/progress/progress.types';
-import type { ProgressRepository } from '../progress.repository';
+import type { PracticeCompletionCommand, ProgressRepository } from '../progress.repository';
 import { openProgressDatabase } from './progress.database';
 
 export type IndexedDbProgressRepositoryOptions = {
@@ -71,6 +71,36 @@ export class IndexedDbProgressRepository implements ProgressRepository {
   async savePracticeResult(result: PracticeResult): Promise<void> {
     const database = await this.getDatabase();
     await database.put('practice_results', result);
+  }
+
+  async commitPracticeCompletion(command: PracticeCompletionCommand): Promise<void> {
+    const database = await this.getDatabase();
+    const tx = database.transaction(
+      ['practice_results', 'review_status', 'lesson_progress'],
+      'readwrite',
+    );
+
+    // Idempotency: if a result with the same ID already exists, skip entirely.
+    const existing = await tx.objectStore('practice_results').get(command.result.id);
+    if (existing) {
+      // Already committed — treat as no-op.
+      await tx.done;
+      return;
+    }
+
+    // All writes happen inside this single transaction — any failure
+    // causes the entire transaction to roll back automatically.
+    await tx.objectStore('practice_results').put(command.result);
+
+    for (const item of command.reviewUpdates) {
+      await tx.objectStore('review_status').put(item);
+    }
+
+    if (command.lessonProgress) {
+      await tx.objectStore('lesson_progress').put(command.lessonProgress);
+    }
+
+    await tx.done;
   }
 
   async close(): Promise<void> {
