@@ -3,24 +3,46 @@ import type { PracticeResult } from '../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
 import type { PracticeCompletionCommand, ProgressRepository } from './progress.repository';
 
+/**
+ * Describes the durability of the current storage backend.
+ * - `persistent`: IndexedDB is healthy; data survives reload.
+ * - `degraded`:   IndexedDB failed; data lives only in memory for this session.
+ * - `unavailable`: Not yet determined (before first operation).
+ */
+export type StorageStatus = 'persistent' | 'degraded' | 'unavailable';
+
 export type ResilientProgressRepositoryOptions = {
   onError?: (error: unknown) => void;
+  onStatusChange?: (status: StorageStatus) => void;
+};
+
+export type ResilientProgressRepository = ProgressRepository & {
+  readonly storageStatus: StorageStatus;
 };
 
 export function withMemoryFallback(
   primary: ProgressRepository,
   fallback: ProgressRepository,
   options: ResilientProgressRepositoryOptions = {},
-): ProgressRepository {
-  let useFallback = false;
+): ResilientProgressRepository {
+  let storageStatus: StorageStatus = 'unavailable';
+
+  function setStatus(next: StorageStatus) {
+    if (storageStatus !== next) {
+      storageStatus = next;
+      options.onStatusChange?.(next);
+    }
+  }
 
   async function run<T>(primaryAction: () => Promise<T>, fallbackAction: () => Promise<T>) {
-    if (useFallback) return fallbackAction();
+    if (storageStatus === 'degraded') return fallbackAction();
 
     try {
-      return await primaryAction();
+      const result = await primaryAction();
+      setStatus('persistent');
+      return result;
     } catch (error) {
-      useFallback = true;
+      setStatus('degraded');
       options.onError?.(error);
       if (import.meta.env.DEV) {
         console.error('IndexedDB progress storage failed; using memory for this session.', error);
@@ -29,7 +51,10 @@ export function withMemoryFallback(
     }
   }
 
-  return {
+  const repo: ResilientProgressRepository = {
+    get storageStatus() {
+      return storageStatus;
+    },
     getCourseProgress: (): Promise<CourseProgress> =>
       run(
         () => primary.getCourseProgress(),
@@ -66,4 +91,6 @@ export function withMemoryFallback(
         () => fallback.commitPracticeCompletion(command),
       ),
   };
+
+  return repo;
 }

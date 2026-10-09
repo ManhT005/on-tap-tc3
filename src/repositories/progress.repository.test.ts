@@ -234,4 +234,45 @@ describe('withMemoryFallback', () => {
     const courseProgress = await fallback.getCourseProgress();
     expect(courseProgress.practiceSessions).toBe(1);
   });
+
+  it('starts with unavailable status and transitions to persistent on first success', async () => {
+    const primary = new MemoryProgressRepository();
+    const fallback = new MemoryProgressRepository();
+    const statusChanges: import('./resilient-progress.repository').StorageStatus[] = [];
+    const repository = withMemoryFallback(primary, fallback, {
+      onStatusChange: (s) => statusChanges.push(s),
+    });
+
+    expect(repository.storageStatus).toBe('unavailable');
+    await repository.getCourseProgress();
+    expect(repository.storageStatus).toBe('persistent');
+    expect(statusChanges).toEqual(['persistent']);
+  });
+
+  it('transitions to degraded on primary failure and stays degraded', async () => {
+    const primary: ProgressRepository = {
+      getCourseProgress: vi.fn().mockRejectedValue(new Error('quota exceeded')),
+      getLessonProgress: vi.fn().mockRejectedValue(new Error('quota exceeded')),
+      saveLessonProgress: vi.fn(),
+      getReviewItems: vi.fn(),
+      saveReviewItem: vi.fn(),
+      savePracticeResult: vi.fn(),
+      commitPracticeCompletion: vi.fn(),
+    };
+    const fallback = new MemoryProgressRepository();
+    const statusChanges: import('./resilient-progress.repository').StorageStatus[] = [];
+    const repository = withMemoryFallback(primary, fallback, {
+      onStatusChange: (s) => statusChanges.push(s),
+    });
+
+    expect(repository.storageStatus).toBe('unavailable');
+    await repository.getCourseProgress(); // triggers failure
+    expect(repository.storageStatus).toBe('degraded');
+
+    // Subsequent calls go straight to fallback — primary not called again
+    await repository.getLessonProgress(1); // should use fallback, not call primary again
+    expect(repository.storageStatus).toBe('degraded');
+    expect(statusChanges).toEqual(['degraded']); // only one transition
+    expect(primary.getLessonProgress).not.toHaveBeenCalled();
+  });
 });
