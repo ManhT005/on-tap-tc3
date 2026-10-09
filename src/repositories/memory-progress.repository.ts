@@ -29,8 +29,12 @@ export class MemoryProgressRepository implements ProgressRepository {
       totalAnswers,
       accuracy: totalAnswers === 0 ? 0 : Math.round((correctAnswers / totalAnswers) * 100),
       reviewsDue: reviewItems.filter((item) => item.nextReviewAt <= now).length,
-      vocabularyReviewed: reviewItems.filter((item) => item.itemType === 'vocabulary').length,
-      grammarReviewed: reviewItems.filter((item) => item.itemType === 'grammar').length,
+      vocabularyReviewed: reviewItems.filter(
+        (item) => item.itemType === 'vocabulary' && item.repetitions > 0,
+      ).length,
+      grammarReviewed: reviewItems.filter(
+        (item) => item.itemType === 'grammar' && item.repetitions > 0,
+      ).length,
     };
   }
 

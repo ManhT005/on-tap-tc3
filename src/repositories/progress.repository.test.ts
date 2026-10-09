@@ -121,6 +121,51 @@ describe('IndexedDbProgressRepository', () => {
     await repository.close();
   });
 
+  it('TC-12: does not increment vocabularyReviewed or grammarReviewed for marked-only items (repetitions = 0)', async () => {
+    const repository = createRepository();
+    const markedVocabulary: ReviewStatus = {
+      itemId: 'v-marked',
+      itemType: 'vocabulary',
+      repetitions: 0,
+      correctCount: 0,
+      wrongCount: 0,
+      lastReviewedAt: '2026-09-30T09:00:00.000Z',
+      nextReviewAt: '2026-09-30T10:00:00.000Z',
+      intervalDays: 0,
+      confidence: 1,
+      box: 0,
+    };
+    const markedGrammar: ReviewStatus = {
+      itemId: 'g-marked',
+      itemType: 'grammar',
+      repetitions: 0,
+      correctCount: 0,
+      wrongCount: 0,
+      lastReviewedAt: '2026-09-30T09:00:00.000Z',
+      nextReviewAt: '2026-09-30T10:00:00.000Z',
+      intervalDays: 0,
+      confidence: 1,
+      box: 0,
+    };
+
+    await repository.saveReviewItem(markedVocabulary);
+    await repository.saveReviewItem(markedGrammar);
+
+    const progress = await repository.getCourseProgress();
+    expect(progress.vocabularyReviewed).toBe(0);
+    expect(progress.grammarReviewed).toBe(0);
+
+    // Also verify for MemoryProgressRepository
+    const memoryRepo = new MemoryProgressRepository();
+    await memoryRepo.saveReviewItem(markedVocabulary);
+    await memoryRepo.saveReviewItem(markedGrammar);
+    const memProgress = await memoryRepo.getCourseProgress();
+    expect(memProgress.vocabularyReviewed).toBe(0);
+    expect(memProgress.grammarReviewed).toBe(0);
+
+    await repository.close();
+  });
+
   it('commits practice result, review updates, and lesson progress atomically', async () => {
     const repository = createRepository();
     const command = createCompletionCommand();
