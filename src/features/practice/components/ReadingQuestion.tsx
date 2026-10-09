@@ -18,7 +18,7 @@ export function ReadingQuestion({
   return (
     <article className="reading-question">
       <h3>{question.question}</h3>
-      <div className="quiz-card__options">
+      <div className="quiz-card__options" role="group" aria-label={`Đáp án cho câu ${question.id}`}>
         {question.options.map((option, index) => (
           <button
             key={option}

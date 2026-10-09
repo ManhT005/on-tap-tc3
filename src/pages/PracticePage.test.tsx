@@ -65,6 +65,15 @@ describe('PracticePage', () => {
     await user.click(screen.getByRole('tab', { name: 'Writing' }));
     await user.click(screen.getByRole('button', { name: 'Hiện bài mẫu' }));
     expect(screen.getByText(/저는 한국학과/)).toBeInTheDocument();
+
+    // Button disabled when response is empty
+    expect(screen.getByRole('button', { name: 'Đạt yêu cầu' })).toBeDisabled();
+
+    // Type answer into controlled textarea
+    const textarea = screen.getByRole('textbox', { name: 'Câu trả lời của bạn' });
+    await user.type(textarea, '저는 한국학과 2학년 흐엉이라고 합니다.');
+    expect(screen.getByRole('button', { name: 'Đạt yêu cầu' })).toBeEnabled();
+
     await user.click(screen.getByRole('button', { name: 'Đạt yêu cầu' }));
     expect(await screen.findByText('Đã lưu: Đạt yêu cầu.')).toBeInTheDocument();
     await expect(repository.getCourseProgress()).resolves.toMatchObject({ practiceSessions: 1 });
@@ -109,5 +118,41 @@ describe('PracticePage', () => {
     // Switch back to Lesson 1
     await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '1');
     expect(screen.getByRole('button', { name: 'Hiện bài mẫu' })).toBeInTheDocument();
+  });
+
+  it('Writing practice: keeps self-check disabled for whitespace-only response', async () => {
+    const user = userEvent.setup();
+    renderPracticePage();
+
+    await user.click(screen.getByRole('tab', { name: 'Writing' }));
+    await user.click(screen.getByRole('button', { name: 'Hiện bài mẫu' }));
+
+    const textarea = screen.getByRole('textbox', { name: 'Câu trả lời của bạn' });
+    await user.type(textarea, '   ');
+    expect(screen.getByRole('button', { name: 'Đạt yêu cầu' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Cần luyện thêm' })).toBeDisabled();
+  });
+
+  it('Reading practice: scores reading and records completion in repository', async () => {
+    const user = userEvent.setup();
+    const { repository } = renderPracticePage();
+    const reading = getLessonReading(1);
+    if (!reading.ok || !reading.data[0]) throw new Error('Expected lesson 1 reading data');
+
+    await user.click(screen.getByRole('tab', { name: 'Reading' }));
+    for (const question of reading.data[0].questions) {
+      const group = screen.getByRole('group', { name: `Đáp án cho câu ${question.id}` });
+      const options = within(group).getAllByRole('button');
+      const correctOption = options[question.correctIndex];
+      if (!correctOption) throw new Error('Expected option');
+      await user.click(correctOption);
+    }
+
+    await user.click(screen.getByRole('button', { name: 'Chấm điểm bài đọc' }));
+    expect(await screen.findByRole('button', { name: 'Luyện lại bài đọc' })).toBeInTheDocument();
+    await expect(repository.getCourseProgress()).resolves.toMatchObject({
+      practiceSessions: 1,
+      accuracy: 100,
+    });
   });
 });

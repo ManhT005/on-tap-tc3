@@ -19,6 +19,7 @@ export function ReadingPractice() {
   const [showTranslation, setShowTranslation] = useState(false);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<{ score: number; correct: number; total: number } | null>(
     null,
   );
@@ -27,9 +28,13 @@ export function ReadingPractice() {
   const passage = readingResult.ok ? readingResult.data[passageIndex] : undefined;
 
   async function submit() {
-    if (!passage || submitted) return;
+    if (!passage || submitted || submitting) return;
+
+    setSubmitting(true);
+    setError(null);
     const session = createPracticeSession({
       id: createId('reading-session'),
+      lessonId,
       mode: 'reading',
       questionIds: passage.questions.map((question) => question.id),
       startedAt: new Date().toISOString(),
@@ -40,12 +45,14 @@ export function ReadingPractice() {
         { ...session, answers },
         passage.questions.map(({ id, correctIndex }) => ({ id, correctIndex })),
         repository,
-        { resultId: createId('reading-result'), completedAt: new Date().toISOString() },
+        { resultId: `reading-result-${session.id}`, completedAt: new Date().toISOString() },
       );
       setResult({ score: completed.score, correct: completed.correct, total: completed.total });
       setSubmitted(true);
     } catch {
       setError('Không lưu được kết quả đọc hiểu.');
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -53,8 +60,10 @@ export function ReadingPractice() {
     setPassageIndex(nextPassageIndex);
     setAnswers({});
     setSubmitted(false);
+    setSubmitting(false);
     setResult(null);
     setShowTranslation(false);
+    setError(null);
   }
 
   return (
@@ -148,12 +157,13 @@ export function ReadingPractice() {
           ) : (
             <Button
               disabled={
+                submitting ||
                 !passage.questions.length ||
                 !passage.questions.every((question) => answers[question.id] !== undefined)
               }
               onClick={() => void submit()}
             >
-              Chấm điểm bài đọc
+              {submitting ? 'Đang chấm điểm...' : 'Chấm điểm bài đọc'}
             </Button>
           )}
         </>

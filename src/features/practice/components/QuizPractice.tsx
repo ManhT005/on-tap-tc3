@@ -23,6 +23,7 @@ export function QuizPractice() {
   const [session, setSession] = useState<PracticeSession | null>(null);
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [result, setResult] = useState<PracticeResult | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -75,18 +76,22 @@ export function QuizPractice() {
   }
 
   async function submit() {
-    if (!session || result) return;
+    if (!session || result || submitting) return;
 
+    setSubmitting(true);
+    setError(null);
     try {
       const completed = await completePracticeSession(
         { ...session, answers },
         availableQuestions.map(({ id, correctIndex }) => ({ id, correctIndex })),
         repository,
-        { resultId: createId('quiz-result'), completedAt: new Date().toISOString() },
+        { resultId: `quiz-result-${session.id}`, completedAt: new Date().toISOString() },
       );
       setResult(completed);
     } catch {
       setError('Không lưu được kết quả bài quiz.');
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -179,8 +184,8 @@ export function QuizPractice() {
               }
             />
           ))}
-          <Button disabled={!allAnswered} onClick={() => void submit()}>
-            Chấm điểm và lưu kết quả
+          <Button disabled={!allAnswered || submitting} onClick={() => void submit()}>
+            {submitting ? 'Đang chấm điểm...' : 'Chấm điểm và lưu kết quả'}
           </Button>
         </div>
       )}
