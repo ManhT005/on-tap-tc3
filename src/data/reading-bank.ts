@@ -1097,6 +1097,473 @@ const raw = {
       ],
     },
   ],
+  // BÀI 11: 고민 (Nỗi lo & Tư vấn tâm lý)
+  11: [
+    {
+      id: 'r11_1',
+      passageNumber: 1,
+      type: 'Tư vấn tâm lý học đường',
+      title: '대학 생활 상담 센터 상담 일지 (Nhật ký tư vấn tại Trung tâm tâm lý trường đại học)',
+      source: 'Authored practice based on Lesson 11 vocabulary & grammar',
+      koreanText: `[상담 사연]: 대학교 3학년 김민우 학생은 최근 졸업 후 진로 문제와 취업 준비로 인해 심한 스트레스와 불안감을 겪고 상담실을 찾았습니다.\n민우 학생은 다른 동기들에 비해 자신이 가진 스펙이나 자격 요건이 부족하다고 생각하여 자신감을 잃고 밤마다 잠을 설치고 있었습니다.\n[상담사의 조언]: 민우 학생, 누구나 사회 진출을 앞두고 현실의 벽 앞에서 초조하고 두려운 마음이 드는 것은 당연합니다.\n하지만 사소한 걱정에 얽매여 마음의 짐을 키우기보다는, 오늘 할 수 있는 작은 일부터 하나씩 실천해 나가는 것이 중요합니다. 외국어 공부든 자격증 준비든 꾸준히 하다 보면 저절로 실력이 늘고 자신감도 되찾게 될 것입니다.\n혼자 고민하지 말고 언제든 상담 센터의 문을 두드리세요.`,
+      vietnameseTranslation: `[Câu chuyện tư vấn]: Sinh viên năm 3 Kim Min-woo dạo gần đây do áp lực định hướng tương lai sau khi tốt nghiệp và chuẩn bị xin việc nên rơi vào trạng thái căng thẳng và bất an cực độ, đã tìm đến phòng tư vấn. Min-woo cảm thấy hồ sơ năng lực và các chứng chỉ của mình thua kém bạn bè đồng trang lứa nên đã đánh mất sự tự tin, đêm nào cũng trằn trọc mất ngủ. [Lời khuyên của chuyên viên]: Min-woo à, bất cứ ai trước ngưỡng cửa bước vào đời đều cảm thấy bồn chồn và sợ hãi trước bức tường thực tế khắc nghiệt, đó là điều hoàn toàn tự nhiên. Tuy nhiên thay vì để tâm vào những nỗi lo vụn vặt làm gánh nặng tâm lý thêm nặng nề, điều quan trọng là hãy bắt tay làm từng việc nhỏ trong khả năng của ngày hôm nay. Dù là học ngoại ngữ hay ôn thi chứng chỉ, nếu cứ kiên trì làm từng chút một thì năng lực tự khắc sẽ nâng cao và sự tự tin sẽ tự quay trở lại thôi. Đừng ôm nỗi lo một mình, hãy gõ cửa trung tâm tư vấn bất kỳ lúc nào.`,
+      keyVocabulary: [
+        { kr: '진로 문제와 취업', vn: 'Vấn đề định hướng nghề nghiệp và xin việc' },
+        { kr: '자신감을 잃다', vn: 'Đánh mất sự tự tin' },
+        { kr: '초조하다', vn: 'Bồn chồn đứng ngồi không yên' },
+        { kr: '꾸준히 하다 보면', vn: 'Cứ kiên trì làm liên tục thì' },
+        { kr: '저절로', vn: 'Tự nó, một cách tự nhiên' },
+      ],
+      questions: [
+        {
+          id: 'rq_11_1_1',
+          question:
+            'Lý do chính khiến sinh viên Min-woo rơi vào trạng thái căng thẳng mất ngủ là gì?',
+          options: [
+            'Do bất hòa xích mích với người yêu',
+            'Do lo lắng về tương lai sau tốt nghiệp và cảm thấy bản thân thiếu tự tin so với bạn bè',
+            'Do không tìm được nhà trọ gần trường',
+            'Do bị mất đồ đạc cá nhân',
+          ],
+          correctIndex: 1,
+          evidence:
+            '졸업 후 진로 문제와 취업 준비로 인해 심한 스트레스와 불안감을 겪고... 자신감을 잃고',
+        },
+        {
+          id: 'rq_11_1_2',
+          question: 'Chuyên viên tư vấn đã đưa ra lời khuyên thiết thực nào cho Min-woo?',
+          options: [
+            'Hãy bỏ học ngay lập tức để đi làm kiếm tiền',
+            'Bắt đầu từ những việc nhỏ cụ thể mỗi ngày, kiên trì làm thì năng lực và sự tự tin sẽ tự cải thiện',
+            'Không cần chuẩn bị gì cả vì mọi việc sẽ tự diễn ra',
+            'Chuyển sang một trường đại học khác',
+          ],
+          correctIndex: 1,
+          evidence:
+            '작은 일부터 하나씩 실천해 나가는 것이 중요합니다. 꾸준히 하다 보면 저절로 실력이 늘고 자신감도 되찾게 될 것입니다.',
+        },
+      ],
+    },
+    {
+      id: 'r11_2',
+      passageNumber: 2,
+      type: 'Thư tâm sự bạn bè',
+      title: '친구에게 보내는 응원 편지 (Bức thư động viên bạn thân - Lối nói thân mật 반말)',
+      source: 'Authored practice based on Lesson 11 grammar (반말)',
+      koreanText: `지훈아, 안녕? 나 민수야.\n요즘 시험 준비하느라 많이 힘들지? 어제 도서관에서 네 얼굴을 보니까 안색이 너무 안 좋아서 걱정되더라.\n너 평소에 워낙 성실하니까 이번 시험도 분명히 잘 볼 거야. 너무 긴장하지 말고 편안한 마음으로 임해라.\n공부하다 보면 가끔 지치고 포기하고 싶을 때도 있잖아. 그럴 때는 잠시 산책도 하고 좋아하는 음악도 들어.\n이번 주 금요일에 시험 끝나고 우리 맛있는 떡볶이 먹으러 가자! 내가 쏠게. 힘내라, 친구야!`,
+      vietnameseTranslation: `Ji-hoon à, chào cậu! Mình là Min-su đây. Dạo này ôn thi vất vả lắm đúng không? Hôm qua thấy cậu ở thư viện sắc mặt kém quá nên mình lo lắm. Bình thường cậu vốn rất chăm chỉ nên kỳ thi lần này nhất định sẽ làm tốt thôi. Đừng căng thẳng quá, hãy làm bài với tâm lý thật thoải mái nhé. Cứ học liên tục thì thỉnh thoảng ai cũng mệt mỏi và muốn buông xuôi mà. Những lúc như thế hãy đi dạo một chút và nghe bài nhạc mình thích. Thứ Sáu tuần này thi xong bọn mình cùng đi ăn tokbokki ngon nhé! Mình bao. Cố lên nhé bạn tôi!`,
+      keyVocabulary: [
+        { kr: '임해라', vn: 'Hãy đối mặt / bước vào (mệnh lệnh ban말)' },
+        { kr: '공부하다 보면', vn: 'Nếu cứ học liên tục thì' },
+        { kr: '지치다', vn: 'Kiệt sức mệt mỏi' },
+        { kr: '내가 쏠게', vn: 'Tớ sẽ khao / tớ bao bữa này' },
+        { kr: '먹으러 가자', vn: 'Cùng đi ăn đi (rủ rê ban말)' },
+      ],
+      questions: [
+        {
+          id: 'rq_11_2_1',
+          question: 'Phong cách ngôn ngữ được sử dụng trong bức thư này là gì?',
+          options: [
+            'Lối nói kính ngữ trang trọng trang nghiêm (격식체)',
+            'Lối nói thân mật không kính ngữ (반말) giữa hai người bạn thân cùng tuổi',
+            'Ngôn ngữ hành chính thông báo công vụ',
+            'Lối nói thơ ca cổ điển',
+          ],
+          correctIndex: 1,
+          evidence:
+            '편안한 마음으로 임해라... 맛있는 떡볶이 먹으러 가자! 내가 쏠게. 힘내라 (đuôi 반말: -아/어라, -자).',
+        },
+        {
+          id: 'rq_11_2_2',
+          question: 'Người viết đã rủ bạn làm gì sau khi kỳ thi kết thúc vào thứ Sáu?',
+          options: [
+            'Cùng đi xem phim kinh dị',
+            'Cùng đi ăn món tokbokki ngon và người viết sẽ khao',
+            'Đến thư viện học tiếp môn mới',
+            'Đi du lịch nước ngoài dài ngày',
+          ],
+          correctIndex: 1,
+          evidence: '이번 주 금요일에 시험 끝나고 우리 맛있는 떡볶이 먹으러 가자! 내가 쏠게.',
+        },
+      ],
+    },
+  ],
+  // BÀI 12: 인터넷 (Internet & Công nghệ)
+  12: [
+    {
+      id: 'r12_1',
+      passageNumber: 1,
+      type: 'Thông báo quy chế mạng',
+      title:
+        '기숙사 인터넷 사용 수칙 및 보안 공지 (Thông báo quy chế sử dụng internet và an ninh mạng ký túc xá)',
+      source: 'Authored practice based on Lesson 12 vocabulary & grammar',
+      koreanText: `[기숙사 사생 공지사항]\n기숙사 내 안정적인 네트워크 환경과 정보 보안을 위해 사생 여러분께 아래와 같이 협조를 요청함.\n1. 공용 컴퓨터실 이용 후 반드시 개인 계정 로그아웃할 것.\n2. 출처가 불분명한 스팸 메일이나 첨부파일은 바이러스 감염 위험이 있으므로 절대 열람하지 말 것.\n3. 과제물 인쇄 시 프린터 출력실을 이용하되, 용지 낭비를 줄이기 위해 모아찍기를 권장함.\n4. 기숙사비 납부 확인서는 홈페이지에서 직접 출력 가능함.\n5. 네트워크 정기 점검으로 인해 이번 주 일요일 새벽 2시부터 6시까지 인터넷 서비스가 일시 중단됨.\n사생 여러분의 많은 양해와 협조를 바람.`,
+      vietnameseTranslation: `[Thông báo gửi sinh viên ký túc xá]\nNhằm bảo đảm môi trường mạng ổn định và an toàn thông tin trong ký túc xá, trân trọng yêu cầu sinh viên phối hợp như sau: 1. Sau khi dùng phòng máy tính chung bắt buộc phải đăng xuất tài khoản cá nhân. 2. Tuyệt đối không mở các thư rác hoặc tập tin đính kèm không rõ nguồn gốc do có nguy cơ lây nhiễm virus. 3. Khi in bài tập xin dùng phòng in ấn, khuyến khích in gộp trang để tiết kiệm giấy. 4. Giấy xác nhận nộp phí KTX có thể tự in trực tiếp trên trang chủ. 5. Do bảo trì định kỳ nên dịch vụ internet sẽ tạm ngừng từ 2h đến 6h sáng Chủ Nhật tuần này. Rất mong sinh viên thông cảm và phối hợp.`,
+      keyVocabulary: [
+        { kr: '협조를 요청함', vn: 'Yêu cầu phối hợp (đuôi danh hóa -함)' },
+        { kr: '스팸 메일', vn: 'Thư rác quảng cáo, độc hại' },
+        { kr: '출력하다', vn: 'In ấn ra giấy' },
+        { kr: '일시 중단됨', vn: 'Bị tạm dừng tạm thời (đuôi danh hóa -됨)' },
+      ],
+      questions: [
+        {
+          id: 'rq_12_1_1',
+          question:
+            'Vì sao thông báo yêu cầu sinh viên tuyệt đối không mở các thư rác (스팸 메일)?',
+          options: [
+            'Vì sẽ làm tốn dung lượng hộp thư',
+            'Vì có nguy cơ lây nhiễm virus độc hại cho hệ thống',
+            'Vì ban quản lý không cho phép nhận thư từ bên ngoài',
+            'Vì thư rác viết bằng tiếng nước ngoài',
+          ],
+          correctIndex: 1,
+          evidence:
+            '출처가 불분명한 스팸 메일이나 첨부파일은 바이러스 감염 위험이 있으므로 절대 열람하지 말 것.',
+        },
+        {
+          id: 'rq_12_1_2',
+          question: 'Dịch vụ internet ký túc xá sẽ tạm ngừng hoạt động vào thời gian nào?',
+          options: [
+            'Suốt cả ngày thứ Hai',
+            'Từ 2h đến 6h sáng Chủ Nhật tuần này để bảo trì mạng định kỳ',
+            'Vào giờ học buổi sáng mỗi ngày',
+            'Không hề bị gián đoạn thời gian nào',
+          ],
+          correctIndex: 1,
+          evidence: '이번 주 일요일 새벽 2시부터 6시까지 인터넷 서비스가 일시 중단됨.',
+        },
+      ],
+    },
+    {
+      id: 'r12_2',
+      passageNumber: 2,
+      type: 'Tin nhắn liên lạc học tập',
+      title: '과제 제출 안내 단체 메시지 (Tin nhắn nhóm hướng dẫn nộp bài tập lớn)',
+      source: 'Authored practice based on Lesson 12 grammar',
+      koreanText: `한국학과 3학년 학우 여러분, 과 대표 이영호입니다.\n교수님께서 이번 학기 팀 프로젝트 과제 제출에 대해 말씀하셨습니다.\n교수님께서 발표용 파워포인트(PPT) 파일을 이번 주 금요일 오후 5시까지 학과 홈페이지 게시판에 반드시 제출하라고 하셨어요. 마감 시간을 넘기면 감점된다고 하셨으니 늦지 않도록 주의해 주세요.\n그리고 자료를 정리하다가 질문이 있으면 조교님께 메일로 문의해 달라고 하셨습니다.\n우리 조원들은 내일 수업 끝나고 도서관 앞 카페에서 만나서 최종 마무리 회의를 하자고 했어요. 내일 4시에 잊지 말고 모여 주세요!`,
+      vietnameseTranslation: `Gửi các bạn sinh viên năm 3 khoa Hàn Quốc học, mình là lớp trưởng Lee Young-ho. Giáo sư đã có lời dặn về việc nộp bài tập dự án nhóm kỳ này. Thầy bảo chúng ta phải nộp file thuyết trình PowerPoint (PPT) lên bảng tin website khoa trước 17h chiều thứ Sáu tuần này. Thầy bảo nếu quá hạn sẽ bị trừ điểm nên mọi người chú ý không nộp muộn nhé. Ngoài ra thầy dặn nếu có thắc mắc trong lúc tổng hợp tài liệu thì hãy gửi email hỏi trợ giảng. Nhóm của chúng mình cũng đã thống nhất rủ nhau sau giờ học ngày mai hẹn ở quán cà phê trước thư viện để họp tổng kết chốt lại. Ngày mai 4h chiều nhớ đến đông đủ nhé!`,
+      keyVocabulary: [
+        { kr: '제출하라고 하시다', vn: 'Bảo hãy nộp (tường thuật mệnh lệnh)' },
+        {
+          kr: '문의해 달라고 하시다',
+          vn: 'Bảo hãy hỏi trợ giảng (tường thuật yêu cầu hướng về người khác)',
+        },
+        { kr: '회의를 하자고 하다', vn: 'Rủ cùng họp (tường thuật rủ rê)' },
+        { kr: '마무리하다', vn: 'Hoàn tất, kết thúc trọn vẹn' },
+      ],
+      questions: [
+        {
+          id: 'rq_12_2_1',
+          question: 'Giáo sư đã đưa ra yêu cầu thời hạn nộp bài tập PPT như thế nào?',
+          options: [
+            'Nộp trực tiếp tại văn phòng khoa vào sáng thứ Hai',
+            'Nộp lên bảng tin website trước 17h chiều thứ Sáu tuần này',
+            'In ra giấy nộp vào cuối kỳ thi',
+            'Không giới hạn thời gian nộp bài',
+          ],
+          correctIndex: 1,
+          evidence:
+            '파워포인트(PPT) 파일을 이번 주 금요일 오후 5시까지 학과 홈페이지 게시판에 반드시 제출하라고 하셨어요.',
+        },
+        {
+          id: 'rq_12_2_2',
+          question: 'Lớp trưởng đã truyền đạt lời rủ rê của nhóm làm gì vào chiều mai?',
+          options: [
+            'Rủ nhau đi đá bóng ở sân vận động',
+            'Rủ nhau gặp nhau lúc 4h chiều tại quán cà phê trước thư viện để họp hoàn tất bài tập',
+            'Rủ nhau đến nhà thầy giáo ăn tối',
+            'Rủ nhau nghỉ học buổi chiều',
+          ],
+          correctIndex: 1,
+          evidence:
+            '도서관 앞 카페에서 만나서 최종 마무리 회의를 하자고 했어요. 내일 4시에 모여 주세요!',
+        },
+      ],
+    },
+  ],
+  // BÀI 13: 희망 (Ước mơ & Hy vọng)
+  13: [
+    {
+      id: 'r13_1',
+      passageNumber: 1,
+      type: 'Tự sự truyền cảm hứng',
+      title:
+        '동시통역사의 꿈을 향해 걸어온 길 (Con đường bước tới ước mơ trở thành thông dịch viên)',
+      source: 'Authored practice based on Lesson 13 vocabulary & grammar',
+      koreanText: `저는 고등학교 시절부터 한국과 베트남을 잇는 가교가 되고 싶다는 희망을 품고 한국어를 공부해 왔습니다.\n처음에는 한국어 발음과 문법이 너무 생소해서 어려움을 겪었지만, 매일 아침 뉴스를 듣고 소리 내어 따라 읽는 훈련을 4년 동안 꾸준히 해 왔습니다.\n때로는 한계에 부딪혀 포기하고 싶을 때도 있었지만, 국제 회담장에서 양국 정상을 위해 통역하는 저의 미래 모습을 상상하며 힘을 냈습니다.\n앞으로 통번역 대학원에 진학하여 전문 실력을 한 단계 더 발전시켜 갈 것입니다. 제 노력이 결실을 맺어 뛰어난 전문 동시통역사가 되었으면 좋겠습니다. 그리고 다음 학기에는 꼭 장학금을 타야겠어요.`,
+      vietnameseTranslation: `Từ thời học sinh cấp 3, tôi đã nuôi dưỡng ước mơ trở thành chiếc cầu nối gắn kết Việt Nam và Hàn Quốc và đã miệt mài học tiếng Hàn từ đó đến nay. Hồi đầu ngữ pháp và phát âm tiếng Hàn quá đỗi mới lạ khiến tôi gặp muôn vàn khó khăn, nhưng suốt 4 năm qua tôi đã kiên trì luyện nghe thời sự buổi sáng và đọc đuổi thành tiếng mỗi ngày. Đôi khi chạm tới giới hạn muốn bỏ cuộc, nhưng tôi lại có thêm nghị lực khi tưởng tượng về hình ảnh tương lai của chính mình đang ngồi dịch cabin cho lãnh đạo hai nước tại các hội nghị quốc tế. Thời gian tới tôi sẽ thi vào cao học biên phiên dịch để tiếp tục phát triển năng lực chuyên môn lên tầm cao mới. Ước gì những nỗ lực của tôi sẽ đơm hoa kết trái để trở thành một chuyên viên thông dịch viên cabin xuất sắc. Và kỳ tới nhất định tôi sẽ phải giành được học bổng.`,
+      keyVocabulary: [
+        { kr: '공부해 오다', vn: 'Đã và đang học suốt từ quá khứ đến nay' },
+        { kr: '발전시켜 가다', vn: 'Tiếp tục phát triển hướng tới tương lai' },
+        { kr: '동시통역사', vn: 'Chuyên viên thông dịch cabin song song' },
+        { kr: '되었으면 좋겠다', vn: 'Ước gì / giá mà trở thành' },
+        { kr: '타야겠다', vn: 'Nhất định sẽ phải giành được (ý chí)' },
+      ],
+      questions: [
+        {
+          id: 'rq_13_1_1',
+          question: 'Phương pháp học tập mà tác giả đã kiên trì duy trì suốt 4 năm qua là gì?',
+          options: [
+            'Chỉ học ngữ pháp qua sách vở không bao giờ nói',
+            'Nghe thời sự buổi sáng và luyện đọc to thành tiếng đều đặn mỗi ngày',
+            'Thuê gia sư riêng dạy kèm cả ngày',
+            'Chỉ xem phim hoạt hình không phụ đề',
+          ],
+          correctIndex: 1,
+          evidence: '매일 아침 뉴스를 듣고 소리 내어 따라 읽는 훈련을 4년 동안 꾸준히 해 왔습니다.',
+        },
+        {
+          id: 'rq_13_1_2',
+          question: 'Ước mơ lớn nhất và kế hoạch tương lai của tác giả là gì?',
+          options: [
+            'Trở thành ca sĩ thần tượng nổi tiếng',
+            'Thi vào cao học biên phiên dịch và trở thành chuyên viên thông dịch cabin quốc tế xuất sắc',
+            'Mở một nhà hàng ẩm thực truyền thống',
+            'Đi du lịch vòng quanh thế giới một mình',
+          ],
+          correctIndex: 1,
+          evidence: '통번역 대학원에 진학하여... 뛰어난 전문 동시통역사가 되었으면 좋겠습니다.',
+        },
+      ],
+    },
+    {
+      id: 'r13_2',
+      passageNumber: 2,
+      type: 'Nhân vật & Tấm gương',
+      title:
+        '시련을 딛고 희망을 전한 강영우 박사 이야기 (Tiến sĩ Kang Young-woo - Vượt qua bóng tối thắp sáng hy vọng)',
+      source: 'Authored practice based on Lesson 13 culture note',
+      koreanText: `중학교 시절 축구공에 눈을 맞아 시력을 완전히 잃은 소년이 있었습니다. 앞이 보이지 않는 절망 속에서도 그는 학업을 포기하지 않았습니다.\n그는 손가락 끝 감각으로 점자책을 읽으며 밤낮없이 노력해 왔습니다. 연세대학교를 졸업한 후 미국으로 유학을 떠나 시각장애인 최초로 교육학 박사 학위를 취득하였습니다.\n그 후 그는 미국 백악관 국가장애위원회 정책차관보로 임명되어 장애인들의 인권과 복지 향상을 위해 평생을 헌신했습니다.\n그의 삶은 불가능을 가능으로 바꾼 기적이었으며, 전 세계 수많은 청소년들에게 "장애는 걸림돌이 아니라 디딤돌이 될 수 있다"는 큰 희망과 교훈을 전해 주었습니다. 우리 사회에도 소외된 이웃을 배려하는 따뜻한 문화가 더욱 확산되었으면 좋겠습니다.`,
+      vietnameseTranslation: `Hồi học cấp 2, có một cậu bé bị bóng đập trúng mắt và mất hoàn toàn thị lực. Trong nỗi tuyệt vọng của bóng tối mù lòa, cậu vẫn kiên quyết không từ bỏ con đường học tập. Cậu đã miệt mài đọc sách chữ nổi Braille bằng xúc giác đầu ngón tay ngày đêm suốt bao năm qua. Sau khi tốt nghiệp Đại học Yonsei, ông sang Mỹ du học và trở thành người khiếm thị đầu tiên đạt học vị Tiến sĩ Giáo dục học. Sau đó, ông được bổ nhiệm làm Phó trợ lý chính sách Ủy ban Người khuyết tật Quốc gia tại Nhà Trắng Hoa Kỳ, cống hiến trọn đời cho quyền lợi và phúc lợi của người khuyết tật. Cuộc đời ông là kỳ tích biến điều không thể thành có thể, truyền đi niềm hy vọng và bài học lớn lao cho giới trẻ: "Khuyết tật không phải là hòn đá ngáng đường, mà có thể là bệ phóng vươn lên". Ước gì xã hội chúng ta sẽ ngày càng lan tỏa văn hóa nhân ái quan tâm đến những người yếu thế.`,
+      keyVocabulary: [
+        { kr: '시력을 잃다', vn: 'Đánh mất thị lực, bị mù' },
+        { kr: '점자책', vn: 'Sách chữ nổi Braille cho người khiếm thị' },
+        { kr: '노력해 오다', vn: 'Đã và đang nỗ lực kiên trì từ quá khứ' },
+        { kr: '백악관', vn: 'Nhà Trắng (cơ quan quyền lực Hoa Kỳ)' },
+        { kr: '확산되었으면 좋겠다', vn: 'Ước gì được lan tỏa sâu rộng' },
+      ],
+      questions: [
+        {
+          id: 'rq_13_2_1',
+          question: 'Tiến sĩ Kang Young-woo đã vượt qua nghịch cảnh mất thị lực bằng cách nào?',
+          options: [
+            'Chờ đợi sự tài trợ hoàn toàn từ người khác',
+            'Kiên trì tự học ngày đêm bằng sách chữ nổi và vươn lên nhận bằng tiến sĩ tại Mỹ',
+            'Từ bỏ việc học chuyển sang kinh doanh tự thân',
+            'Không cần đọc sách mà chỉ nghe đài phát thanh',
+          ],
+          correctIndex: 1,
+          evidence:
+            '점자책을 읽으며 밤낮없이 노력해 왔습니다... 시각장애인 최초로 교육학 박사 학위를 취득하였습니다.',
+        },
+        {
+          id: 'rq_13_2_2',
+          question:
+            'Thông điệp sâu sắc nhất mà cuộc đời Tiến sĩ Kang Young-woo gửi tới mọi người là gì?',
+          options: [
+            'Chỉ người giàu mới có thể thành công',
+            'Nghịch cảnh và khuyết tật không phải là vật cản mà có thể trở thành động lực vươn lên nếu có ý chí',
+            'Nên tránh tham gia các hoạt động thể thao nguy hiểm',
+            'Phải đi du học Mỹ thì mới có sự nghiệp',
+          ],
+          correctIndex: 1,
+          evidence:
+            '"장애는 걸림돌이 아니라 디딤돌이 될 수 있다"는 큰 희망과 교훈을 전해 주었습니다.',
+        },
+      ],
+    },
+  ],
+  // BÀI 14: 영화와 드라마 (Phim ảnh & Truyền hình)
+  14: [
+    {
+      id: 'r14_1',
+      passageNumber: 1,
+      type: 'Đánh giá phim ảnh & Cảm tưởng',
+      title:
+        '천만 관객 영화 "명량" 관람 후기 (Cảm nhận bộ phim điện ảnh mười triệu vé "Đại thủy chiến Roaring Currents")',
+      source: 'Authored practice based on Lesson 14 vocabulary & grammar',
+      koreanText: `지난 주말에 친구와 함께 한국 역사 영화 '명량'을 보고 왔습니다.\n이 영화는 조선 시대 이순신 장군이 불과 12척의 배로 133척에 달하는 왜군 함대를 물리친 위대한 명량대첩을 다룬 사극 영화입니다.\n직접 극장에서 관람해 보니 해상 전투 장면의 컴퓨터 그래픽과 특수효과가 정말 실감나던데요. 거친 물살과 화포 공격 장면을 볼 때는 손에 땀을 쥐게 할 만큼 긴장감이 넘쳤습니다.\n주연 배우의 카리스마 넘치는 연기력도 매우 인상적이었습니다. 제가 한국 역사 영화를 즐겨 보는 이유는 역사의 감동과 교훈을 생생하게 느낄 수 있거든요.\n역사물을 좋아하시는 분이라면 이 영화를 꼭 한번 보시기를 추천합니다.`,
+      vietnameseTranslation: `Cuối tuần vừa rồi tôi đã cùng bạn đi xem bộ phim điện ảnh lịch sử Hàn Quốc 'Roaring Currents' (Đại thủy chiến Myeongnyang). Bộ phim này là tác phẩm điện ảnh cổ trang dã sử tái hiện trận đại thủy chiến oanh liệt thời Chosun, khi danh tướng Yi Sun-sin chỉ với vỏn vẹn 12 chiến thuyền đã đánh tan hạm đội 133 tàu giặc ngoại xâm. Trực tiếp xem ở rạp chiếu tôi thấy các cảnh giao chiến trên biển bằng đồ họa kỹ xảo máy tính thực sự sống động vô cùng luôn đấy. Nhìn những cảnh sóng nước cuồn cuộn và đại bác nã đạn, cảm giác gay cấn đến mức toát cả mồ hôi tay. Diễn xuất đầy khí chất cuốn hút của nam diễn viên chính cũng để lại ấn tượng vô cùng sâu sắc. Lý do tôi say mê xem phim lịch sử Hàn Quốc là vì qua đó tôi có thể cảm nhận sống động những xúc động và bài học quý giá từ lịch sử mà. Ai mê phim dã sử thì tôi rất khuyên nên xem tác phẩm này.`,
+      keyVocabulary: [
+        { kr: '사극 영화', vn: 'Phim điện ảnh cổ trang dã sử' },
+        { kr: '실감나던데요', vn: 'Tôi thấy sống động thực sự cơ mà (hồi tưởng -던데요)' },
+        { kr: '연기력', vn: 'Năng lực diễn xuất đỉnh cao' },
+        { kr: '인상적이다', vn: 'Ấn tượng sâu sắc khó quên' },
+        { kr: '느낄 수 있거든요', vn: 'Bởi vì có thể cảm nhận được mà (-거든요)' },
+      ],
+      questions: [
+        {
+          id: 'rq_14_1_1',
+          question:
+            'Người viết hồi tưởng cảm nhận thế nào về các cảnh giao chiến trên biển trong phim?',
+          options: [
+            'Kỹ xảo còn vụng về và nhàm chán',
+            'Đồ họa kỹ xảo vô cùng sống động, chân thực và gay cấn toát mồ hôi tay',
+            'Quá dài dòng và khiến người xem buồn ngủ',
+            'Âm thanh quá nhỏ không nghe rõ tiếng đại bác',
+          ],
+          correctIndex: 1,
+          evidence:
+            '해상 전투 장면의 컴퓨터 그래픽과 특수효과가 정말 실감나던데요. 손에 땀을 쥐게 할 만큼 긴장감이 넘쳤습니다.',
+        },
+        {
+          id: 'rq_14_1_2',
+          question:
+            'Lý do chính khiến người viết yêu thích và say mê theo dõi phim lịch sử Hàn Quốc là gì?',
+          options: [
+            'Vì vé xem phim cổ trang rẻ hơn phim hành động',
+            'Vì giúp người xem cảm nhận sống động những xúc động và bài học lịch sử hào hùng',
+            'Vì thích ngắm trang phục thời hiện đại',
+            'Vì phim cổ trang không có cảnh chiến đấu',
+          ],
+          correctIndex: 1,
+          evidence:
+            '제가 한국 역사 영화를 즐겨 보는 이유는 역사의 감동과 교훈을 생생하게 느낄 수 있거든요.',
+        },
+      ],
+    },
+    {
+      id: 'r14_2',
+      passageNumber: 2,
+      type: 'Văn hóa đại chúng',
+      title: '한류 드라마의 세계화와 문화 관광 (Sức lan tỏa toàn cầu của phim truyền hình Hallyu)',
+      source: 'Authored practice based on Lesson 14 culture note',
+      koreanText: `2000년대 초반 방영된 '겨울연가'와 '대장금'은 아시아 전역에 폭발적인 한류(K-Wave) 열풍을 일으켰습니다.\n드라마의 인기는 단순한 방송 시청에 그치지 않고 한국 문화 전반에 대한 관심으로 이어졌습니다. 드라마 촬영지였던 남이섬은 매년 수백만 명의 외국인 관광객이 찾는 대표적인 명소가 되었습니다.\n또한 '대장금'을 통해 한국의 전통 궁중 음식과 한복의 아름다움이 전 세계에 널리 알려졌습니다.\n최근에는 온라인 동영상 서비스(OTT)를 통해 전 세계 시청자들이 한국 드라마를 동시에 즐겨 보고 있습니다. 탄탄한 스토리와 배우들의 뛰어난 연기력, 그리고 매력적인 OST가 어우러져 세계인의 마음을 사로잡고 있습니다.`,
+      vietnameseTranslation: `Vào đầu những năm 2000, các bộ phim truyền hình như 'Bản tình ca mùa đông' và 'Nàng Dae Jang Geum' đã tạo nên làn sóng Hallyu bùng nổ khắp châu Á. Sức hút của các tác phẩm này không dừng lại ở việc xem truyền hình đơn thuần mà đã kéo theo sự quan tâm sâu sắc tới toàn bộ văn hóa Hàn Quốc. Đảo Nami - phim trường của bộ phim đã trở thành điểm đến tiêu biểu đón hàng triệu lượt khách quốc tế mỗi năm. Ngoài ra qua 'Nàng Dae Jang Geum', nét đẹp của ẩm thực hoàng cung và tà áo Hanbok truyền thống đã được bạn bè năm châu biết đến rộng rãi. Gần đây qua các nền tảng trực tuyến OTT, khán giả toàn cầu có thể cùng thưởng thức phim Hàn song song. Cốt truyện chặt chẽ, diễn xuất xuất sắc của diễn viên và những bản nhạc phim OST mê đắm đã cùng nhau chinh phục trái tim khán giả toàn thế giới.`,
+      keyVocabulary: [
+        { kr: '한류 열풍', vn: 'Làn sóng văn hóa Hàn Quốc bùng nổ' },
+        { kr: '촬영지', vn: 'Trường quay, địa điểm quay phim' },
+        { kr: '궁중 음식', vn: 'Ẩm thực cung đình thời xưa' },
+        { kr: '연기력', vn: 'Năng lực diễn xuất tài hoa' },
+        { kr: '사로잡다', vn: 'Mê hoặc, chinh phục lòng người' },
+      ],
+      questions: [
+        {
+          id: 'rq_14_2_1',
+          question:
+            'Thành công của các bộ phim truyền hình kinh điển như "Bản tình ca mùa đông" đã mang lại hiệu ứng gì?',
+          options: [
+            'Khiến khán giả không còn thích xem phim nữa',
+            'Thúc đẩy du lịch bùng nổ và biến các địa điểm quay phim như đảo Nami thành thắng cảnh nổi tiếng',
+            'Làm giảm lượng khách du lịch đến Hàn Quốc',
+            'Chỉ có người cao tuổi mới biết đến văn hóa Hàn Quốc',
+          ],
+          correctIndex: 1,
+          evidence:
+            '드라마 촬영지였던 남이섬은 매년 수백만 명의 외국인 관광객이 찾는 대표적인 명소가 되었습니다.',
+        },
+        {
+          id: 'rq_14_2_2',
+          question:
+            'Những yếu tố nào giúp các bộ phim truyền hình Hàn Quốc ngày nay chinh phục khán giả toàn cầu?',
+          options: [
+            'Chi phí sản xuất phim hoàn toàn miễn phí',
+            'Cốt truyện hấp dẫn chặt chẽ, diễn xuất xuất sắc của diễn viên và những bản nhạc phim OST lôi cuốn',
+            'Phim không cần dịch phụ đề',
+            'Thời lượng mỗi tập phim cực kỳ ngắn dưới 5 phút',
+          ],
+          correctIndex: 1,
+          evidence:
+            '탄탄한 스토리와 배우들의 뛰어난 연기력, 그리고 매력적인 OST가 어우러져 세계인의 마음을 사로잡고 있습니다.',
+        },
+      ],
+    },
+  ],
+  // BÀI 15: 예절과 규칙 (Lễ nghi & Quy tắc ứng xử)
+  15: [
+    {
+      id: 'r15_1',
+      passageNumber: 1,
+      type: 'Cẩm nang văn hóa đời sống',
+      title:
+        '한국 생활에서 꼭 지켜야 할 기본 공공 예절 (Những quy tắc lịch thiệp công cộng cơ bản tại Hàn Quốc)',
+      source: 'Authored practice based on Lesson 15 vocabulary & grammar',
+      koreanText: `외국인이 한국에서 생활할 때 원만한 인간관계를 유지하고 불필요한 마찰을 피하기 위해서는 한국의 기본 예절과 공공 규칙을 준수하지 않으면 안 됩니다.\n첫째, 대중교통을 이용할 때는 휴대폰을 진동 모드로 바꾸고 통화는 작게 해야 합니다. 특히 지하철의 경로석은 어르신이나 임산부를 위한 좌석이므로 자리가 비어 있더라도 비워 두는 것이 바람직합니다.\n둘째, 쓰레기를 배출할 때는 반드시 규격 종량제 봉투에 담아 지정된 날짜와 장소에 버리지 않으면 안 됩니다. 재활용품은 정해진 기준대로 분리배출해야 과태료를 물지 않습니다.\n셋째, 실내나 어른 앞에서는 모자를 벗는 것이 예의이며, 타인의 방을 방문할 때는 미리 전화로 허락을 구해야 합니다.\n이러한 공공 예절을 지키는 것은 타인을 배려하는 성숙한 사회 구성원의 기본 덕목입니다.`,
+      vietnameseTranslation: `Khi người nước ngoài sinh sống tại Hàn Quốc, để duy trì các mối quan hệ êm đẹp và tránh những va chạm không đáng có thì bắt buộc phải tuân thủ nghiêm túc các quy tắc công cộng và phép lịch thiệp căn bản. Thứ nhất, khi đi phương tiện công cộng, phải chuyển điện thoại sang chế độ rung và nói chuyện khẽ khàng. Đặc biệt ghế ưu tiên (경로석) trên tàu điện ngầm là vị trí dành cho người cao tuổi và phụ nữ mang thai, nên dù ghế trống cũng nên để dành. Thứ hai, khi vứt rác, bắt buộc phải bỏ vào túi rác tiêu chuẩn (종량제 봉투) và bỏ đúng ngày giờ, vị trí quy định. Rác tái chế phải phân loại đúng theo quy chuẩn thì mới không bị phạt tiền. Thứ ba, khi vào trong phòng hoặc đứng trước mặt bề trên thì cởi mũ là phép lịch sự, và khi đến thăm nhà người khác cần gọi điện xin phép trước. Tuân thủ những quy tắc này là phẩm chất cơ bản của một công dân văn minh biết nghĩ cho cộng đồng.`,
+      keyVocabulary: [
+        { kr: '준수하지 않으면 안 되다', vn: 'Bắt buộc phải tuân thủ nghiêm ngặt' },
+        { kr: '진동 모드', vn: 'Chế độ rung điện thoại' },
+        { kr: '경로석', vn: 'Ghế ưu tiên người già, người khuyết tật' },
+        { kr: '종량제 봉투', vn: 'Túi rác tiêu chuẩn có đóng phí môi trường' },
+        { kr: '기준대로', vn: 'Theo đúng như quy chuẩn' },
+      ],
+      questions: [
+        {
+          id: 'rq_15_1_1',
+          question:
+            'Quy định bắt buộc khi vứt rác sinh hoạt tại Hàn Quốc để không bị phạt tiền là gì?',
+          options: [
+            'Cho tất cả các loại rác vào một túi nilon bất kỳ rồi vứt ra vỉa hè',
+            'Bắt buộc dùng túi rác tiêu chuẩn (종량제 봉투) và phân loại rác tái chế đúng theo quy định',
+            'Chỉ được vứt rác vào ban ngày',
+            'Đốt rác ngay trong sân nhà',
+          ],
+          correctIndex: 1,
+          evidence:
+            '반드시 규격 종량제 봉투에 담아 버리지 않으면 안 됩니다. 재활용품은 정해진 기준대로 분리배출해야 과태료를 물지 않습니다.',
+        },
+        {
+          id: 'rq_15_1_2',
+          question:
+            'Phép lịch sự nào sau đây được nhắc đến khi ở trong phòng kín hoặc đứng trước mặt người lớn tuổi?',
+          options: [
+            'Phải nói thật to để mọi người cùng nghe',
+            'Cởi mũ nón ra để bày tỏ sự tôn trọng lịch thiệp',
+            'Luôn luôn mang giày dép trong nhà',
+            'Tự ý mở tủ đồ của người khác',
+          ],
+          correctIndex: 1,
+          evidence: '실내나 어른 앞에서는 모자를 벗는 것이 예의이며',
+        },
+      ],
+    },
+    {
+      id: 'r15_2',
+      passageNumber: 2,
+      type: 'Nghi thức bàn ăn & Giao tiếp',
+      title:
+        '한국의 전통 식사 예절과 악수 매너 (Văn hóa bàn ăn truyền thống và quy tắc bắt tay ở Hàn Quốc)',
+      source: 'Authored practice based on Lesson 15 vocabulary & culture note',
+      koreanText: `한국의 식사 문화는 윗사람에 대한 공경과 예의를 매우 중요하게 여깁니다.\n식사 자리에 어른과 함께 앉았을 때는 어른이 먼저 수저를 드신 후에 식사를 시작해야 합니다. 숟가락과 젓가락을 한 손에 동시에 쥐지 않으며, 음식을 씹을 때는 소리를 내지 않는 것이 기본입니다.\n특히 베트남과 달리 한국에서는 밥그릇이나 국그릇을 손에 들고 먹으면 거지의 행동이라 여겨 결례가 되므로, 반드시 그릇을 식탁에 내려놓고 숟가락으로 밥을 떠먹어야 합니다.\n또한 처음 만나 인사를 나눌 때 손을 내미는 악수는 윗사람이나 나이가 많은 사람이 아랫사람에게 먼저 청하는 것이 원칙입니다. 이때 상대방의 손을 살며시 쥐며 고개를 가볍게 숙여 인사하는 것이 올바른 매너입니다. 마침 저도 한국 회사에 입사하려던 참이었는데 이러한 비즈니스 매너가 큰 도움이 되었습니다.`,
+      vietnameseTranslation: `Văn hóa ẩm thực Hàn Quốc rất coi trọng sự tôn kính và phép lịch thiệp với bậc trưởng bối. Khi ngồi cùng bàn ăn với người lớn, phải đợi người lớn cầm thìa đũa trước rồi mới bắt đầu dùng bữa. Không cầm cả thìa và đũa cùng một lúc trên một tay, khi nhai thức ăn không phát ra tiếng chóp chép. Đặc biệt khác với Việt Nam, ở Hàn Quốc việc bưng bát cơm hay bát canh lên tay bị xem như hành vi của kẻ ăn xin và là sự thất lễ lớn, vì vậy nhất định phải để bát trên bàn và dùng thìa xúc cơm. Ngoài ra khi gặp gỡ lần đầu, việc bắt tay theo nguyên tắc là người lớn tuổi hoặc cấp trên sẽ chủ động đưa tay ra trước. Khi đó, nắm nhẹ tay đối phương và hơi cúi đầu chào là phong thái chuẩn mực. Đúng lúc tôi cũng đang định vào làm việc tại công ty Hàn Quốc nên những quy tắc ứng xử thương mại này đã giúp ích cho tôi rất nhiều.`,
+      keyVocabulary: [
+        { kr: '수저를 들다', vn: 'Cầm thìa đũa bắt đầu ăn' },
+        { kr: '그릇을 들고 먹지 않다', vn: 'Không bưng bát lên tay ăn (tối kỵ tại Hàn)' },
+        { kr: '악수를 청하다', vn: 'Chủ động đưa tay ra ngỏ ý bắt tay' },
+        { kr: '살며시 쥐다', vn: 'Nắm nhẹ nhàng ấm áp vừa tay' },
+        { kr: '입사하려던 참이다', vn: 'Vừa đúng lúc đang định vào làm việc ở công ty' },
+      ],
+      questions: [
+        {
+          id: 'rq_15_2_1',
+          question:
+            'Điểm khác biệt quan trọng trong văn hóa bàn ăn giữa Hàn Quốc và Việt Nam được nêu trong bài là gì?',
+          options: [
+            'Ở Hàn Quốc không được dùng thìa',
+            'Ở Hàn Quốc không được bưng bát cơm lên tay ăn, phải đặt bát trên bàn và dùng thìa xúc',
+            'Ở Hàn Quốc phải ăn hết thức ăn trong 5 phút',
+            'Ở Hàn Quốc người nhỏ tuổi phải ăn trước',
+          ],
+          correctIndex: 1,
+          evidence:
+            '한국에서는 밥그릇이나 국그릇을 손에 들고 먹으면 결례가 되므로, 반드시 그릇을 식탁에 내려놓고 숟가락으로 밥을 떠먹어야 합니다.',
+        },
+        {
+          id: 'rq_15_2_2',
+          question: 'Theo nghi thức bắt tay chuẩn mực ở Hàn Quốc, quy tắc đúng là gì?',
+          options: [
+            'Người nhỏ tuổi phải nắm thật chặt tay người lớn kéo lại',
+            'Người lớn tuổi hoặc cấp trên chủ động đưa tay ra trước, người đối diện nắm nhẹ và hơi cúi đầu chào',
+            'Hai người cùng cúi gập người 90 độ và không chạm tay vào nhau',
+            'Chỉ phụ nữ mới được bắt tay',
+          ],
+          correctIndex: 1,
+          evidence:
+            '악수는 윗사람이나 나이가 많은 사람이 아랫사람에게 먼저 청하는 것이 원칙입니다. 상대방의 손을 살며시 쥐며 고개를 가볍게 숙여 인사하는 것이 올바른 매너입니다.',
+        },
+      ],
+    },
+  ],
 };
 
 export const READING_BANK = LegacyReadingDatabaseSchema.parse(raw);

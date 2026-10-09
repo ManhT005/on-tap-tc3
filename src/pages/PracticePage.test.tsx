@@ -1,8 +1,9 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { ProgressRepositoryProvider } from '../app/providers/ProgressRepositoryProvider';
+import * as lessonService from '../domain/learning/lesson.service';
 import { getLessonQuiz, getLessonReading } from '../domain/learning/lesson.service';
 import { MemoryProgressRepository } from '../repositories/memory-progress.repository';
 import { PracticePage } from './PracticePage';
@@ -82,42 +83,62 @@ describe('PracticePage', () => {
     expect(screen.getByRole('button', { name: 'Sắp ra mắt' })).toBeDisabled();
   });
 
-  it('Reading practice: selecting empty lesson 4 shows empty state, selecting lesson 1 recovers', async () => {
-    const user = userEvent.setup();
-    renderPracticePage();
+  it('Reading practice: selecting empty lesson shows empty state, selecting lesson 1 recovers', async () => {
+    const originalGetLessonReading = lessonService.getLessonReading;
+    const readingSpy = vi
+      .spyOn(lessonService, 'getLessonReading')
+      .mockImplementation((id) =>
+        id === 15 ? { ok: true, data: [] } : originalGetLessonReading(id),
+      );
+    try {
+      const user = userEvent.setup();
+      renderPracticePage();
 
-    await user.click(screen.getByRole('tab', { name: 'Reading' }));
-    expect(await screen.findByRole('combobox', { name: 'Bài học' })).toBeInTheDocument();
+      await user.click(screen.getByRole('tab', { name: 'Reading' }));
+      expect(await screen.findByRole('combobox', { name: 'Bài học' })).toBeInTheDocument();
 
-    // Select Lesson 15 (has no reading passages)
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '15');
-    expect(screen.getByText('Chưa có bài đọc')).toBeInTheDocument();
-    // Selector is still visible and functional
-    expect(screen.getByRole('combobox', { name: 'Bài học' })).toBeInTheDocument();
+      // Select Lesson 15 (mocked to have no reading passages)
+      await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '15');
+      expect(screen.getByText('Chưa có bài đọc')).toBeInTheDocument();
+      // Selector is still visible and functional
+      expect(screen.getByRole('combobox', { name: 'Bài học' })).toBeInTheDocument();
 
-    // Switch back to Lesson 1
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '1');
-    const reading = getLessonReading(1);
-    if (!reading.ok || !reading.data[0]) throw new Error('Expected lesson 1 reading');
-    expect(screen.getByRole('heading', { name: reading.data[0].title })).toBeInTheDocument();
+      // Switch back to Lesson 1
+      await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '1');
+      const reading = originalGetLessonReading(1);
+      if (!reading.ok || !reading.data[0]) throw new Error('Expected lesson 1 reading');
+      expect(screen.getByRole('heading', { name: reading.data[0].title })).toBeInTheDocument();
+    } finally {
+      readingSpy.mockRestore();
+    }
   });
 
-  it('Writing practice: selecting empty lesson 15 shows empty state, selecting lesson 1 recovers', async () => {
-    const user = userEvent.setup();
-    renderPracticePage();
+  it('Writing practice: selecting empty lesson shows empty state, selecting lesson 1 recovers', async () => {
+    const originalGetLessonWriting = lessonService.getLessonWriting;
+    const writingSpy = vi
+      .spyOn(lessonService, 'getLessonWriting')
+      .mockImplementation((id) =>
+        id === 15 ? { ok: true, data: [] } : originalGetLessonWriting(id),
+      );
+    try {
+      const user = userEvent.setup();
+      renderPracticePage();
 
-    await user.click(screen.getByRole('tab', { name: 'Writing' }));
-    expect(await screen.findByRole('combobox', { name: 'Bài học' })).toBeInTheDocument();
+      await user.click(screen.getByRole('tab', { name: 'Writing' }));
+      expect(await screen.findByRole('combobox', { name: 'Bài học' })).toBeInTheDocument();
 
-    // Select Lesson 15 (has no writing prompt)
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '15');
-    expect(screen.getByText('Chưa có đề bài viết')).toBeInTheDocument();
-    // Selector is still visible and functional
-    expect(screen.getByRole('combobox', { name: 'Bài học' })).toBeInTheDocument();
+      // Select Lesson 15 (mocked to have no writing prompt)
+      await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '15');
+      expect(screen.getByText('Chưa có đề bài viết')).toBeInTheDocument();
+      // Selector is still visible and functional
+      expect(screen.getByRole('combobox', { name: 'Bài học' })).toBeInTheDocument();
 
-    // Switch back to Lesson 1
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '1');
-    expect(screen.getByRole('button', { name: 'Hiện bài mẫu' })).toBeInTheDocument();
+      // Switch back to Lesson 1
+      await user.selectOptions(screen.getByRole('combobox', { name: 'Bài học' }), '1');
+      expect(screen.getByRole('button', { name: 'Hiện bài mẫu' })).toBeInTheDocument();
+    } finally {
+      writingSpy.mockRestore();
+    }
   });
 
   it('Writing practice: keeps self-check disabled for whitespace-only response', async () => {

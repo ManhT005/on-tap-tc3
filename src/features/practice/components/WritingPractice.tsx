@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { COURSE_STRUCTURE } from '../../../data/course';
-import { WRITING_BANK } from '../../../data/writing-bank';
+import { getLessonWriting } from '../../../domain/learning/lesson.service';
 import { createPracticeSession } from '../../../domain/practice/practice-session';
 import { scorePractice } from '../../../domain/practice/score-practice';
 import { useProgressRepository } from '../../../app/providers/ProgressRepositoryProvider';
@@ -20,7 +20,9 @@ export function WritingPractice() {
   const [saved, setSaved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const prompt = WRITING_BANK.find((item) => item.lessonId === lessonId);
+  const writingResult = getLessonWriting(lessonId);
+  const prompt =
+    writingResult.ok && writingResult.data.length > 0 ? writingResult.data[0] : undefined;
 
   const missingKeywords = prompt
     ? prompt.requiredKeywords.filter((keyword) => !response.includes(keyword))

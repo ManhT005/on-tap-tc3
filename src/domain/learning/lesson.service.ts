@@ -2,6 +2,7 @@ import { COURSE_STRUCTURE } from '../../data/course';
 import { LESSONS_DATA } from '../../data/lessons';
 import { QUIZ_BANK } from '../../data/quiz-bank';
 import { READING_BANK } from '../../data/reading-bank';
+import { WRITING_BANK } from '../../data/writing-bank';
 import type {
   LearningError,
   LearningResult,
@@ -10,6 +11,7 @@ import type {
   LessonQuiz,
   LessonReading,
   LessonVocabulary,
+  LessonWriting,
 } from './learning.types';
 
 function failure(code: LearningError['code'], message: string): LearningResult<never> {
@@ -51,4 +53,11 @@ export function getLessonQuiz(id: number): LearningResult<LessonQuiz[]> {
 export function getLessonReading(id: number): LearningResult<LessonReading[]> {
   const lesson = getLessonById(id);
   return lesson.ok ? { ok: true, data: READING_BANK[String(id)] ?? [] } : lesson;
+}
+
+export function getLessonWriting(id: number): LearningResult<LessonWriting[]> {
+  const lesson = getLessonById(id);
+  return lesson.ok
+    ? { ok: true, data: WRITING_BANK.filter((prompt) => prompt.lessonId === id) }
+    : lesson;
 }

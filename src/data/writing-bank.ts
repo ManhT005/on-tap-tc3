@@ -201,6 +201,125 @@ const raw = [
     explanation:
       'Sử dụng -(으)냐고 묻다 để tường thuật lại câu hỏi về trải nghiệm quá khứ (-았/었냐고) và tính từ trạng thái (맛있냐고).',
   },
+  {
+    id: 'w18',
+    lessonId: 11,
+    title: 'Bài 11: Viết tin nhắn động viên bạn thân bằng lối nói thân mật (반말)',
+    prompt:
+      '다음 상황에 맞게 친구에게 보내는 따뜻한 응원 메시지를 반말로 작성하시오.\n[상황]: Động viên bạn mình đừng lo lắng quá về kỳ thi sắp tới, nếu cứ chăm chỉ học tập liên tục thì sẽ đạt kết quả tốt, rủ thi xong cùng đi ăn ngon.',
+    requiredKeywords: ['공부하다 보면', '잘 볼 거야', '먹으러 가자'],
+    modelAnswer:
+      '너무 걱정하지 마. 열심히 공부하다 보면 분명히 시험을 잘 볼 거야. 이번 주말에 시험 끝나고 맛있는 거 먹으러 가자!',
+    explanation:
+      'Sử dụng cấu trúc -다 보면 kết hợp lối nói thân mật 반말 (-아/어, -자, -ㄹ 거야) để động viên bạn bè.',
+  },
+  {
+    id: 'w19',
+    lessonId: 11,
+    title: 'Bài 11: Trút bầu tâm sự về nỗi băn khoăn tương lai',
+    prompt:
+      '다음 주제에 대해 자신의 솔직한 고민을 작성하시오.\n[주제]: Giãi bày nỗi băn khoăn về định hướng nghề nghiệp và việc làm sau khi tốt nghiệp, sử dụng từ vựng 고민을 털어놓다, 자신감.',
+    requiredKeywords: ['고민을 털어놓', '진로 문제', '자신감을 되찾'],
+    modelAnswer:
+      '졸업을 앞두고 진로 문제로 고민이 많아서 선배에게 속마음 고민을 털어놓았어요. 선배의 따뜻한 조언 덕분에 잃어버렸던 자신감을 되찾을 수 있었습니다.',
+    explanation:
+      'Sử dụng cụm từ 고민을 털어놓다 (giãi bày tâm sự) và 자신감을 되찾다 (tìm lại sự tự tin) để chia sẻ.',
+  },
+  {
+    id: 'w20',
+    lessonId: 12,
+    title: 'Bài 12: Viết thông báo ngắn gọn về lịch bảo trì mạng',
+    prompt:
+      '다음 상황에 맞게 게시판 공지문을 작성하시오.\n[상황]: Viết thông báo ngắn về việc dịch vụ internet bị tạm ngừng vào rạng sáng Chủ Nhật để bảo trì định kỳ, sử dụng đuôi câu danh hóa -(으)ㅁ.',
+    requiredKeywords: ['점검으로 인해', '일시 중단됨', '바람'],
+    modelAnswer:
+      '네트워크 정기 점검으로 인해 이번 주 일요일 새벽 2시부터 인터넷 서비스가 일시 중단됨. 이용자 여러분의 많은 양해를 바람.',
+    explanation:
+      'Áp dụng đuôi danh hóa -(으)ㅁ trong các văn bản thông báo hoặc ghi chú ngắn gọn trang trọng.',
+  },
+  {
+    id: 'w21',
+    lessonId: 12,
+    title: 'Bài 12: Tường thuật lại lời dặn của giáo viên và đề nghị nhóm',
+    prompt:
+      '다음 상황에 맞게 단체 메시지를 완성하시오.\n[상황]: Tường thuật lại lời giáo viên dặn phải nộp báo cáo trước thứ Sáu và rủ cả nhóm cùng họp trực tuyến qua mạng.',
+    requiredKeywords: ['제출하라고 하셨', '회의를 하자고'],
+    modelAnswer:
+      '교수님께서 이번 주 금요일까지 과제 리포트를 제출하라고 하셨어요. 오늘 저녁에 온라인으로 모여서 회의를 하자고 조원들에게 전했어요.',
+    explanation:
+      'Kết hợp -(으)라고 하다 (tường thuật mệnh lệnh) và -자고 하다 (tường thuật rủ rê).',
+  },
+  {
+    id: 'w22',
+    lessonId: 13,
+    title: 'Bài 13: Chia sẻ ước mơ nghề nghiệp tương lai',
+    prompt:
+      '다음 질문에 대해 자신의 장래 희망을 작성하시오.\n[질문]: Chia sẻ quá trình học tiếng Hàn từ trước đến nay và quyết tâm trở thành thông dịch viên giỏi, sử dụng cấu trúc -아/어 오다 và -아/어야겠다.',
+    requiredKeywords: ['공부해 왔', '동시통역사', '노력해야겠'],
+    modelAnswer:
+      '저는 4년 동안 한국어를 꾸준히 공부해 왔습니다. 앞으로 실력을 더 쌓아서 훌륭한 전문 동시통역사가 되도록 열심히 노력해야겠어요.',
+    explanation:
+      'Sử dụng -아/어 오다 để nói về quá trình kiên trì từ quá khứ đến nay và -아/어야겠다 để bộc lộ ý chí quyết tâm.',
+  },
+  {
+    id: 'w23',
+    lessonId: 13,
+    title: 'Bài 13: Bày tỏ niềm mong ước cho người thân',
+    prompt:
+      '다음 상황에 맞게 소망을 담은 글을 작성하시오.\n[상황]: Viết lời chúc năm mới mong gia đình luôn khỏe mạnh bình an và bản thân thực hiện được ước mơ, sử dụng cấu trúc -았/었으면 좋겠다.',
+    requiredKeywords: ['건강했으면 좋겠', '꿈을 이루었으면'],
+    modelAnswer:
+      '새해에는 우리 가족 모두 아프지 않고 항상 건강했으면 좋겠어요. 그리고 제가 바라는 소중한 꿈을 꼭 이루었으면 좋겠습니다.',
+    explanation: 'Cấu trúc -았/었으면 좋겠다 biểu đạt niềm hy vọng và lời chúc tốt lành.',
+  },
+  {
+    id: 'w24',
+    lessonId: 14,
+    title: 'Bài 14: Viết cảm nhận ngắn sau khi xem phim',
+    prompt:
+      '다음 상황에 맞게 영화 관람 후기를 작성하시오.\n[상황]: Chia sẻ cảm nhận sau khi xem một bộ phim Hàn Quốc: hồi tưởng về diễn xuất chân thực xúc động bằng -던데요 và giải thích lý do thích phim bằng -거든요.',
+    requiredKeywords: ['감동적이던데요', '배우의 연기', '좋아하거든요'],
+    modelAnswer:
+      '어제 극장에서 한국 영화를 봤는데 주연 배우의 연기가 정말 감동적이던데요. 저는 탄탄한 스토리의 역사 영화를 아주 좋아하거든요.',
+    explanation:
+      'Dùng -던데요 để hồi tưởng trải nghiệm xúc động và -거든요 để đưa ra nguyên nhân giải thích.',
+  },
+  {
+    id: 'w25',
+    lessonId: 14,
+    title: 'Bài 14: Giới thiệu thể loại phim yêu thích',
+    prompt:
+      '다음 질문에 대해 자신이 좋아하는 한국 드라마 장르를 소개하시오.\n[질문]: Giới thiệu lý do bạn yêu thích thể loại phim cổ trang (사극) hoặc phim tình cảm gia đình, sử dụng từ vựng bài 14.',
+    requiredKeywords: ['사극', '실감나다', '흥미진진'],
+    modelAnswer:
+      '저는 역사적인 사건을 다룬 사극 드라마를 즐겨 봅니다. 화려한 전통 의상과 실감나는 연기 덕분에 매회 스토리가 흥미진진해요.',
+    explanation:
+      'Áp dụng các từ vựng đánh giá phim ảnh: 사극 (phim cổ trang), 실감나다 (sống động chân thực), 흥미진진하다 (hấp dẫn gay cấn).',
+  },
+  {
+    id: 'w26',
+    lessonId: 15,
+    title: 'Bài 15: Hướng dẫn quy tắc sinh hoạt tập thể tại ký túc xá',
+    prompt:
+      '다음 상황에 맞게 기숙사 생활 수칙 안내문을 작성하시오.\n[상황]: Hướng dẫn các quy tắc bắt buộc: phân loại rác theo quy định (종량제 봉투) và giữ trật tự chung, sử dụng cấu trúc -지 않으면 안 되다 và Danh từ + 대로.',
+    requiredKeywords: ['배출하지 않으면 안', '규칙대로', '배려'],
+    modelAnswer:
+      '기숙사에서는 쓰레기를 규격 종량제 봉투에 담아 배출하지 않으면 안 됩니다. 공동생활 규칙대로 생활하며 룸메이트를 서로 배려해야 합니다.',
+    explanation:
+      'Sử dụng -지 않으면 안 되다 để nhấn mạnh quy định nghĩa vụ bắt buộc và Danh từ + 대로 để chỉ việc tuân thủ nguyên tắc.',
+  },
+  {
+    id: 'w27',
+    lessonId: 15,
+    title: 'Bài 15: Chia sẻ về kinh nghiệm ứng xử trong bữa ăn người Hàn',
+    prompt:
+      '다음 상황에 맞게 자신의 경험을 소개하시오.\n[상황]: Kể lại tình huống đúng lúc đang định cầm bát cơm lên ăn thì nhớ ra quy tắc không được bưng bát cơm tại Hàn Quốc, sử dụng cấu trúc -(으)려던 참이다.',
+    requiredKeywords: ['밥그릇을 들고 먹으려던 참', '생각이 났', '식탁에 내려놓'],
+    modelAnswer:
+      '식당에서 밥그릇을 들고 먹으려던 참이었는데 한국에서는 그릇을 들고 먹으면 안 된다는 예절이 생각이 났어요. 그래서 얼른 식탁에 내려놓고 숟가락으로 먹었습니다.',
+    explanation:
+      'Áp dụng -(으)려던 참이다 để miêu tả sự việc diễn ra đúng vào thời điểm chuẩn bị làm một hành động.',
+  },
 ];
 
 export const WRITING_BANK = raw.map((item) => LegacyWritingPromptSchema.parse(item));
