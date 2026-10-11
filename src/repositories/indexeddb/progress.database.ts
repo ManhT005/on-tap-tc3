@@ -35,9 +35,30 @@ export interface ProgressDatabase extends DBSchema {
 
 export function openProgressDatabase(
   databaseName = PROGRESS_DATABASE_NAME,
+  onInvalidated?: () => void,
 ): Promise<IDBPDatabase<ProgressDatabase>> {
-  return openDB<ProgressDatabase>(databaseName, PROGRESS_DATABASE_VERSION, {
+  let opened: IDBPDatabase<ProgressDatabase> | undefined;
+  let blocked = false;
+  let rejectBlocked: (error: Error) => void = () => undefined;
+  const unavailable = new Promise<never>((_resolve, reject) => {
+    rejectBlocked = reject;
+  });
+  const opening = openDB<ProgressDatabase>(databaseName, PROGRESS_DATABASE_VERSION, {
+    blocked() {
+      blocked = true;
+      rejectBlocked(new Error('Database upgrade blocked. Close other tabs and retry.'));
+    },
+    blocking() {
+      opened?.close();
+      onInvalidated?.();
+    },
+    terminated() {
+      onInvalidated?.();
+    },
     upgrade(database, _oldVersion, _newVersion, transaction) {
+      // idb exposes a separate completion promise for the upgrade transaction.
+      // openDB reports failure too; observe both so aborts never leak rejections.
+      void transaction.done.catch(() => undefined);
       if (!database.objectStoreNames.contains('lesson_progress')) {
         const store = database.createObjectStore('lesson_progress', { keyPath: 'lessonId' });
         store.createIndex('by-status', 'status');
@@ -69,7 +90,21 @@ export function openProgressDatabase(
         database.createObjectStore('completion_receipts', { keyPath: 'sessionId' });
       }
       // Only IndexedDB requests are awaited; migration stays in the upgrade tx.
-      void migrateReviewIdentities(transaction).catch(() => transaction.abort());
+      void migrateReviewIdentities(transaction).catch(() => {
+        try {
+          transaction.abort();
+        } catch {
+          /* transaction already aborted */
+        }
+      });
     },
+  }).then((database) => {
+    opened = database;
+    if (blocked) {
+      database.close();
+      throw new Error('Database upgrade was blocked; retry.');
+    }
+    return database;
   });
+  return Promise.race([opening, unavailable]);
 }

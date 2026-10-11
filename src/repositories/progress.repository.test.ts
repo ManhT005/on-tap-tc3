@@ -1,11 +1,11 @@
 import 'fake-indexeddb/auto';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import type { ReviewStatus } from '../data/schemas';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { LessonProgress } from '../domain/progress/progress.types';
-import type { PracticeCompletionCommand, ProgressRepository } from './progress.repository';
+import type { PracticeCompletionCommand } from './progress.repository';
 import { MemoryProgressRepository } from './memory-progress.repository';
-import { withMemoryFallback } from './resilient-progress.repository';
+
 import { IndexedDbProgressRepository } from './indexeddb/indexeddb-progress.repository';
 
 let testDatabaseId = 0;
@@ -250,98 +250,5 @@ describe('MemoryProgressRepository', () => {
 
     const courseProgress = await repository.getCourseProgress();
     expect(courseProgress.practiceSessions).toBe(1);
-  });
-});
-
-describe('withMemoryFallback', () => {
-  it('switches to memory storage and reports an IndexedDB failure', async () => {
-    const primary: ProgressRepository = {
-      getCourseProgress: vi.fn().mockRejectedValue(new Error('IndexedDB unavailable')),
-      getLessonProgress: vi.fn(),
-      saveLessonProgress: vi.fn(),
-      applyLessonEvent: vi.fn(),
-      getReviewItems: vi.fn(),
-      saveReviewItem: vi.fn(),
-      applyReview: vi.fn(),
-      savePracticeResult: vi.fn(),
-      commitPracticeCompletion: vi.fn(),
-    };
-    const fallback = new MemoryProgressRepository();
-    const onError = vi.fn();
-    const repository = withMemoryFallback(primary, fallback, { onError });
-
-    await repository.getCourseProgress();
-    await repository.saveLessonProgress(lessonProgress);
-    await expect(repository.getLessonProgress(1)).resolves.toEqual(lessonProgress);
-    expect(onError).toHaveBeenCalledOnce();
-  });
-
-  it('delegates commitPracticeCompletion to fallback on primary failure', async () => {
-    const primary: ProgressRepository = {
-      getCourseProgress: vi.fn(),
-      getLessonProgress: vi.fn(),
-      saveLessonProgress: vi.fn(),
-      applyLessonEvent: vi.fn(),
-      getReviewItems: vi.fn(),
-      saveReviewItem: vi.fn(),
-      applyReview: vi.fn(),
-      savePracticeResult: vi.fn(),
-      commitPracticeCompletion: vi.fn().mockRejectedValue(new Error('IndexedDB unavailable')),
-    };
-    const fallback = new MemoryProgressRepository();
-    const onError = vi.fn();
-    const repository = withMemoryFallback(primary, fallback, { onError });
-
-    const command = createCompletionCommand();
-    await repository.commitPracticeCompletion(command);
-
-    // Should have fallen back to memory
-    expect(onError).toHaveBeenCalledOnce();
-
-    const courseProgress = await fallback.getCourseProgress();
-    expect(courseProgress.practiceSessions).toBe(1);
-  });
-
-  it('starts with unavailable status and transitions to persistent on first success', async () => {
-    const primary = new MemoryProgressRepository();
-    const fallback = new MemoryProgressRepository();
-    const statusChanges: import('./resilient-progress.repository').StorageStatus[] = [];
-    const repository = withMemoryFallback(primary, fallback, {
-      onStatusChange: (s) => statusChanges.push(s),
-    });
-
-    expect(repository.storageStatus).toBe('unavailable');
-    await repository.getCourseProgress();
-    expect(repository.storageStatus).toBe('persistent');
-    expect(statusChanges).toEqual(['persistent']);
-  });
-
-  it('transitions to degraded on primary failure and stays degraded', async () => {
-    const primary: ProgressRepository = {
-      getCourseProgress: vi.fn().mockRejectedValue(new Error('quota exceeded')),
-      getLessonProgress: vi.fn().mockRejectedValue(new Error('quota exceeded')),
-      saveLessonProgress: vi.fn(),
-      applyLessonEvent: vi.fn(),
-      getReviewItems: vi.fn(),
-      saveReviewItem: vi.fn(),
-      applyReview: vi.fn(),
-      savePracticeResult: vi.fn(),
-      commitPracticeCompletion: vi.fn(),
-    };
-    const fallback = new MemoryProgressRepository();
-    const statusChanges: import('./resilient-progress.repository').StorageStatus[] = [];
-    const repository = withMemoryFallback(primary, fallback, {
-      onStatusChange: (s) => statusChanges.push(s),
-    });
-
-    expect(repository.storageStatus).toBe('unavailable');
-    await repository.getCourseProgress(); // triggers failure
-    expect(repository.storageStatus).toBe('degraded');
-
-    // Subsequent calls go straight to fallback — primary not called again
-    await repository.getLessonProgress(1); // should use fallback, not call primary again
-    expect(repository.storageStatus).toBe('degraded');
-    expect(statusChanges).toEqual(['degraded']); // only one transition
-    expect(primary.getLessonProgress).not.toHaveBeenCalled();
   });
 });

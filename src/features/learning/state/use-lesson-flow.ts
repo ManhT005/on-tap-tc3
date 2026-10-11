@@ -14,7 +14,7 @@ import { useProgressRepository } from '../../../app/providers/ProgressRepository
 import { getLessonRequirements } from '../../../domain/progress/lesson-progress';
 
 export function useLessonFlow(lessonId: number) {
-  const { repository } = useProgressRepository();
+  const { repository, storageRevision } = useProgressRepository();
   const lessonResult = getLessonById(lessonId);
   const grammarResult = getLessonGrammar(lessonId);
   const quizResult = getLessonQuiz(lessonId);
@@ -44,7 +44,10 @@ export function useLessonFlow(lessonId: number) {
     repository
       .applyLessonEvent({ lessonId, kind: 'opened', occurredAt: startedAt })
       .then((stored) => {
-        if (active) setProgress(stored);
+        if (active) {
+          setProgress(stored);
+          setError(null);
+        }
       })
       .catch(() => {
         if (active) setError('Không tải được dữ liệu học. Vui lòng thử lại.');
@@ -55,7 +58,7 @@ export function useLessonFlow(lessonId: number) {
     return () => {
       active = false;
     };
-  }, [lessonId, lessonResult.ok, repository, startedAt]);
+  }, [lessonId, lessonResult.ok, repository, startedAt, storageRevision]);
 
   async function refreshProgress() {
     const stored = await repository.getLessonProgress(lessonId);

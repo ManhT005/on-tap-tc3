@@ -1,6 +1,6 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useProgressRepository } from './providers/ProgressRepositoryProvider';
-import { Toast } from '../components/ui/Toast';
+import { Button } from '../components/ui/Button';
 
 const navigationItems = [
   { to: '/', label: 'Home', end: true },
@@ -11,7 +11,7 @@ const navigationItems = [
 ];
 
 export function AppShell() {
-  const { storageError } = useProgressRepository();
+  const { storageError, retryStorage } = useProgressRepository();
 
   return (
     <div className="app-shell">
@@ -41,11 +41,16 @@ export function AppShell() {
         </nav>
       </header>
       <main id="main-content" className="page-content" tabIndex={-1}>
+        {storageError ? (
+          <div className="storage-warning" role="alert">
+            <p>{storageError}</p>
+            <Button variant="secondary" onClick={() => void retryStorage()}>
+              Thử kết nối lại bộ nhớ
+            </Button>
+          </div>
+        ) : null}
         <Outlet />
       </main>
-      <div className="toast-viewport">
-        {storageError ? <Toast tone="error">{storageError}</Toast> : null}
-      </div>
     </div>
   );
 }

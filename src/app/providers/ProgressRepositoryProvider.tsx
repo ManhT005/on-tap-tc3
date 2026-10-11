@@ -3,15 +3,17 @@ import { IndexedDbProgressRepository } from '../../repositories/indexeddb/indexe
 import { MemoryProgressRepository } from '../../repositories/memory-progress.repository';
 import type { ProgressRepository } from '../../repositories/progress.repository';
 import {
-  withMemoryFallback,
+  withStorageRecovery,
   type StorageStatus,
 } from '../../repositories/resilient-progress.repository';
 
 export type ProgressRepositoryContextValue = {
   repository: ProgressRepository;
   storageStatus: StorageStatus;
-  /** Non-null only when storage failed and data is session-only. */
+  /** Failed durable operation: no implicit memory writes. */
   storageError: string | null;
+  storageRevision: number;
+  retryStorage: () => Promise<void>;
 };
 
 const defaultRepository = new MemoryProgressRepository();
@@ -19,6 +21,8 @@ const ProgressRepositoryContext = createContext<ProgressRepositoryContextValue>(
   repository: defaultRepository,
   storageStatus: 'unavailable',
   storageError: null,
+  storageRevision: 0,
+  retryStorage: async () => undefined,
 });
 
 export type ProgressRepositoryProviderProps = {
@@ -34,10 +38,13 @@ export function ProgressRepositoryProvider({
 }: ProgressRepositoryProviderProps) {
   const [internalStatus, setInternalStatus] = useState<StorageStatus>('unavailable');
   const [storageError, setStorageError] = useState<string | null>(null);
+  const [storageRevision, setStorageRevision] = useState(0);
   const [defaultRepository] = useState(() =>
-    withMemoryFallback(new IndexedDbProgressRepository(), new MemoryProgressRepository(), {
+    withStorageRecovery(new IndexedDbProgressRepository(), {
       onError: () =>
-        setStorageError('Không thể lưu tiến độ lâu dài. Dữ liệu phiên này chỉ được giữ tạm thời.'),
+        setStorageError(
+          'Không truy cập được dữ liệu trên trình duyệt. Thao tác lưu chưa được xác nhận; hãy thử lại. Dữ liệu đã lưu không bị thay bằng bộ nhớ tạm.',
+        ),
       onStatusChange: setInternalStatus,
     }),
   );
@@ -48,8 +55,24 @@ export function ProgressRepositoryProvider({
       ? (repositoryOverride as { storageStatus: StorageStatus }).storageStatus
       : internalStatus);
 
+  async function retryStorage() {
+    try {
+      if ('retryStorage' in repository && typeof repository.retryStorage === 'function')
+        await repository.retryStorage();
+      else await repository.getCourseProgress();
+      setStorageError(null);
+      setStorageRevision((value) => value + 1);
+    } catch {
+      setStorageError(
+        'Chưa truy cập được dữ liệu. Hãy đóng các tab phiên bản cũ, kiểm tra quyền lưu của trình duyệt rồi thử lại.',
+      );
+    }
+  }
+
   return (
-    <ProgressRepositoryContext.Provider value={{ repository, storageStatus, storageError }}>
+    <ProgressRepositoryContext.Provider
+      value={{ repository, storageStatus, storageError, storageRevision, retryStorage }}
+    >
       {children}
     </ProgressRepositoryContext.Provider>
   );

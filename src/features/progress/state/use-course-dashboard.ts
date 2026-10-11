@@ -9,7 +9,7 @@ export type CourseDashboardData = {
 };
 
 export function useCourseDashboard(reloadKey = 0) {
-  const { repository } = useProgressRepository();
+  const { repository, storageRevision } = useProgressRepository();
   const [state, setState] = useState<{
     key: number;
     data: CourseDashboardData | null;
@@ -63,7 +63,7 @@ export function useCourseDashboard(reloadKey = 0) {
     return () => {
       active = false;
     };
-  }, [repository, reloadKey]);
+  }, [repository, reloadKey, storageRevision]);
 
   const isCurrent = state.key === reloadKey;
   return {

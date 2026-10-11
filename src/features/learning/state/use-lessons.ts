@@ -4,7 +4,7 @@ import type { LessonProgress } from '../../../domain/progress/progress.types';
 import { useProgressRepository } from '../../../app/providers/ProgressRepositoryProvider';
 
 export function useLessons() {
-  const { repository } = useProgressRepository();
+  const { repository, storageRevision } = useProgressRepository();
   const [lessons] = useState(() => getLessons());
   const [progressByLesson, setProgressByLesson] = useState<Record<number, LessonProgress | null>>(
     {},
@@ -21,7 +21,10 @@ export function useLessons() {
       ),
     )
       .then((entries) => {
-        if (active) setProgressByLesson(Object.fromEntries(entries));
+        if (active) {
+          setProgressByLesson(Object.fromEntries(entries));
+          setError(null);
+        }
       })
       .catch(() => {
         if (active) setError('Không tải được tiến độ bài học. Vui lòng thử lại.');
@@ -33,7 +36,7 @@ export function useLessons() {
     return () => {
       active = false;
     };
-  }, [lessons, repository]);
+  }, [lessons, repository, storageRevision]);
 
   return { lessons, progressByLesson, loading, error };
 }

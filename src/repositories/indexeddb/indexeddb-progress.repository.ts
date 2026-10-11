@@ -22,7 +22,12 @@ export class IndexedDbProgressRepository implements ProgressRepository {
   }
 
   private getDatabase() {
-    this.databasePromise ??= openProgressDatabase(this.databaseName);
+    this.databasePromise ??= openProgressDatabase(this.databaseName, () => {
+      this.databasePromise = undefined;
+    }).catch((error: unknown) => {
+      this.databasePromise = undefined;
+      throw error;
+    });
     return this.databasePromise;
   }
 

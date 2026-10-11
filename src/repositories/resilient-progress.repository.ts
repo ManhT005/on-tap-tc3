@@ -1,108 +1,70 @@
-import type { ReviewStatus } from '../data/schemas';
-import type { ReviewCommand } from '../domain/review/review-command';
-import type { LessonEvent } from '../domain/progress/lesson-progress';
-import type { PracticeResult } from '../domain/practice/practice.types';
-import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
-import type { PracticeCompletionCommand, ProgressRepository } from './progress.repository';
+import type { ProgressRepository } from './progress.repository';
 
-/**
- * Describes the durability of the current storage backend.
- * - `persistent`: IndexedDB is healthy; data survives reload.
- * - `degraded`:   IndexedDB failed; data lives only in memory for this session.
- * - `unavailable`: Not yet determined (before first operation).
- */
 export type StorageStatus = 'persistent' | 'degraded' | 'unavailable';
-
-export type ResilientProgressRepositoryOptions = {
+export type StorageHealth = {
+  status: StorageStatus;
+  lastPersistedAt: string | null;
+  error: unknown | null;
+};
+export type StorageRecoveryOptions = {
   onError?: (error: unknown) => void;
   onStatusChange?: (status: StorageStatus) => void;
+  now?: () => Date;
 };
-
 export type ResilientProgressRepository = ProgressRepository & {
   readonly storageStatus: StorageStatus;
+  readonly storageHealth: StorageHealth;
+  retryStorage(): Promise<void>;
 };
 
-export function withMemoryFallback(
+/** Fail closed: never replace durable data with an empty memory repository. */
+export function withStorageRecovery(
   primary: ProgressRepository,
-  fallback: ProgressRepository,
-  options: ResilientProgressRepositoryOptions = {},
+  options: StorageRecoveryOptions = {},
 ): ResilientProgressRepository {
-  let storageStatus: StorageStatus = 'unavailable';
-
-  function setStatus(next: StorageStatus) {
-    if (storageStatus !== next) {
-      storageStatus = next;
-      options.onStatusChange?.(next);
-    }
+  let health: StorageHealth = { status: 'unavailable', lastPersistedAt: null, error: null };
+  function setStatus(status: StorageStatus) {
+    if (health.status !== status) options.onStatusChange?.(status);
+    health = { ...health, status };
   }
-
-  async function run<T>(primaryAction: () => Promise<T>, fallbackAction: () => Promise<T>) {
-    if (storageStatus === 'degraded') return fallbackAction();
-
+  async function run<T>(action: () => Promise<T>, write = false): Promise<T> {
     try {
-      const result = await primaryAction();
+      const result = await action();
+      health = {
+        ...health,
+        error: null,
+        lastPersistedAt: write
+          ? (options.now?.() ?? new Date()).toISOString()
+          : health.lastPersistedAt,
+      };
       setStatus('persistent');
       return result;
     } catch (error) {
-      setStatus('degraded');
+      health = { ...health, error };
+      setStatus('unavailable');
       options.onError?.(error);
-      if (import.meta.env.DEV) {
-        console.error('IndexedDB progress storage failed; using memory for this session.', error);
-      }
-      return fallbackAction();
+      throw error;
     }
   }
-
-  const repo: ResilientProgressRepository = {
+  return {
     get storageStatus() {
-      return storageStatus;
+      return health.status;
     },
-    getCourseProgress: (): Promise<CourseProgress> =>
-      run(
-        () => primary.getCourseProgress(),
-        () => fallback.getCourseProgress(),
-      ),
-    getLessonProgress: (lessonId: number): Promise<LessonProgress | null> =>
-      run(
-        () => primary.getLessonProgress(lessonId),
-        () => fallback.getLessonProgress(lessonId),
-      ),
-    saveLessonProgress: (progress: LessonProgress): Promise<void> =>
-      run(
-        () => primary.saveLessonProgress(progress),
-        () => fallback.saveLessonProgress(progress),
-      ),
-    applyLessonEvent: (event: LessonEvent): Promise<LessonProgress> =>
-      run(
-        () => primary.applyLessonEvent(event),
-        () => fallback.applyLessonEvent(event),
-      ),
-    getReviewItems: (): Promise<ReviewStatus[]> =>
-      run(
-        () => primary.getReviewItems(),
-        () => fallback.getReviewItems(),
-      ),
-    saveReviewItem: (item: ReviewStatus): Promise<void> =>
-      run(
-        () => primary.saveReviewItem(item),
-        () => fallback.saveReviewItem(item),
-      ),
-    applyReview: (command: ReviewCommand): Promise<ReviewStatus> =>
-      run(
-        () => primary.applyReview(command),
-        () => fallback.applyReview(command),
-      ),
-    savePracticeResult: (result: PracticeResult): Promise<void> =>
-      run(
-        () => primary.savePracticeResult(result),
-        () => fallback.savePracticeResult(result),
-      ),
-    commitPracticeCompletion: (command: PracticeCompletionCommand): Promise<PracticeResult> =>
-      run(
-        () => primary.commitPracticeCompletion(command),
-        () => fallback.commitPracticeCompletion(command),
-      ),
+    get storageHealth() {
+      return { ...health };
+    },
+    retryStorage: async () => {
+      await run(() => primary.getCourseProgress());
+    },
+    getCourseProgress: () => run(() => primary.getCourseProgress()),
+    getLessonProgress: (lessonId) => run(() => primary.getLessonProgress(lessonId)),
+    saveLessonProgress: (progress) => run(() => primary.saveLessonProgress(progress), true),
+    applyLessonEvent: (event) => run(() => primary.applyLessonEvent(event), true),
+    getReviewItems: () => run(() => primary.getReviewItems()),
+    saveReviewItem: (item) => run(() => primary.saveReviewItem(item), true),
+    applyReview: (command) => run(() => primary.applyReview(command), true),
+    savePracticeResult: (result) => run(() => primary.savePracticeResult(result), true),
+    commitPracticeCompletion: (command) =>
+      run(() => primary.commitPracticeCompletion(command), true),
   };
-
-  return repo;
 }
