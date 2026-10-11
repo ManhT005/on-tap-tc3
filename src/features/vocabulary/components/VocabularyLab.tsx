@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { COURSE_STRUCTURE } from '../../../data/course';
 import { adaptVocabulary } from '../../../domain/vocabulary/vocabulary.adapter';
+import { VOCABULARY_ENRICHMENT } from '../../../data/vocabulary-enrichment';
 import { filterVocabulary, planVocabularyBatch } from '../../../domain/vocabulary/session-planner';
 import type { VocabularyFilter } from '../../../domain/vocabulary/vocabulary.types';
 import { useVocabularySession } from '../state/use-vocabulary-session';
@@ -10,7 +11,7 @@ import { VocabularyCatalog } from './VocabularyCatalog';
 import { Button } from '../../../components/ui/Button';
 import { PageHeader } from '../../../components/ui/PageHeader';
 
-const entries = adaptVocabulary();
+const entries = adaptVocabulary(VOCABULARY_ENRICHMENT);
 const modes = [
   { id: 'flashcard', label: 'Flashcard' },
   { id: 'list', label: 'Danh sách' },

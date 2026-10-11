@@ -157,6 +157,30 @@
   line-height: 1.8;
   padding-left: 22px;
 }
+.korean-speech-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0;
+  font-size: var(--text-sm);
+}
+.korean-speech-controls label {
+  display: grid;
+  gap: 6px;
+}
+.korean-speech-controls select {
+  min-height: 44px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  padding: 8px 12px;
+  color: var(--color-text-primary);
+}
+.korean-speech-controls p {
+  flex-basis: 100%;
+}
 .primary-nav {
   flex-wrap: wrap;
 }

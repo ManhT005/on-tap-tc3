@@ -12,8 +12,8 @@ export function adaptVocabulary(
           ...enrichments[item.id],
           id: item.id,
           lessonId: Number(lessonId),
-          korean: item.kr,
-          vietnamese: item.vn,
+          korean: item.kr.normalize('NFC').trim().replace(/\s+/g, ' '),
+          vietnamese: item.vn.normalize('NFC').trim().replace(/\s+/g, ' '),
           source: pack.sourceTag.includes('기본')
             ? ('basic' as const)
             : pack.sourceTag.includes('새')

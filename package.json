@@ -32,7 +32,9 @@
     "generate:manifest": "tsx scripts/generate-learning-manifest.ts",
     "check:manifest": "tsx scripts/generate-learning-manifest.ts --check",
     "validate:release": "tsx scripts/validate-content.ts --release",
-    "check:bundle": "tsx scripts/check-bundle-budget.ts"
+    "check:bundle": "tsx scripts/check-bundle-budget.ts",
+    "validate:vocab": "tsx scripts/validate-vocabulary.ts --check-docs",
+    "audit:vocab": "tsx scripts/validate-vocabulary.ts --write-docs"
   },
   "dependencies": {
     "idb": "^8.0.3",

@@ -1,5 +1,6 @@
 import type { VocabularyEntry } from '../../../domain/vocabulary/vocabulary.types';
 import { Button } from '../../../components/ui/Button';
+import { KoreanSpeechControls } from '../../../components/learning/KoreanSpeechControls';
 
 export function VocabularyFlashcard({
   entry,
@@ -23,6 +24,7 @@ export function VocabularyFlashcard({
         <h3 className="vocab-hangul" lang="ko">
           {entry.korean}
         </h3>
+        <KoreanSpeechControls key={entry.id} text={entry.korean} />
         {entry.partOfSpeech ? <p>{entry.partOfSpeech}</p> : null}
         {revealed ? (
           <div className="vocab-card__back">
@@ -30,8 +32,19 @@ export function VocabularyFlashcard({
             {examples.length ? (
               examples.map((example, index) => (
                 <div className="vocab-example" key={index}>
-                  <p lang="ko">{example.kr}</p>
+                  <p lang="ko">
+                    {example.targetRange ? (
+                      <>
+                        {example.kr.slice(0, example.targetRange[0])}
+                        <mark>{example.kr.slice(...example.targetRange)}</mark>
+                        {example.kr.slice(example.targetRange[1])}
+                      </>
+                    ) : (
+                      example.kr
+                    )}
+                  </p>
                   <p>{example.vn}</p>
+                  <KoreanSpeechControls text={example.kr} label="Nghe câu ví dụ" />
                 </div>
               ))
             ) : (
