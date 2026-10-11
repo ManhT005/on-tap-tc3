@@ -17,6 +17,7 @@ export function resetLessonSnapshot(
     results,
     receipts: snapshot.receipts.filter((receipt) => resultIds.has(receipt.resultId)),
     settings: snapshot.settings.filter((setting) => {
+      if (setting.key === `vocabulary-session:${lessonId}`) return false;
       if (setting.key.startsWith(`writing-draft:${lessonId}:`)) return false;
       if (
         setting.key.startsWith('review-event:') &&

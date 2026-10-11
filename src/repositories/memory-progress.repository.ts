@@ -1,4 +1,10 @@
 import type { ReviewStatus } from '../data/schemas';
+import {
+  VocabularySessionSchema,
+  mutateVocabularySession,
+  type VocabularySession,
+  type VocabularyMutation,
+} from '../domain/vocabulary/vocabulary-session';
 import { applyReviewCommand, type ReviewCommand } from '../domain/review/review-command';
 import { applyLessonEvent, type LessonEvent } from '../domain/progress/lesson-progress';
 import {
@@ -57,6 +63,49 @@ export class MemoryProgressRepository implements ProgressRepository {
         (item) => item.itemType === 'grammar' && item.repetitions > 0,
       ).length,
     };
+  }
+
+  async getVocabularySession(lessonId: number): Promise<VocabularySession | null> {
+    const setting = this.settings.get(`vocabulary-session:${lessonId}`);
+    return setting ? VocabularySessionSchema.parse(structuredClone(setting.value)) : null;
+  }
+  async startVocabularySession(
+    input: VocabularySession,
+    expectedSessionId?: string,
+  ): Promise<VocabularySession> {
+    const session = VocabularySessionSchema.parse(input);
+    if (Object.keys(session.grades).length || session.cursor !== 0)
+      throw new Error('New session must be ungraded.');
+    const stored = this.settings.get(`vocabulary-session:${session.lessonId}`);
+    const previous = stored ? VocabularySessionSchema.parse(stored.value) : null;
+    if (previous && expectedSessionId === undefined) return previous;
+    if (expectedSessionId !== undefined && previous?.id !== expectedSessionId)
+      throw new Error('Vocabulary session changed in another tab.');
+    this.settings.set(`vocabulary-session:${session.lessonId}`, {
+      key: `vocabulary-session:${session.lessonId}`,
+      value: structuredClone(session),
+      updatedAt: session.updatedAt,
+    });
+    return session;
+  }
+  async mutateVocabularySession(mutation: VocabularyMutation): Promise<VocabularySession> {
+    const key = `vocabulary-session:${mutation.lessonId}`;
+    const stored = this.settings.get(key);
+    if (!stored) throw new Error('Vocabulary session not found.');
+    const { session, command } = mutateVocabularySession(
+      VocabularySessionSchema.parse(stored.value),
+      mutation,
+    );
+    if (command && !this.reviewReceipts.has(command.eventId)) {
+      const reviewKey = `vocabulary:${command.itemId}`;
+      const review = applyReviewCommand(this.reviewItems.get(reviewKey), command)!;
+      const progress = applyLessonEvent(this.lessons.get(session.lessonId), command.lessonEvent!);
+      this.reviewItems.set(reviewKey, structuredClone(review));
+      this.reviewReceipts.set(command.eventId, structuredClone(review));
+      this.lessons.set(session.lessonId, structuredClone(progress));
+    }
+    this.settings.set(key, { key, value: structuredClone(session), updatedAt: session.updatedAt });
+    return session;
   }
 
   async getLessonProgress(lessonId: number): Promise<LessonProgress | null> {

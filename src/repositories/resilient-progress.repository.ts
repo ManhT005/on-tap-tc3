@@ -59,6 +59,11 @@ export function withStorageRecovery(
       await run(() => primary.getCourseProgress());
     },
     getCourseProgress: () => run(() => primary.getCourseProgress()),
+    getVocabularySession: (id) => run(() => primary.getVocabularySession(id)),
+    startVocabularySession: (session, expected) =>
+      run(() => primary.startVocabularySession(session, expected), true),
+    mutateVocabularySession: (mutation) =>
+      run(() => primary.mutateVocabularySession(mutation), true),
     getLessonProgress: (lessonId) => run(() => primary.getLessonProgress(lessonId)),
     saveLessonProgress: (progress) => run(() => primary.saveLessonProgress(progress), true),
     applyLessonEvent: (event) => run(() => primary.applyLessonEvent(event), true),

@@ -1,4 +1,10 @@
 import type { ReviewStatus } from '../../data/schemas';
+import {
+  VocabularySessionSchema,
+  mutateVocabularySession,
+  type VocabularySession,
+  type VocabularyMutation,
+} from '../../domain/vocabulary/vocabulary-session';
 import { applyReviewCommand, type ReviewCommand } from '../../domain/review/review-command';
 import { applyLessonEvent, type LessonEvent } from '../../domain/progress/lesson-progress';
 import {
@@ -77,6 +83,82 @@ export class IndexedDbProgressRepository implements ProgressRepository {
         (item) => item.itemType === 'grammar' && item.repetitions > 0,
       ).length,
     };
+  }
+
+  async getVocabularySession(lessonId: number): Promise<VocabularySession | null> {
+    const database = await this.getDatabase();
+    const stored = await database.get('settings', `vocabulary-session:${lessonId}`);
+    return stored ? VocabularySessionSchema.parse(stored.value) : null;
+  }
+
+  async startVocabularySession(
+    input: VocabularySession,
+    expectedSessionId?: string,
+  ): Promise<VocabularySession> {
+    const session = VocabularySessionSchema.parse(input);
+    if (Object.keys(session.grades).length || session.cursor !== 0)
+      throw new Error('New session must be ungraded.');
+    const database = await this.getDatabase();
+    const tx = database.transaction('settings', 'readwrite');
+    const current = await tx.store.get(`vocabulary-session:${session.lessonId}`);
+    const previous = current ? VocabularySessionSchema.parse(current.value) : null;
+    if (previous && expectedSessionId === undefined) {
+      await tx.done;
+      return previous;
+    }
+    if (expectedSessionId !== undefined && previous?.id !== expectedSessionId) {
+      await tx.done;
+      throw new Error('Vocabulary session changed in another tab.');
+    }
+    await tx.store.put({
+      key: `vocabulary-session:${session.lessonId}`,
+      value: session,
+      updatedAt: session.updatedAt,
+    });
+    await tx.done;
+    return session;
+  }
+
+  async mutateVocabularySession(mutation: VocabularyMutation): Promise<VocabularySession> {
+    const database = await this.getDatabase();
+    const tx = database.transaction(['settings', 'review_status', 'lesson_progress'], 'readwrite');
+    try {
+      const settings = tx.objectStore('settings');
+      const key = `vocabulary-session:${mutation.lessonId}`;
+      const stored = await settings.get(key);
+      if (!stored) throw new Error('Vocabulary session not found.');
+      const { session, command } = mutateVocabularySession(
+        VocabularySessionSchema.parse(stored.value),
+        mutation,
+      );
+      if (command) {
+        const receiptKey = `review-event:${command.eventId}`;
+        if (!(await settings.get(receiptKey))) {
+          const reviews = tx.objectStore('review_status');
+          const review = applyReviewCommand(
+            await reviews.get(['vocabulary', command.itemId]),
+            command,
+          )!;
+          await reviews.put(review);
+          const lessons = tx.objectStore('lesson_progress');
+          await lessons.put(
+            applyLessonEvent(await lessons.get(session.lessonId), command.lessonEvent!),
+          );
+          await settings.add({ key: receiptKey, value: review, updatedAt: command.gradedAt });
+        }
+      }
+      await settings.put({ key, value: session, updatedAt: session.updatedAt });
+      await tx.done;
+      return session;
+    } catch (error) {
+      try {
+        tx.abort();
+      } catch {
+        /* already aborted */
+      }
+      await tx.done.catch(() => undefined);
+      throw error;
+    }
   }
 
   async getLessonProgress(lessonId: number): Promise<LessonProgress | null> {

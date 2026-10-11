@@ -1,4 +1,8 @@
 import type { ReviewStatus } from '../data/schemas';
+import type {
+  VocabularySession,
+  VocabularyMutation,
+} from '../domain/vocabulary/vocabulary-session';
 import type { ReviewCommand } from '../domain/review/review-command';
 import type { LessonEvent } from '../domain/progress/lesson-progress';
 import type { ProgressSnapshot, WritingDraft } from '../domain/progress/backup';
@@ -20,6 +24,12 @@ export type PracticeCompletionCommand = {
 };
 
 export interface ProgressRepository {
+  getVocabularySession(lessonId: number): Promise<VocabularySession | null>;
+  startVocabularySession(
+    session: VocabularySession,
+    expectedSessionId?: string,
+  ): Promise<VocabularySession>;
+  mutateVocabularySession(mutation: VocabularyMutation): Promise<VocabularySession>;
   getCourseProgress(): Promise<CourseProgress>;
   getLessonProgress(lessonId: number): Promise<LessonProgress | null>;
   saveLessonProgress(progress: LessonProgress): Promise<void>;

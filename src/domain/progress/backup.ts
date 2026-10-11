@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ReviewStatusSchema } from '../../data/schemas';
 import { resolveContentItemId } from '../review/content-identity';
 import { ExamAttemptSchema } from '../exam/exam.types';
+import { VocabularySessionSchema } from '../vocabulary/vocabulary-session';
 
 const timestamp = z.string().datetime();
 const ids = z.array(z.string().min(1)).max(5000);
@@ -131,6 +132,11 @@ export function validateSnapshot(input: unknown): ProgressSnapshot {
     }
   }
   for (const setting of snapshot.settings) {
+    if (setting.key.startsWith('vocabulary-session:')) {
+      const session = VocabularySessionSchema.parse(setting.value);
+      if (setting.key !== `vocabulary-session:${session.lessonId}`)
+        throw new Error('Vocabulary setting identity mismatch.');
+    }
     if (setting.key.startsWith('writing-draft:')) WritingDraftSchema.parse(setting.value);
     if (setting.key.startsWith('review-event:')) ReviewStatusSchema.parse(setting.value);
     if (setting.key.startsWith('exam-attempt:')) {
