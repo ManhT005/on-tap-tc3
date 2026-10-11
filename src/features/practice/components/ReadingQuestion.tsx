@@ -6,6 +6,7 @@ export type ReadingQuestionProps = {
   question: ReadingQuestionData;
   selectedAnswer?: number;
   submitted: boolean;
+  disabled?: boolean;
   onSelect: (answer: number) => void;
 };
 
@@ -13,6 +14,7 @@ export function ReadingQuestion({
   question,
   selectedAnswer,
   submitted,
+  disabled = false,
   onSelect,
 }: ReadingQuestionProps) {
   return (
@@ -35,7 +37,7 @@ export function ReadingQuestion({
               .filter(Boolean)
               .join(' ')}
             aria-pressed={selectedAnswer === index}
-            disabled={submitted}
+            disabled={submitted || disabled}
             onClick={() => onSelect(index)}
           >
             {option}

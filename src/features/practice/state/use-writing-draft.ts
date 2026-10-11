@@ -4,6 +4,9 @@ import { useProgressRepository } from '../../../app/providers/ProgressRepository
 import type { ProgressRepository } from '../../../repositories/progress.repository';
 
 const sessionDrafts = new WeakMap<ProgressRepository, Map<string, WritingDraft>>();
+export function clearWritingDraftCache(repository: ProgressRepository) {
+  sessionDrafts.get(repository)?.clear();
+}
 
 type DraftState = {
   key: string;

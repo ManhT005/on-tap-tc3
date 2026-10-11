@@ -102,11 +102,20 @@ export function useLessonFlow(lessonId: number) {
   async function markGrammarViewed(itemId: string) {
     setError(null);
     try {
-      await repository.applyLessonEvent({
-        lessonId,
-        kind: 'grammar',
+      await repository.applyReview({
+        eventId: crypto.randomUUID(),
         itemId,
-        occurredAt: new Date().toISOString(),
+        itemType: 'grammar',
+        kind: 'mark',
+        correct: false,
+        confidence: 1,
+        gradedAt: new Date().toISOString(),
+        lessonEvent: {
+          lessonId,
+          kind: 'grammar',
+          itemId,
+          occurredAt: new Date().toISOString(),
+        },
       });
       await refreshProgress();
     } catch {

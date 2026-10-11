@@ -1017,6 +1017,41 @@ a {
   max-width: 100%;
 }
 
+.exam-navigator {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 16px;
+}
+.exam-question [role='group'] {
+  display: grid;
+  gap: 8px;
+  margin-block: 16px;
+}
+.exam-question .button {
+  white-space: normal;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.listening-player {
+  display: grid;
+  gap: 12px;
+  margin-block: 16px;
+}
+.listening-player audio {
+  width: 100%;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th,
+td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
 @media (max-width: 680px) {
   .app-header {
     align-items: flex-start;

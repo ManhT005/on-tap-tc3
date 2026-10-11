@@ -3,13 +3,16 @@ import { PageHeader } from '../components/ui/PageHeader';
 import { QuizPractice } from '../features/practice/components/QuizPractice';
 import { ReadingPractice } from '../features/practice/components/ReadingPractice';
 import { WritingPractice } from '../features/practice/components/WritingPractice';
+import { ListeningPractice } from '../features/practice/components/ListeningPractice';
+import { ExamPractice } from '../features/practice/components/ExamPractice';
 
-type PracticeMode = 'quiz' | 'reading' | 'writing' | 'exam';
+type PracticeMode = 'quiz' | 'reading' | 'writing' | 'listening' | 'exam';
 
 const practiceModes: { id: PracticeMode; label: string }[] = [
   { id: 'quiz', label: 'Quiz' },
   { id: 'reading', label: 'Reading' },
   { id: 'writing', label: 'Writing' },
+  { id: 'listening', label: 'Listening' },
   { id: 'exam', label: 'Exam' },
 ];
 
@@ -74,15 +77,8 @@ export function PracticePage() {
         {mode === 'quiz' ? <QuizPractice /> : null}
         {mode === 'reading' ? <ReadingPractice /> : null}
         {mode === 'writing' ? <WritingPractice /> : null}
-        {mode === 'exam' ? (
-          <div className="practice-coming-soon">
-            <h2>Exam chưa sẵn sàng</h2>
-            <p>Nội dung đề thi thử sẽ được mở khi ngân hàng câu hỏi đủ độ phủ.</p>
-            <button className="button button--secondary button--md" type="button" disabled>
-              Sắp ra mắt
-            </button>
-          </div>
-        ) : null}
+        {mode === 'listening' ? <ListeningPractice /> : null}
+        {mode === 'exam' ? <ExamPractice /> : null}
       </section>
     </section>
   );

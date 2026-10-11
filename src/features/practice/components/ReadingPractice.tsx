@@ -142,6 +142,7 @@ export function ReadingPractice() {
                 question={question}
                 selectedAnswer={answers[question.id]}
                 submitted={submitted}
+                disabled={submitting}
                 onSelect={(answer) =>
                   setAnswers((current) => ({ ...current, [question.id]: answer }))
                 }

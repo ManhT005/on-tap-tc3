@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
@@ -60,7 +60,7 @@ describe('PracticePage', () => {
     expect(screen.getByText(reading.data[0].vietnameseTranslation ?? '')).toBeInTheDocument();
   });
 
-  it('reveals a writing model, saves self-check, and keeps Exam disabled', async () => {
+  it('reveals a writing model, saves self-check and makes Exam available', async () => {
     const user = userEvent.setup();
     const { repository } = renderPracticePage();
 
@@ -81,7 +81,9 @@ describe('PracticePage', () => {
     await expect(repository.getCourseProgress()).resolves.toMatchObject({ practiceSessions: 1 });
 
     await user.click(screen.getByRole('tab', { name: 'Exam' }));
-    expect(screen.getByRole('button', { name: 'Sắp ra mắt' })).toBeDisabled();
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Bắt đầu đề mới' })).toBeEnabled(),
+    );
   });
 
   it('Reading practice: selecting empty lesson shows empty state, selecting lesson 1 recovers', async () => {

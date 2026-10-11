@@ -12,6 +12,12 @@ import type { PracticeResult } from '../../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../../domain/progress/progress.types';
 import type { PracticeCompletionCommand, ProgressRepository } from '../progress.repository';
 import { openProgressDatabase } from './progress.database';
+import {
+  ExamAttemptSchema,
+  type ExamAttempt,
+  type ExamMutation,
+} from '../../domain/exam/exam.types';
+import { startExam, mutateExam, completeExam } from '../../domain/exam/exam-engine';
 
 export type IndexedDbProgressRepositoryOptions = {
   databaseName?: string;
@@ -122,6 +128,133 @@ export class IndexedDbProgressRepository implements ProgressRepository {
     return (await database.getAll('practice_results')).sort((a, b) =>
       b.completedAt.localeCompare(a.completedAt),
     );
+  }
+
+  async getActiveExamAttempt(): Promise<ExamAttempt | null> {
+    const database = await this.getDatabase();
+    const tx = database.transaction('settings');
+    const active = await tx.store.get('active-exam');
+    const stored =
+      typeof active?.value === 'string'
+        ? await tx.store.get(`exam-attempt:${active.value}`)
+        : undefined;
+    await tx.done;
+    return stored ? ExamAttemptSchema.parse(stored.value) : null;
+  }
+
+  async createExamAttempt(input: ExamAttempt): Promise<ExamAttempt> {
+    const parsed = ExamAttemptSchema.parse(input);
+    if (parsed.status !== 'CREATED') throw new Error('New exam must be CREATED.');
+    const database = await this.getDatabase();
+    const tx = database.transaction('settings', 'readwrite');
+    try {
+      const active = await tx.store.get('active-exam');
+      const current =
+        typeof active?.value === 'string'
+          ? await tx.store.get(`exam-attempt:${active.value}`)
+          : undefined;
+      if (current) {
+        const attempt = ExamAttemptSchema.parse(current.value);
+        if (attempt.status === 'IN_PROGRESS') {
+          await tx.done;
+          return attempt;
+        }
+      }
+      const existing = await tx.store.get(`exam-attempt:${parsed.id}`);
+      if (existing) {
+        await tx.done;
+        return ExamAttemptSchema.parse(existing.value);
+      }
+      const now = this.now();
+      const attempt = startExam(parsed, now);
+      await tx.store.add({
+        key: `exam-attempt:${attempt.id}`,
+        value: attempt,
+        updatedAt: now.toISOString(),
+      });
+      await tx.store.put({ key: 'active-exam', value: attempt.id, updatedAt: now.toISOString() });
+      await tx.done;
+      return attempt;
+    } catch (error) {
+      try {
+        tx.abort();
+      } catch {
+        /* already aborted */
+      }
+      await tx.done.catch(() => undefined);
+      throw error;
+    }
+  }
+
+  async mutateExamAttempt(mutation: ExamMutation): Promise<ExamAttempt> {
+    const database = await this.getDatabase();
+    const tx = database.transaction('settings', 'readwrite');
+    try {
+      const key = `exam-attempt:${mutation.attemptId}`;
+      const stored = await tx.store.get(key);
+      if (!stored) throw new Error('Exam not found.');
+      const now = this.now();
+      const attempt = mutateExam(ExamAttemptSchema.parse(stored.value), mutation, now);
+      await tx.store.put({ key, value: attempt, updatedAt: now.toISOString() });
+      await tx.done;
+      return attempt;
+    } catch (error) {
+      try {
+        tx.abort();
+      } catch {
+        /* already aborted */
+      }
+      await tx.done.catch(() => undefined);
+      throw error;
+    }
+  }
+
+  async submitExamAttempt(
+    attemptId: string,
+  ): Promise<{ attempt: ExamAttempt; result: PracticeResult }> {
+    const database = await this.getDatabase();
+    const tx = database.transaction(
+      ['settings', 'practice_results', 'completion_receipts', 'review_status'],
+      'readwrite',
+    );
+    try {
+      const key = `exam-attempt:${attemptId}`;
+      const stored = await tx.objectStore('settings').get(key);
+      if (!stored) throw new Error('Exam not found.');
+      const attempt = ExamAttemptSchema.parse(stored.value);
+      if (attempt.status === 'SUBMITTED' || attempt.status === 'EXPIRED') {
+        const result = await tx.objectStore('practice_results').get(attempt.resultId!);
+        if (!result) throw new Error('Exam result is missing.');
+        await tx.done;
+        return { attempt, result };
+      }
+      const completed = completeExam(attempt, this.now());
+      await tx.objectStore('practice_results').add(completed.result);
+      await tx.objectStore('completion_receipts').add({
+        sessionId: attemptId,
+        resultId: completed.result.id,
+        completedAt: completed.result.completedAt,
+      });
+      for (const event of completed.reviewCommands) {
+        const reviews = tx.objectStore('review_status');
+        const current = await reviews.get([event.itemType, event.itemId]);
+        const updated = applyReviewCommand(current, event);
+        if (updated) await reviews.put(updated);
+      }
+      await tx
+        .objectStore('settings')
+        .put({ key, value: completed.attempt, updatedAt: completed.result.completedAt });
+      await tx.done;
+      return { attempt: completed.attempt, result: completed.result };
+    } catch (error) {
+      try {
+        tx.abort();
+      } catch {
+        /* already aborted */
+      }
+      await tx.done.catch(() => undefined);
+      throw error;
+    }
   }
 
   async getWritingDraft(lessonId: number, promptId: string): Promise<WritingDraft | null> {

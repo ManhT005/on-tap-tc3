@@ -8,6 +8,7 @@ import {
 } from '../../../domain/progress/backup';
 import { Button } from '../../../components/ui/Button';
 import { resetLessonSnapshot } from '../../../domain/progress/reset-lesson-snapshot';
+import { clearWritingDraftCache } from '../../practice/state/use-writing-draft';
 
 function download(snapshot: ProgressSnapshot) {
   const url = URL.createObjectURL(
@@ -79,6 +80,7 @@ export function BackupPanel() {
       )
         return;
       await repository.restoreSnapshot(replacement, current);
+      clearWritingDraftCache(repository);
       setPreview(null);
       setMessage(
         resetting ? 'Đã xóa dữ liệu. Có thể khôi phục từ file sao lưu.' : 'Đã khôi phục dữ liệu.',

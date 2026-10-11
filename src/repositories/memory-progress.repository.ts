@@ -9,6 +9,8 @@ import {
   type WritingDraft,
 } from '../domain/progress/backup';
 import type { AppSetting } from '../domain/progress/progress.types';
+import { ExamAttemptSchema, type ExamAttempt, type ExamMutation } from '../domain/exam/exam.types';
+import { startExam, mutateExam, completeExam } from '../domain/exam/exam-engine';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
 import type { PracticeCompletionCommand, ProgressRepository } from './progress.repository';
@@ -87,6 +89,85 @@ export class MemoryProgressRepository implements ProgressRepository {
     return structuredClone(
       [...this.practiceResults.values()].sort((a, b) => b.completedAt.localeCompare(a.completedAt)),
     );
+  }
+
+  async getActiveExamAttempt(): Promise<ExamAttempt | null> {
+    const active = this.settings.get('active-exam');
+    const stored =
+      typeof active?.value === 'string'
+        ? this.settings.get(`exam-attempt:${active.value}`)
+        : undefined;
+    return stored ? ExamAttemptSchema.parse(structuredClone(stored.value)) : null;
+  }
+  async createExamAttempt(input: ExamAttempt): Promise<ExamAttempt> {
+    const parsed = ExamAttemptSchema.parse(input);
+    if (parsed.status !== 'CREATED') throw new Error('New exam must be CREATED.');
+    const active = this.settings.get('active-exam');
+    const current =
+      typeof active?.value === 'string'
+        ? this.settings.get(`exam-attempt:${active.value}`)
+        : undefined;
+    if (current) {
+      const attempt = ExamAttemptSchema.parse(current.value);
+      if (attempt.status === 'IN_PROGRESS') return structuredClone(attempt);
+    }
+    const existing = this.settings.get(`exam-attempt:${parsed.id}`);
+    if (existing) return ExamAttemptSchema.parse(structuredClone(existing.value));
+    const now = this.now();
+    const attempt = startExam(parsed, now);
+    this.settings.set(`exam-attempt:${attempt.id}`, {
+      key: `exam-attempt:${attempt.id}`,
+      value: structuredClone(attempt),
+      updatedAt: now.toISOString(),
+    });
+    this.settings.set('active-exam', {
+      key: 'active-exam',
+      value: attempt.id,
+      updatedAt: now.toISOString(),
+    });
+    return structuredClone(attempt);
+  }
+  async mutateExamAttempt(mutation: ExamMutation): Promise<ExamAttempt> {
+    const key = `exam-attempt:${mutation.attemptId}`;
+    const stored = this.settings.get(key);
+    if (!stored) throw new Error('Exam not found.');
+    const now = this.now();
+    const attempt = mutateExam(ExamAttemptSchema.parse(stored.value), mutation, now);
+    this.settings.set(key, { key, value: structuredClone(attempt), updatedAt: now.toISOString() });
+    return structuredClone(attempt);
+  }
+  async submitExamAttempt(
+    attemptId: string,
+  ): Promise<{ attempt: ExamAttempt; result: PracticeResult }> {
+    const key = `exam-attempt:${attemptId}`;
+    const stored = this.settings.get(key);
+    if (!stored) throw new Error('Exam not found.');
+    const attempt = ExamAttemptSchema.parse(structuredClone(stored.value));
+    if (attempt.status === 'SUBMITTED' || attempt.status === 'EXPIRED') {
+      const result = this.practiceResults.get(attempt.resultId!);
+      if (!result) throw new Error('Exam result is missing.');
+      return { attempt, result: structuredClone(result) };
+    }
+    const completed = completeExam(attempt, this.now());
+    const reviews = new Map(this.reviewItems);
+    for (const event of completed.reviewCommands) {
+      const reviewKey = `${event.itemType}:${event.itemId}`;
+      const updated = applyReviewCommand(reviews.get(reviewKey), event);
+      if (updated) reviews.set(reviewKey, updated);
+    }
+    this.practiceResults.set(completed.result.id, structuredClone(completed.result));
+    this.receipts.set(attemptId, completed.result.id);
+    for (const [reviewKey, value] of reviews)
+      this.reviewItems.set(reviewKey, structuredClone(value));
+    this.settings.set(key, {
+      key,
+      value: structuredClone(completed.attempt),
+      updatedAt: completed.result.completedAt,
+    });
+    return {
+      attempt: structuredClone(completed.attempt),
+      result: structuredClone(completed.result),
+    };
   }
   async getWritingDraft(lessonId: number, promptId: string): Promise<WritingDraft | null> {
     const setting = this.settings.get(`writing-draft:${lessonId}:${promptId}`);

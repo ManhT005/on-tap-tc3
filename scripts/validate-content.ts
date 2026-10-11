@@ -3,6 +3,7 @@ import { LESSONS_DATA } from '../src/data/lessons';
 import { QUIZ_BANK } from '../src/data/quiz-bank';
 import { READING_BANK } from '../src/data/reading-bank';
 import { WRITING_BANK } from '../src/data/writing-bank';
+import { LISTENING_BANK } from '../src/data/listening-bank';
 
 const issues: string[] = [];
 const warnings: string[] = [];
@@ -32,6 +33,11 @@ for (const lesson of COURSE_STRUCTURE) {
 
 checkDuplicateIds(QUIZ_BANK, 'quiz-bank.ts');
 checkDuplicateIds(WRITING_BANK, 'writing-bank.ts');
+checkDuplicateIds(LISTENING_BANK, 'listening-bank.ts');
+checkDuplicateIds(
+  LISTENING_BANK.flatMap((passage) => passage.questions),
+  'listening questions',
+);
 
 const readingPassages = Object.values(READING_BANK).flat();
 const readingQuestions = readingPassages.flatMap((passage) => passage.questions);
@@ -174,6 +180,11 @@ for (let lessonId = 1; lessonId <= 15; lessonId += 1) {
   const quizCount = QUIZ_BANK.filter((q) => q.lessonId === lessonId).length;
   const readingCount = (READING_BANK[String(lessonId)] ?? []).length;
   const writingCount = WRITING_BANK.filter((p) => p.lessonId === lessonId).length;
+  if (
+    !process.argv.includes('--phase2') &&
+    LISTENING_BANK.filter((passage) => passage.lessonId === lessonId).length < 2
+  )
+    issues.push(`Lesson ${lessonId}: fewer than 2 listening scripts`);
 
   if (quizCount < (process.argv.includes('--phase2') ? 8 : 12)) {
     issues.push(`Lesson ${lessonId}: insufficient quiz coverage (${quizCount})`);

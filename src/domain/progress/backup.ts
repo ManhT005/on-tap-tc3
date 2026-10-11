@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { ReviewStatusSchema } from '../../data/schemas';
 import { resolveContentItemId } from '../review/content-identity';
+import { ExamAttemptSchema } from '../exam/exam.types';
 
 const timestamp = z.string().datetime();
 const ids = z.array(z.string().min(1)).max(5000);
@@ -132,6 +133,24 @@ export function validateSnapshot(input: unknown): ProgressSnapshot {
   for (const setting of snapshot.settings) {
     if (setting.key.startsWith('writing-draft:')) WritingDraftSchema.parse(setting.value);
     if (setting.key.startsWith('review-event:')) ReviewStatusSchema.parse(setting.value);
+    if (setting.key.startsWith('exam-attempt:')) {
+      const attempt = ExamAttemptSchema.parse(setting.value);
+      if (setting.key !== `exam-attempt:${attempt.id}`)
+        throw new Error('Exam setting identity mismatch.');
+      if (
+        attempt.resultId &&
+        !snapshot.results.some(
+          (result) => result.id === attempt.resultId && result.sessionId === attempt.id,
+        )
+      )
+        throw new Error('Exam result is missing from backup.');
+    }
+    if (
+      setting.key === 'active-exam' &&
+      (typeof setting.value !== 'string' ||
+        !snapshot.settings.some((item) => item.key === `exam-attempt:${setting.value}`))
+    )
+      throw new Error('Active exam pointer is invalid.');
   }
   return snapshot;
 }
