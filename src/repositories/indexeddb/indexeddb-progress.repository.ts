@@ -110,6 +110,10 @@ export class IndexedDbProgressRepository implements ProgressRepository {
       await tx.done;
       throw new Error('Vocabulary session changed in another tab.');
     }
+    if (previous?.id === session.id) {
+      await tx.done;
+      throw new Error('Replacement needs a new session ID.');
+    }
     await tx.store.put({
       key: `vocabulary-session:${session.lessonId}`,
       value: session,

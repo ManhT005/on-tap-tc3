@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { MemoryProgressRepository } from './memory-progress.repository';
 import { IndexedDbProgressRepository } from './indexeddb/indexeddb-progress.repository';
 import { serializeBackup, parseBackup } from '../domain/progress/backup';
@@ -16,6 +16,43 @@ const initial: VocabularySession = {
   startedAt: '2026-10-11T00:00:00.000Z',
   updatedAt: '2026-10-11T00:00:00.000Z',
 };
+it('rolls back session, lesson, SRS and receipt on a late IndexedDB write failure', async () => {
+  const repository = new IndexedDbProgressRepository({ databaseName: crypto.randomUUID() });
+  await repository.startVocabularySession(initial);
+  const original = IDBObjectStore.prototype.put;
+  const spy = vi.spyOn(IDBObjectStore.prototype, 'put').mockImplementation(function (
+    this: IDBObjectStore,
+    value,
+    key,
+  ) {
+    if (this.name === 'settings' && value.key === 'vocabulary-session:1')
+      throw new DOMException('quota', 'QuotaExceededError');
+    return original.call(this, value, key);
+  });
+  try {
+    await expect(
+      repository.mutateVocabularySession({
+        kind: 'grade',
+        sessionId: initial.id,
+        lessonId: 1,
+        itemId: initial.itemIds[0]!,
+        confidence: 4,
+        occurredAt: initial.updatedAt,
+      }),
+    ).rejects.toThrow();
+  } finally {
+    spy.mockRestore();
+  }
+  expect(await repository.getReviewItems()).toEqual([]);
+  expect(await repository.getLessonProgress(1)).toBeNull();
+  expect((await repository.getVocabularySession(1))?.grades).toEqual({});
+  expect(
+    (await repository.getSnapshot()).settings.filter((setting) =>
+      setting.key.startsWith('review-event:'),
+    ),
+  ).toHaveLength(0);
+  await repository.close();
+});
 for (const adapter of ['memory', 'indexeddb'])
   describe(`${adapter} vocabulary persistence`, () => {
     it('serializes competing grades, resumes, backs up/restores and resets one lesson', async () => {

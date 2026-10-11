@@ -12,6 +12,7 @@ import { Button } from '../../../components/ui/Button';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { getLessonReading } from '../../../domain/learning/lesson.service';
 import { ContextualVocabulary } from './ContextualVocabulary';
+import { KoreanSpeechControls } from '../../../components/learning/KoreanSpeechControls';
 
 const entries = adaptVocabulary(VOCABULARY_ENRICHMENT);
 const modes = [
@@ -29,22 +30,15 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
     : 'flashcard';
   const lessonEntries = entries.filter((entry) => entry.lessonId === lessonId);
   const wordId = params.get('word');
-  const initialIds =
-    wordId && lessonEntries.some((entry) => entry.id === wordId)
-      ? [
-          wordId,
-          ...lessonEntries
-            .filter((entry) => entry.id !== wordId)
-            .slice(0, 9)
-            .map((entry) => entry.id),
-        ]
-      : lessonEntries.slice(0, 10).map((entry) => entry.id);
-  const state = useVocabularySession(lessonId, initialIds);
+  const requestedWord =
+    wordId && lessonEntries.some((entry) => entry.id === wordId) ? wordId : undefined;
+  const state = useVocabularySession(lessonId, lessonEntries, requestedWord);
   const [batchSize, setBatchSize] = useState<5 | 10 | 15>(10);
   const [filter, setFilter] = useState<VocabularyFilter>('all');
   const [query, setQuery] = useState('');
   const [revealed, setRevealed] = useState(false);
   const [guess, setGuess] = useState<string | null>(null);
+  const [viewSessionId, setViewSessionId] = useState<string | null>(null);
   const card = useRef<HTMLDivElement>(null);
   const session = state.session;
   const entry = session
@@ -108,7 +102,16 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
     const existing = session?.itemIds.indexOf(id) ?? -1;
     if (existing >= 0) await state.mutate({ kind: 'move', cursor: existing });
     else await state.start([id], 5);
-    changeMode('flashcard');
+    const next = new URLSearchParams(params);
+    next.set('mode', 'flashcard');
+    next.set('word', id);
+    setParams(next, { replace: true });
+  }
+  function startBatch(ids: string[], size: 5 | 10 | 15) {
+    const next = new URLSearchParams(params);
+    next.delete('word');
+    setParams(next, { replace: true });
+    return state.start(ids, size);
   }
   const options = entry
     ? [
@@ -195,7 +198,7 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
           variant="secondary"
           disabled={state.saving || state.loading || !filtered.length}
           onClick={() =>
-            void state.start(
+            void startBatch(
               planVocabularyBatch(filtered, batchSize, studied, state.reviews),
               batchSize,
             )
@@ -269,7 +272,7 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
               disabled={state.saving}
               onOpen={(id) => void openWord(id)}
             />
-          ) : complete ? (
+          ) : complete && viewSessionId !== session?.id && !requestedWord ? (
             <div className="vocab-summary" role="status">
               <h3>Đã hoàn thành lượt học</h3>
               <p>
@@ -277,9 +280,12 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
                 {done - hardIds.length}
               </p>
               <div className="vocab-actions">
+                <Button variant="secondary" onClick={() => setViewSessionId(session!.id)}>
+                  Xem lại các từ trong phiên
+                </Button>
                 <Button
                   disabled={state.saving || !hardIds.length}
-                  onClick={() => void state.start(hardIds, session!.batchSize)}
+                  onClick={() => void startBatch(hardIds, session!.batchSize)}
                 >
                   Ôn lại từ khó
                 </Button>
@@ -296,7 +302,7 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
                     ).length
                   }
                   onClick={() =>
-                    void state.start(
+                    void startBatch(
                       planVocabularyBatch(
                         filtered,
                         batchSize,
@@ -323,6 +329,7 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
                   <h3 className="vocab-hangul" lang="ko">
                     {entry.korean}
                   </h3>
+                  <KoreanSpeechControls key={entry.id} text={entry.korean} />
                   <p>Chọn nghĩa đúng. Kết quả ghi vào SRS, không tính vào điểm bài thi.</p>
                   <div className="vocab-choices">
                     {options.map((option) => (
@@ -417,6 +424,18 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
         <aside className="vocab-rail card">
           <h2>Hành trình ghi nhớ</h2>
           <dl>
+            <dt>Từ đến hạn ôn trong bài</dt>
+            <dd>
+              {
+                state.reviews.filter(
+                  (item) =>
+                    item.itemType === 'vocabulary' &&
+                    item.nextReviewAt <= now &&
+                    lessonEntries.some((candidate) => candidate.id === item.itemId),
+                ).length
+              }{' '}
+              từ
+            </dd>
             <dt>Đã đánh giá phiên này</dt>
             <dd>{done} từ</dd>
             <dt>Không nhớ / Khó nhớ</dt>

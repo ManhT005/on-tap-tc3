@@ -81,6 +81,7 @@ export class MemoryProgressRepository implements ProgressRepository {
     if (previous && expectedSessionId === undefined) return previous;
     if (expectedSessionId !== undefined && previous?.id !== expectedSessionId)
       throw new Error('Vocabulary session changed in another tab.');
+    if (previous?.id === session.id) throw new Error('Replacement needs a new session ID.');
     this.settings.set(`vocabulary-session:${session.lessonId}`, {
       key: `vocabulary-session:${session.lessonId}`,
       value: structuredClone(session),

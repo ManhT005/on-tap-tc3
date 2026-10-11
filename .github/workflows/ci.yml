@@ -22,6 +22,7 @@ jobs:
       - run: npm run format:check
       - run: npm run test:coverage
       - run: npm run check:manifest
+      - run: npm run validate:vocab
       - run: npm run validate:content
       - run: npm run audit:data -- --write-docs
       - run: git diff --exit-code -- docs/content/CONTENT_COVERAGE.md

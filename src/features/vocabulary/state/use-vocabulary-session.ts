@@ -2,12 +2,18 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useProgressRepository } from '../../../app/providers/ProgressRepositoryProvider';
 import type { LessonProgress } from '../../../domain/progress/progress.types';
 import type { ReviewStatus } from '../../../data/schemas';
+import type { VocabularyEntry } from '../../../domain/vocabulary/vocabulary.types';
+import { planVocabularyBatch } from '../../../domain/vocabulary/session-planner';
 import type {
   VocabularyMutation,
   VocabularySession,
 } from '../../../domain/vocabulary/vocabulary-session';
 
-export function useVocabularySession(lessonId: number, initialIds: string[]) {
+export function useVocabularySession(
+  lessonId: number,
+  entries: VocabularyEntry[],
+  requestedWord?: string,
+) {
   const { repository, storageRevision } = useProgressRepository();
   const [session, setSession] = useState<VocabularySession | null>(null);
   const [progress, setProgress] = useState<LessonProgress | null>(null);
@@ -16,7 +22,7 @@ export function useVocabularySession(lessonId: number, initialIds: string[]) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const lock = useRef(false);
-  const initial = useRef(initialIds);
+  const initial = useRef(entries);
   const mounted = useRef(true);
   const sequence = useRef(0);
   const refresh = useCallback(async () => {
@@ -40,26 +46,50 @@ export function useVocabularySession(lessonId: number, initialIds: string[]) {
   }, [repository, lessonId]);
   useEffect(() => {
     const sequenceRef = sequence;
+    let active = true;
     mounted.current = true;
     const initialize = async () => {
       try {
-        const stored = await repository.getVocabularySession(lessonId);
-        if (!stored && mounted.current) {
+        const [stored, lesson, items] = await Promise.all([
+          repository.getVocabularySession(lessonId),
+          repository.getLessonProgress(lessonId),
+          repository.getReviewItems(),
+        ]);
+        if (!active) return;
+        if (!stored || (requestedWord && !stored.itemIds.includes(requestedWord))) {
           const now = new Date().toISOString();
-          await repository.startVocabularySession({
-            id: crypto.randomUUID(),
+          await repository.startVocabularySession(
+            {
+              id: crypto.randomUUID(),
+              lessonId,
+              itemIds: requestedWord
+                ? [requestedWord]
+                : planVocabularyBatch(
+                    initial.current,
+                    10,
+                    lesson?.steps?.vocabularyIds ?? [],
+                    items,
+                  ),
+              batchSize: 10,
+              cursor: 0,
+              grades: {},
+              startedAt: now,
+              updatedAt: now,
+            },
+            stored?.id,
+          );
+        } else if (requestedWord && stored.itemIds[stored.cursor] !== requestedWord) {
+          await repository.mutateVocabularySession({
+            kind: 'move',
+            cursor: stored.itemIds.indexOf(requestedWord),
+            sessionId: stored.id,
             lessonId,
-            itemIds: initial.current.slice(0, 10),
-            batchSize: 10,
-            cursor: 0,
-            grades: {},
-            startedAt: now,
-            updatedAt: now,
+            occurredAt: new Date().toISOString(),
           });
         }
-        if (mounted.current) await refresh();
+        if (active) await refresh();
       } catch {
-        if (mounted.current) {
+        if (active) {
           setError('Không tải được phiên từ vựng. Hãy thử kết nối lại bộ nhớ.');
           setLoading(false);
         }
@@ -72,12 +102,13 @@ export function useVocabularySession(lessonId: number, initialIds: string[]) {
     window.addEventListener('focus', focus);
     const timer = setInterval(focus, 30_000);
     return () => {
+      active = false;
       mounted.current = false;
       sequenceRef.current++;
       clearInterval(timer);
       window.removeEventListener('focus', focus);
     };
-  }, [repository, lessonId, refresh, storageRevision]);
+  }, [repository, lessonId, refresh, storageRevision, requestedWord]);
 
   async function run(action: () => Promise<VocabularySession>) {
     if (lock.current) return;
