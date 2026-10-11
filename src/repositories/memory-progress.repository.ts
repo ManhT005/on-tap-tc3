@@ -60,11 +60,11 @@ export class MemoryProgressRepository implements ProgressRepository {
   }
 
   async getLessonProgress(lessonId: number): Promise<LessonProgress | null> {
-    return this.lessons.get(lessonId) ?? null;
+    return structuredClone(this.lessons.get(lessonId) ?? null);
   }
 
   async saveLessonProgress(progress: LessonProgress): Promise<void> {
-    this.lessons.set(progress.lessonId, progress);
+    this.lessons.set(progress.lessonId, structuredClone(progress));
   }
 
   async applyLessonEvent(event: LessonEvent): Promise<LessonProgress> {
@@ -74,15 +74,22 @@ export class MemoryProgressRepository implements ProgressRepository {
   }
 
   async getReviewItems(): Promise<ReviewStatus[]> {
-    return [...this.reviewItems.values()];
+    return structuredClone([...this.reviewItems.values()]);
   }
 
   async saveReviewItem(item: ReviewStatus): Promise<void> {
-    this.reviewItems.set(`${item.itemType}:${item.itemId}`, item);
+    this.reviewItems.set(`${item.itemType}:${item.itemId}`, structuredClone(item));
   }
 
   async savePracticeResult(result: PracticeResult): Promise<void> {
-    this.practiceResults.set(result.id, result);
+    if (
+      result.sessionId &&
+      [...this.practiceResults.values()].some(
+        (item) => item.id !== result.id && item.sessionId === result.sessionId,
+      )
+    )
+      throw new DOMException('Session already stored', 'ConstraintError');
+    this.practiceResults.set(result.id, structuredClone(result));
   }
 
   async getPracticeResults(): Promise<PracticeResult[]> {
@@ -249,7 +256,11 @@ export class MemoryProgressRepository implements ProgressRepository {
     const existing =
       this.practiceResults.get(this.receipts.get(command.sessionId) ?? command.result.id) ??
       [...this.practiceResults.values()].find((result) => result.sessionId === command.sessionId);
-    if (existing) return structuredClone(existing);
+    if (existing) {
+      if (existing.sessionId && existing.sessionId !== command.sessionId)
+        throw new DOMException('Result ID belongs to another session.', 'ConstraintError');
+      return structuredClone(existing);
+    }
 
     const result = structuredClone({ ...command.result, sessionId: command.sessionId });
     const progress = command.lessonEvent

@@ -939,13 +939,13 @@ a {
 }
 
 .button--sm {
-  min-height: 32px;
+  min-height: 44px;
   padding: 0.5rem 0.75rem;
   font-size: var(--text-sm);
 }
 
 .button--md {
-  min-height: 40px;
+  min-height: 44px;
   padding: 0.625rem 1rem;
   font-size: var(--text-base);
 }
@@ -996,6 +996,13 @@ a {
   margin-block: 12px;
   overflow-wrap: anywhere;
 }
+
+.app-footer {
+  text-align: center;
+  padding: 16px;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
 .history-entry summary {
   cursor: pointer;
   min-height: 44px;
@@ -1037,6 +1044,13 @@ a {
   display: grid;
   gap: 12px;
   margin-block: 16px;
+  padding: var(--space-4);
+}
+
+.exam-status,
+.exam-question,
+.history-entry {
+  padding: var(--space-4);
 }
 .listening-player audio {
   width: 100%;
@@ -1053,6 +1067,15 @@ td {
 }
 
 @media (max-width: 680px) {
+  .practice-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow-x: visible;
+  }
+  .practice-tab {
+    width: 100%;
+    white-space: normal;
+  }
   .app-header {
     align-items: flex-start;
     flex-direction: column;

@@ -32,12 +32,37 @@ describe.each(['memory', 'indexeddb'] as const)('session identity: %s', (adapter
       : new IndexedDbProgressRepository({ databaseName: crypto.randomUUID() });
   }
 
+  it('does not expose stored records as mutable aliases and rejects duplicate session identities on direct saves', async () => {
+    const repo = create();
+    const input = { ...command('session', 'first').result, sessionId: 'session' };
+    await repo.savePracticeResult(input);
+    input.correct = 99;
+    expect((await repo.getPracticeResults())[0]?.correct).toBe(0);
+    await expect(repo.savePracticeResult({ ...input, id: 'other' })).rejects.toThrow();
+    const results = await repo.getPracticeResults();
+    results[0]!.correct = 50;
+    expect((await repo.getPracticeResults())[0]?.correct).toBe(0);
+    if (repo instanceof IndexedDbProgressRepository) await repo.close();
+  });
+
   it('returns the original result for the same session with a changed result ID', async () => {
     const repo = create();
     const first = await repo.commitPracticeCompletion(command('session', 'first'));
     const replay = await repo.commitPracticeCompletion(command('session', 'retry'));
     expect(replay).toEqual(first);
     expect((await repo.getCourseProgress()).practiceSessions).toBe(1);
+    if (repo instanceof IndexedDbProgressRepository) await repo.close();
+  });
+
+  it('rejects a result ID collision across distinct sessions rather than returning another session as a successful save', async () => {
+    const repo = create();
+    await repo.commitPracticeCompletion(command('first-session', 'same-result-id'));
+    await expect(
+      repo.commitPracticeCompletion(command('second-session', 'same-result-id')),
+    ).rejects.toThrow('another session');
+    expect((await repo.getCourseProgress()).practiceSessions).toBe(1);
+    await repo.commitPracticeCompletion(command('second-session', 'fresh-result-id'));
+    expect((await repo.getCourseProgress()).practiceSessions).toBe(2);
     if (repo instanceof IndexedDbProgressRepository) await repo.close();
   });
 

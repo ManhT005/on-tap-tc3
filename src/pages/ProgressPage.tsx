@@ -12,7 +12,7 @@ import { BackupPanel } from '../features/progress/components/BackupPanel';
 export function ProgressPage() {
   const { storageStatus } = useProgressRepository();
   const [reloadKey, setReloadKey] = useState(0);
-  const { progress, loading, error } = useCourseDashboard(reloadKey);
+  const { progress, reviewSummary, loading, error } = useCourseDashboard(reloadKey);
 
   const isDegraded = storageStatus === 'degraded';
 
@@ -60,6 +60,30 @@ export function ProgressPage() {
           <StatTile label="Ngữ pháp đã ôn" value={progress.grammarReviewed} />
         </div>
       )}
+      {reviewSummary ? (
+        <section className="review-section" aria-labelledby="review-summary-title">
+          <h2 id="review-summary-title">Lịch ôn hiện tại</h2>
+          <p>
+            Mục mới chưa ôn: {reviewSummary.newItems} · Đã ôn, chưa đạt lịch 30 ngày:{' '}
+            {reviewSummary.learned} · Đã đạt lịch 30 ngày: {reviewSummary.stableSchedule}
+          </p>
+          <p>
+            Nhóm lịch 30 ngày gồm mục ở hộp SRS 5 với khoảng ôn 30 ngày; đây là lịch ôn, không phải
+            chứng nhận đã thành thạo tiếng Hàn.
+          </p>
+          <p>
+            Lịch tiếp theo:{' '}
+            {reviewSummary.nextReviewAt
+              ? new Date(reviewSummary.nextReviewAt).toLocaleString('vi-VN')
+              : 'Chưa có lịch ở tương lai. Hãy xem mục đến hạn trong Review.'}
+          </p>
+          {reviewSummary.orphanCount ? (
+            <p>
+              {reviewSummary.orphanCount} mục không tìm thấy nội dung được giữ riêng để khôi phục.
+            </p>
+          ) : null}
+        </section>
+      ) : null}
       <PracticeHistory />
       <BackupPanel />
     </section>

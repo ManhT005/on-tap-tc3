@@ -7,7 +7,7 @@ export type StorageHealth = {
   error: unknown | null;
 };
 export type StorageRecoveryOptions = {
-  onError?: (error: unknown) => void;
+  onError?: (error: unknown, operation: 'read' | 'write') => void;
   onStatusChange?: (status: StorageStatus) => void;
   now?: () => Date;
 };
@@ -44,7 +44,7 @@ export function withStorageRecovery(
     } catch (error) {
       health = { ...health, error };
       setStatus('unavailable');
-      options.onError?.(error);
+      options.onError?.(error, write ? 'write' : 'read');
       throw error;
     }
   }

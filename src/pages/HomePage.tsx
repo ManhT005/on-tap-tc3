@@ -25,7 +25,7 @@ export function HomePage() {
         <EmptyState title="Không tải được dữ liệu" description={error} role="alert" />
       ) : null}
 
-      {loading || !progress ? (
+      {error ? null : loading || !progress ? (
         <div className="dashboard-grid" aria-label="Đang tải tiến độ">
           {Array.from({ length: 4 }, (_, index) => (
             <Skeleton key={index} height="150px" />

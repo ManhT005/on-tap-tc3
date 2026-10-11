@@ -1,6 +1,6 @@
 {
   "name": "on-tap-tc3",
-  "version": "0.2.0-alpha",
+  "version": "0.3.0-beta.1",
   "description": "Ôn tiếng Hàn TC3",
   "repository": {
     "type": "git",
@@ -26,7 +26,13 @@
     "validate:content": "tsx scripts/validate-content.ts",
     "audit:data": "tsx scripts/data-audit.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"*.{js,ts,json,html}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"*.{js,ts,json,html}\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"*.{js,ts,json,html}\"",
+    "preview": "vite preview",
+    "test:coverage": "vitest run --coverage",
+    "generate:manifest": "tsx scripts/generate-learning-manifest.ts",
+    "check:manifest": "tsx scripts/generate-learning-manifest.ts --check",
+    "validate:release": "tsx scripts/validate-content.ts --release",
+    "check:bundle": "tsx scripts/check-bundle-budget.ts"
   },
   "dependencies": {
     "idb": "^8.0.3",
@@ -36,6 +42,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.63.0",
     "@testing-library/jest-dom": "^7.0.1",
@@ -45,6 +52,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/coverage-v8": "^5.0.2",
     "autoprefixer": "^10.6.1",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
@@ -56,7 +64,6 @@
     "lint-staged": "^17.6.0",
     "postcss": "^8.5.28",
     "prettier": "^3.9.9",
-    "tailwindcss": "^3.4.19",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.70.1",

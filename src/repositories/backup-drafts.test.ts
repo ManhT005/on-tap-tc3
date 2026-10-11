@@ -2,7 +2,12 @@ import 'fake-indexeddb/auto';
 import { describe, expect, it } from 'vitest';
 import { MemoryProgressRepository } from './memory-progress.repository';
 import { IndexedDbProgressRepository } from './indexeddb/indexeddb-progress.repository';
-import { createBackup, parseBackup, type ProgressSnapshot } from '../domain/progress/backup';
+import {
+  createBackup,
+  parseBackup,
+  serializeBackup,
+  type ProgressSnapshot,
+} from '../domain/progress/backup';
 import { completePracticeSession } from '../domain/practice/complete-practice';
 import { resetLessonSnapshot } from '../domain/progress/reset-lesson-snapshot';
 
@@ -13,6 +18,21 @@ const empty: ProgressSnapshot = {
   receipts: [],
   settings: [],
 };
+
+it('does not create an oversized backup that cannot later be restored', () => {
+  expect(() =>
+    serializeBackup({
+      ...empty,
+      settings: [
+        {
+          key: 'large-fixture',
+          value: 'x'.repeat(10 * 1024 * 1024),
+          updatedAt: '2026-10-11T00:00:00.000Z',
+        },
+      ],
+    }),
+  ).toThrow('exceeds');
+});
 
 it('resets one lesson while preserving other lessons and drafts', () => {
   const snapshot = {

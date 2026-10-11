@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useProgressRepository } from '../../../app/providers/ProgressRepositoryProvider';
 import {
-  createBackup,
+  serializeBackup,
   parseBackup,
   MAX_BACKUP_BYTES,
   type ProgressSnapshot,
@@ -12,7 +12,7 @@ import { clearWritingDraftCache } from '../../practice/state/use-writing-draft';
 
 function download(snapshot: ProgressSnapshot) {
   const url = URL.createObjectURL(
-    new Blob([JSON.stringify(createBackup(snapshot), null, 2)], { type: 'application/json' }),
+    new Blob([serializeBackup(snapshot)], { type: 'application/json' }),
   );
   const link = document.createElement('a');
   link.href = url;
@@ -34,8 +34,12 @@ export function BackupPanel() {
     try {
       download(await repository.getSnapshot());
       setMessage('Đã tạo file sao lưu. Hãy giữ file ở nơi an toàn.');
-    } catch {
-      setError('Không xuất được dữ liệu. Hãy thử kết nối lại bộ nhớ.');
+    } catch (error) {
+      setError(
+        error instanceof Error && error.message === 'Backup exceeds 10 MiB.'
+          ? 'Bản sao vượt 10 MiB. Chưa tạo file có thể khôi phục; dữ liệu hiện tại vẫn được giữ.'
+          : 'Không xuất được dữ liệu. Hãy thử kết nối lại bộ nhớ.',
+      );
     } finally {
       setBusy(false);
     }
@@ -66,7 +70,7 @@ export function BackupPanel() {
       download(current);
       if (
         !window.confirm(
-          'Bản sao dữ liệu hiện tại đã được tải xuống. Đóng các tab học khác và xác nhận thay toàn bộ dữ liệu trên trình duyệt này?',
+          'Đã yêu cầu tải bản sao hiện tại. Hãy kiểm tra đã lưu được file, đóng các tab học khác rồi xác nhận thay dữ liệu trên trình duyệt này?',
         )
       )
         return;
@@ -86,9 +90,11 @@ export function BackupPanel() {
         resetting ? 'Đã xóa dữ liệu. Có thể khôi phục từ file sao lưu.' : 'Đã khôi phục dữ liệu.',
       );
       await retryStorage();
-    } catch {
+    } catch (error) {
       setError(
-        'Không thay được dữ liệu. Nếu một tab khác vừa cập nhật, hãy sao lưu lại rồi thử lại.',
+        error instanceof Error && error.message === 'Backup exceeds 10 MiB.'
+          ? 'Bản sao hiện tại vượt 10 MiB; thao tác thay hoặc xóa đã bị chặn để giữ dữ liệu.'
+          : 'Không thay được dữ liệu. Nếu một tab khác vừa cập nhật, hãy sao lưu lại rồi thử lại.',
       );
     } finally {
       setBusy(false);

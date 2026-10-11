@@ -12,6 +12,20 @@ export function ExamPractice() {
   const active = attempt?.status === 'IN_PROGRESS';
   const completed = attempt?.status === 'SUBMITTED' || attempt?.status === 'EXPIRED';
   const question = attempt?.questions[index] ?? attempt?.questions[0];
+  const sectionResults = attempt ? examBreakdown(attempt) : [];
+  const correct = sectionResults.reduce((total, row) => total + row.correct, 0);
+  const lessonResults = attempt
+    ? [...new Set(attempt.questions.map((item) => item.lessonId))]
+        .sort((a, b) => a - b)
+        .map((lessonId) => {
+          const items = attempt.questions.filter((item) => item.lessonId === lessonId);
+          return {
+            lessonId,
+            total: items.length,
+            correct: items.filter((item) => attempt.answers[item.id] === item.correctIndex).length,
+          };
+        })
+    : [];
   const remaining = attempt?.deadlineAt
     ? Math.max(0, Math.ceil((Date.parse(attempt.deadlineAt) - now) / 1000))
     : null;
@@ -176,6 +190,10 @@ export function ExamPractice() {
               ? 'Hết giờ · đã lưu kết quả'
               : 'Đề đã nộp · đã lưu kết quả'}
           </h3>
+          <p>
+            Điểm: {Math.round((correct / attempt.questions.length) * 100)}% · Đúng {correct}/
+            {attempt.questions.length} · Sai hoặc chưa trả lời: {attempt.questions.length - correct}
+          </p>
           <table>
             <caption>Kết quả theo kỹ năng</caption>
             <thead>
@@ -186,7 +204,7 @@ export function ExamPractice() {
               </tr>
             </thead>
             <tbody>
-              {examBreakdown(attempt)
+              {sectionResults
                 .filter((row) => row.total > 0)
                 .map((row) => (
                   <tr key={row.section}>
@@ -195,6 +213,25 @@ export function ExamPractice() {
                     <td>{row.total}</td>
                   </tr>
                 ))}
+            </tbody>
+          </table>
+          <table>
+            <caption>Kết quả theo bài học</caption>
+            <thead>
+              <tr>
+                <th>Bài</th>
+                <th>Đúng</th>
+                <th>Tổng</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lessonResults.map((row) => (
+                <tr key={row.lessonId}>
+                  <td>{row.lessonId}</td>
+                  <td>{row.correct}</td>
+                  <td>{row.total}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
           {attempt.questions.map((item, i) => (

@@ -4,6 +4,8 @@ import { QUIZ_BANK } from '../src/data/quiz-bank';
 import { READING_BANK } from '../src/data/reading-bank';
 import { WRITING_BANK } from '../src/data/writing-bank';
 import { LISTENING_BANK } from '../src/data/listening-bank';
+import { readFileSync } from 'node:fs';
+import { z } from 'zod';
 
 const issues: string[] = [];
 const warnings: string[] = [];
@@ -200,6 +202,40 @@ for (let lessonId = 1; lessonId <= 15; lessonId += 1) {
 if (warnings.length > 0) {
   console.warn(`[Content Coverage Warnings - ${warnings.length} items]:`);
   for (const w of warnings) console.warn(`  ! ${w}`);
+}
+
+if (process.argv.includes('--release')) {
+  const registry = JSON.parse(
+    readFileSync(new URL('../docs/content/CONTENT_APPROVALS.json', import.meta.url), 'utf8'),
+  ) as { lessons?: unknown[] };
+  const Approval = z.object({
+    lessonId: z.number().int().min(1).max(15),
+    status: z.literal('approved'),
+    reviewer: z.string().trim().min(1),
+    reviewedAt: z.string().datetime(),
+    scopes: z.array(z.string()),
+  });
+  for (let lessonId = 1; lessonId <= 15; lessonId++) {
+    const approval = (registry.lessons ?? [])
+      .map((item) => Approval.safeParse(item))
+      .find((item) => item.success && item.data.lessonId === lessonId);
+    if (
+      !approval?.success ||
+      !['vocabulary', 'grammar', 'quiz', 'reading', 'writing', 'culture', 'listening'].every(
+        (scope) => approval.data.scopes.includes(scope),
+      )
+    )
+      issues.push(`RELEASE BLOCKED: lesson ${lessonId} needs human language/source approval`);
+    const recorded = LISTENING_BANK.filter(
+      (passage) =>
+        passage.lessonId === lessonId &&
+        passage.playback === 'recorded' &&
+        passage.audio?.rightsApproved &&
+        passage.reviewStatus === 'approved',
+    );
+    if (recorded.length < 2)
+      issues.push(`RELEASE BLOCKED: lesson ${lessonId} needs two approved recorded audio assets`);
+  }
 }
 
 if (issues.length > 0) {

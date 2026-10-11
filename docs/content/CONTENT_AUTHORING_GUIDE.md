@@ -11,15 +11,15 @@ Mỗi bài học (từ Bài 01 đến Bài 15) bao gồm các thành phần chu�
 1. **Metadata:** `id`, `title`, `koreanTitle`, `objectives`
 2. **Từ vựng (Vocabulary):**
    - Tối thiểu 2 pack (thường là `기본 어휘` và `새 단어 & 읽기 본문`).
-   - Mỗi từ gồm tuple: `[kr: string, vn: string, note?: string]`.
+   - Mỗi từ gồm tuple: `[kr: string, vn: string, note: string, id: string]`. ID cấp một lần, không đổi khi sửa chữ hoặc di chuyển từ.
    - Trung bình 60–75 từ/bài.
 3. **Ngữ pháp (Grammar):**
    - 2–4 cấu trúc ngữ pháp trọng tâm theo giáo trình TC3.
-   - Trường: `structure`, `meaning`, `rule`, `examples` (tối thiểu 2 ví dụ có `kr`, `vn`), `commonMistakes`.
+   - Trường: `id`, `structure`, `meaning`, `rule`, `examples` (tối thiểu 2 ví dụ có `kr`, `vn`), `commonMistakes`.
 4. **Văn hóa (Culture):**
    - Trường: `title`, `content` (thông tin văn hóa Hàn Quốc tương ứng với chủ đề bài học).
 5. **Trắc nghiệm (Quiz Bank):**
-   - Tối thiểu 8 câu/bài (mục tiêu hoàn thiện 12 câu/bài).
+   - Gate hiện tại: tối thiểu 12 câu/bài. `--phase2` giữ gate lịch sử 8 câu.
    - Trường: `id` (số nguyên duy nhất), `lessonId`, `type` (`vocabulary` | `grammar`), `question`, `options` (đúng 4 lựa chọn), `correctIndex` (0–3), `explanation` (giải thích chi tiết vì sao đúng và vì sao các đáp án còn lại sai).
 6. **Đọc hiểu (Reading Bank):**
    - Tối thiểu 2 bài đọc/bài (`READING_BANK[lessonId]`).
@@ -39,10 +39,14 @@ Mỗi bài học (từ Bài 01 đến Bài 15) bao gồm các thành phần chu�
 - **Reading Questions:** `rq_<lessonId>_<passageIndex>_<questionIndex>` (ví dụ `rq_1_1_1`, `rq_14_2_2`).
 - **Writing Prompts:** `w<lessonId>` hoặc `w<lessonId>_<index>` (ví dụ `w1`, `w1_2`, `w15_1`, `w15_2`).
 - **Vocabulary Review ID:**
-  - Định dạng chuẩn mới: `lesson-<lessonId>-vocab-<encodedKrWord>`
-  - Định dạng kế thừa tương thích: `lesson-<lessonId>-vocabulary-<packIndex>-<itemIndex>`
+  - ID immutable trên item, ví dụ `vocab-01-0001`; số thứ tự là mã đã cấp, không tính lại từ vị trí.
+  - ID positional/word cũ chỉ dùng để migrate qua snapshot `legacy-review-ids.v1.json`; không tạo mới và không tái sinh mapping.
 - **Grammar Review ID:**
-  - Định dạng chuẩn mới: `lesson-<lessonId>-grammar-<structureOrIndex>`
+  - ID immutable trên item, ví dụ `grammar-01-001`; không suy ra từ structure hoặc vị trí.
+- **Listening:** `listen-<lessonId>-<allocatedId>`, câu hỏi `lq_<lessonId>_<allocatedPassageId>_<allocatedQuestionId>`; cấp một lần, không renumber khi reorder. Schema và audio metadata ở `listening.schema.ts`.
+- Sau khi đổi học liệu: chạy `npm run generate:manifest`, `npm run validate:content`, `npm run audit:data -- --write-docs`. CI chặn manifest/coverage đã cũ.
+- Quy tắc MCQ dùng chung `MultipleChoiceOptionsSchema`: đúng bốn lựa chọn khác nhau, không rỗng; answer index là số nguyên 0..3. Reading/listening cần evidence.
+- Language/source/audio review ghi riêng trong approval và source registries; số lượng/validator không thay thế sign-off.
 
 ---
 

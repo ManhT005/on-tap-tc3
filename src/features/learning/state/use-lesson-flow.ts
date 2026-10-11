@@ -141,7 +141,13 @@ export function useLessonFlow(lessonId: number) {
         { resultId: `lesson-result-${session.id}`, completedAt: new Date().toISOString() },
       );
       setResult(completed);
-      await refreshProgress();
+      try {
+        await refreshProgress();
+      } catch {
+        setError(
+          'Kết quả đã được lưu, nhưng chưa tải lại được tiến độ. Hãy thử kết nối lại bộ nhớ.',
+        );
+      }
     } catch {
       setError('Không lưu được kết quả luyện tập. Vui lòng thử lại.');
     } finally {

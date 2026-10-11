@@ -1,7 +1,4 @@
-import { LESSONS_DATA } from '../../data/lessons';
-import { QUIZ_BANK } from '../../data/quiz-bank';
-import { READING_BANK } from '../../data/reading-bank';
-import { LISTENING_BANK } from '../../data/listening-bank';
+import { getLearningRequirements } from '../learning/learning-manifest';
 import { resolveContentItemId } from '../review/content-identity';
 import type { ProgressSnapshot } from './backup';
 
@@ -9,21 +6,8 @@ export function resetLessonSnapshot(
   snapshot: ProgressSnapshot,
   lessonId: number,
 ): ProgressSnapshot {
-  const lesson = LESSONS_DATA[lessonId];
-  if (!lesson) throw new Error('Lesson does not exist.');
-  const ids = new Set([
-    ...LISTENING_BANK.filter((passage) => passage.lessonId === lessonId).flatMap((passage) =>
-      passage.questions.map((question) => question.id),
-    ),
-    ...lesson.vocabulary.flatMap((pack) => pack.items.map((item) => item.id!)),
-    ...lesson.grammar.map((item) => item.id!),
-    ...QUIZ_BANK.filter((question) => question.lessonId === lessonId).map((question) =>
-      String(question.id),
-    ),
-    ...(READING_BANK[String(lessonId)] ?? []).flatMap((passage) =>
-      passage.questions.map((question) => question.id),
-    ),
-  ]);
+  const lesson = getLearningRequirements(lessonId);
+  const ids = new Set([...lesson.vocabularyIds, ...lesson.grammarIds, ...lesson.questionIds]);
   const results = snapshot.results.filter((result) => result.lessonId !== lessonId);
   const resultIds = new Set(results.map((result) => result.id));
   return {

@@ -6,9 +6,13 @@ export default defineConfig({
   testDir: './e2e',
   outputDir: './node_modules/.cache/playwright-test-results',
   fullyParallel: true,
+  workers: 2,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
-  reporter: 'list',
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'node_modules/.cache/playwright-report', open: 'never' }],
+  ],
   use: {
     baseURL: 'http://127.0.0.1:4173',
     trace: 'retain-on-failure',
@@ -18,11 +22,12 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
   ],
   webServer: {
-    command: 'npm run dev -- --host 127.0.0.1 --port 4173 --strictPort',
+    command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4173 --strictPort',
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: !isCI,
-    timeout: 30_000,
+    timeout: 60_000,
   },
 });

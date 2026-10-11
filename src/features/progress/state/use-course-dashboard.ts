@@ -2,11 +2,18 @@ import { useEffect, useState } from 'react';
 import { getLessons } from '../../../domain/learning/course.service';
 import type { CourseProgress, LessonProgress } from '../../../domain/progress/progress.types';
 import { useProgressRepository } from '../../../app/providers/ProgressRepositoryProvider';
-import { getReviewPrompt } from '../../../domain/review/review-content';
+import { isReviewItemAvailable } from '../../../domain/learning/learning-manifest';
 
 export type CourseDashboardData = {
   progress: CourseProgress;
   nextLessonId: number | null;
+  reviewSummary: {
+    newItems: number;
+    learned: number;
+    stableSchedule: number;
+    nextReviewAt: string | null;
+    orphanCount: number;
+  };
 };
 
 export function useCourseDashboard(reloadKey = 0) {
@@ -55,21 +62,41 @@ export function useCourseDashboard(reloadKey = 0) {
     ])
       .then(([progress, reviewItems, progressEntries]) => {
         const now = new Date().toISOString();
+        const available = reviewItems.filter(isReviewItemAvailable);
+        const stable = (item: (typeof available)[number]) =>
+          item.repetitions > 0 && item.box === 5 && item.intervalDays === 30;
+        const reviewSummary = {
+          newItems: available.filter((item) => item.repetitions === 0).length,
+          learned: available.filter((item) => item.repetitions > 0 && !stable(item)).length,
+          stableSchedule: available.filter(stable).length,
+          nextReviewAt:
+            available
+              .filter((item) => item.nextReviewAt > now)
+              .map((item) => item.nextReviewAt)
+              .sort()[0] ?? null,
+          orphanCount: reviewItems.length - available.length,
+        };
         progress = {
           ...progress,
           reviewsDue: reviewItems.filter(
-            (item) => item.nextReviewAt <= now && getReviewPrompt(item) !== null,
+            (item) => item.nextReviewAt <= now && isReviewItemAvailable(item),
           ).length,
         };
         const progressByLesson = new Map<number, LessonProgress | null>(progressEntries);
         const nextLesson =
-          lessons.find((lesson) => progressByLesson.get(lesson.id)?.status === 'IN_PROGRESS') ??
+          [...lessons]
+            .filter((lesson) => progressByLesson.get(lesson.id)?.status === 'IN_PROGRESS')
+            .sort((a, b) =>
+              (progressByLesson.get(b.id)?.updatedAt ?? '').localeCompare(
+                progressByLesson.get(a.id)?.updatedAt ?? '',
+              ),
+            )[0] ??
           lessons.find((lesson) => progressByLesson.get(lesson.id)?.status !== 'COMPLETED');
 
         if (active) {
           setState({
             key: reloadKey,
-            data: { progress, nextLessonId: nextLesson?.id ?? null },
+            data: { progress, nextLessonId: nextLesson?.id ?? null, reviewSummary },
             loading: false,
             error: null,
           });

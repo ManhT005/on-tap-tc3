@@ -389,6 +389,8 @@ export class IndexedDbProgressRepository implements ProgressRepository {
         : ((await results.index('by-session-id').get(command.sessionId)) ??
           (await results.get(command.result.id)));
       if (existing) {
+        if (existing.sessionId && existing.sessionId !== command.sessionId)
+          throw new DOMException('Result ID belongs to another session.', 'ConstraintError');
         // Already committed — treat as no-op.
         await tx.done;
         return existing;

@@ -1,13 +1,42 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { ProgressRepositoryProvider } from '../../../app/providers/ProgressRepositoryProvider';
 import { getLessonQuiz } from '../../../domain/learning/lesson.service';
 import { MemoryProgressRepository } from '../../../repositories/memory-progress.repository';
 import { LessonLearningFlow } from './LessonLearningFlow';
 
 describe('LessonLearningFlow', () => {
+  it('reports a confirmed saved result separately from a failed progress refresh', async () => {
+    const repository = new MemoryProgressRepository();
+    vi.spyOn(repository, 'getLessonProgress').mockRejectedValueOnce(
+      new Error('read failed after commit'),
+    );
+    const user = userEvent.setup();
+    render(
+      <ProgressRepositoryProvider repository={repository}>
+        <MemoryRouter>
+          <LessonLearningFlow lessonId={1} />
+        </MemoryRouter>
+      </ProgressRepositoryProvider>,
+    );
+    await screen.findByRole('heading', { name: 'Nhớ lại trước khi xem' });
+    const quiz = getLessonQuiz(1);
+    if (!quiz.ok) throw new Error('Missing quiz');
+    for (const question of quiz.data) {
+      const group = screen.getByRole('group', { name: `Đáp án cho câu ${question.id}` });
+      await user.click(within(group).getAllByRole('button')[question.correctIndex]!);
+    }
+    await user.click(screen.getByRole('button', { name: 'Nộp luyện tập nhanh' }));
+    expect(
+      await screen.findByRole('heading', { name: 'Bài luyện tập đã hoàn thành' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Kết quả đã được lưu, nhưng chưa tải lại được tiến độ',
+    );
+    expect(await repository.getPracticeResults()).toHaveLength(1);
+  });
   it('persists actual steps and quiz completion without claiming an unstudied lesson is complete', async () => {
     const user = userEvent.setup();
     const repository = new MemoryProgressRepository(() => new Date('2026-10-01T08:00:00.000Z'));

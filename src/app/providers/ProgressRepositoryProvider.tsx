@@ -41,9 +41,11 @@ export function ProgressRepositoryProvider({
   const [storageRevision, setStorageRevision] = useState(0);
   const [defaultRepository] = useState(() =>
     withStorageRecovery(new IndexedDbProgressRepository(), {
-      onError: () =>
+      onError: (_error, operation) =>
         setStorageError(
-          'Không truy cập được dữ liệu trên trình duyệt. Thao tác lưu chưa được xác nhận; hãy thử lại. Dữ liệu đã lưu không bị thay bằng bộ nhớ tạm.',
+          operation === 'write'
+            ? 'Thao tác lưu chưa được xác nhận; hãy thử lại. Dữ liệu đã lưu không bị thay bằng bộ nhớ tạm.'
+            : 'Không tải được dữ liệu trên trình duyệt. Dữ liệu cũ vẫn được giữ; hãy thử kết nối lại bộ nhớ.',
         ),
       onStatusChange: setInternalStatus,
     }),

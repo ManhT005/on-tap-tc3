@@ -1,5 +1,4 @@
-import { LESSONS_DATA } from '../../data/lessons';
-import { getContentItemId } from '../review/content-identity';
+import { getLearningRequirements } from '../learning/learning-manifest';
 import type { LessonProgress, LessonSteps } from './progress.types';
 
 export type LessonEvent = {
@@ -10,16 +9,7 @@ export type LessonEvent = {
 };
 
 export function getLessonRequirements(lessonId: number) {
-  const lesson = LESSONS_DATA[lessonId];
-  if (!lesson) throw new Error('Lesson does not exist.');
-  return {
-    recallIds: lesson.vocabulary
-      .flatMap((pack) => pack.items.slice(0, 2))
-      .slice(0, 4)
-      .map(getContentItemId),
-    vocabularyIds: lesson.vocabulary.flatMap((pack) => pack.items).map(getContentItemId),
-    grammarIds: lesson.grammar.map(getContentItemId),
-  };
+  return getLearningRequirements(lessonId);
 }
 
 export function emptyLessonSteps(): LessonSteps {

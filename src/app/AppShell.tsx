@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useProgressRepository } from './providers/ProgressRepositoryProvider';
 import { Button } from '../components/ui/Button';
+import { APP_VERSION } from './version';
 
 const navigationItems = [
   { to: '/', label: 'Home', end: true },
@@ -51,6 +52,9 @@ export function AppShell() {
         ) : null}
         <Outlet />
       </main>
+      <footer className="app-footer">
+        TC3 {APP_VERSION} · Dữ liệu học trên trình duyệt hiện tại
+      </footer>
     </div>
   );
 }

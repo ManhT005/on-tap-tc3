@@ -186,6 +186,14 @@ export function createBackup(snapshot: ProgressSnapshot, exportedAt = new Date()
   };
 }
 
+/** Refuse to produce a backup that this app cannot import again. */
+export function serializeBackup(snapshot: ProgressSnapshot) {
+  const text = JSON.stringify(createBackup(snapshot), null, 2);
+  if (new TextEncoder().encode(text).length > MAX_BACKUP_BYTES)
+    throw new Error('Backup exceeds 10 MiB.');
+  return text;
+}
+
 export function snapshotFingerprint(input: ProgressSnapshot): string {
   const snapshot = validateSnapshot(input);
   const ordered = {

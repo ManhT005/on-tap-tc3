@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { SourceTypeSchema } from './vocabulary.schema';
+import { MultipleChoiceOptionsSchema } from './mcq.schema';
 
 export const QuestionSchema = z
   .object({
@@ -20,10 +21,9 @@ export const QuestionSchema = z
     (question) =>
       question.type !== 'mcq' ||
       (question.options !== undefined &&
-        question.options.length === 4 &&
-        new Set(question.options.map((option) => option.trim())).size === 4 &&
-        question.options.every((option) => option.trim().length > 0) &&
+        MultipleChoiceOptionsSchema.safeParse(question.options).success &&
         typeof question.answer === 'number' &&
+        Number.isInteger(question.answer) &&
         question.answer >= 0 &&
         question.answer < question.options.length),
     { message: 'MCQ must have options and a valid answer index' },
