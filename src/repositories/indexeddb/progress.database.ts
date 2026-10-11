@@ -2,11 +2,12 @@ import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 import type { ReviewStatus } from '../../data/schemas';
 import type { PracticeResult } from '../../domain/practice/practice.types';
 import type { AppSetting, LessonProgress } from '../../domain/progress/progress.types';
+import { migrateReviewIdentities } from './migrate-review-identities';
 
 export const PROGRESS_DATABASE_NAME = 'on-tap-tc3';
-export const PROGRESS_DATABASE_VERSION = 2;
+export const PROGRESS_DATABASE_VERSION = 3;
 
-interface ProgressDatabase extends DBSchema {
+export interface ProgressDatabase extends DBSchema {
   lesson_progress: {
     key: number;
     value: LessonProgress;
@@ -67,6 +68,8 @@ export function openProgressDatabase(
       if (!database.objectStoreNames.contains('completion_receipts')) {
         database.createObjectStore('completion_receipts', { keyPath: 'sessionId' });
       }
+      // Only IndexedDB requests are awaited; migration stays in the upgrade tx.
+      void migrateReviewIdentities(transaction).catch(() => transaction.abort());
     },
   });
 }

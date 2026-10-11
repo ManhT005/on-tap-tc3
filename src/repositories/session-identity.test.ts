@@ -3,6 +3,7 @@ import { openDB } from 'idb';
 import { describe, expect, it } from 'vitest';
 import { IndexedDbProgressRepository } from './indexeddb/indexeddb-progress.repository';
 import { MemoryProgressRepository } from './memory-progress.repository';
+import { PROGRESS_DATABASE_VERSION } from './indexeddb/progress.database';
 import type { PracticeCompletionCommand } from './progress.repository';
 
 function command(sessionId: string, resultId: string): PracticeCompletionCommand {
@@ -85,7 +86,7 @@ it('upgrades v1 without inventing session identity or deleting legacy data', asy
   await repo.commitPracticeCompletion(command('new', 'new'));
   expect((await repo.getCourseProgress()).practiceSessions).toBe(2);
   await repo.close();
-  const migrated = await openDB(databaseName, 2);
+  const migrated = await openDB(databaseName, PROGRESS_DATABASE_VERSION);
   expect(await migrated.get('practice_results', 'legacy')).toEqual(legacy);
   expect(migrated.transaction('practice_results').store.index('by-session-id').unique).toBe(true);
   migrated.close();

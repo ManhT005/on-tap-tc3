@@ -6,7 +6,8 @@ import { Button } from '../../../components/ui/Button';
 import { GrammarCard } from '../../../components/learning/GrammarCard';
 import { QuizCard } from '../../../components/learning/QuizCard';
 import { VocabularyCard } from '../../../components/learning/VocabularyCard';
-import { useLessonFlow, getVocabularyReviewId } from '../state/use-lesson-flow';
+import { useLessonFlow } from '../state/use-lesson-flow';
+import { getContentItemId } from '../../../domain/review/content-identity';
 
 export function LessonLearningFlow({ lessonId }: { lessonId: number }) {
   const {
@@ -115,8 +116,8 @@ export function LessonLearningFlow({ lessonId }: { lessonId: number }) {
           <p>Tự nhớ nghĩa, sau đó chọn mức độ tự tin từ 1 đến 4.</p>
         </div>
         <div className="learning-card-grid">
-          {recallItems.map(({ item, pack, packIndex, itemIndex }) => {
-            const itemId = getVocabularyReviewId(lessonId, packIndex, itemIndex);
+          {recallItems.map(({ item, pack }) => {
+            const itemId = getContentItemId(item);
             return (
               <VocabularyCard
                 key={itemId}
@@ -143,8 +144,8 @@ export function LessonLearningFlow({ lessonId }: { lessonId: number }) {
           <section key={`${pack.category}-${packIndex}`} className="vocabulary-pack">
             <h3>{pack.category}</h3>
             <div className="learning-card-grid">
-              {pack.items.map((item, itemIndex) => {
-                const itemId = getVocabularyReviewId(lessonId, packIndex, itemIndex);
+              {pack.items.map((item) => {
+                const itemId = getContentItemId(item);
                 return (
                   <VocabularyCard
                     key={itemId}

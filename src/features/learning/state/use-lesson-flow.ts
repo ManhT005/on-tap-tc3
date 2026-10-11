@@ -11,14 +11,6 @@ import type { PracticeResult } from '../../../domain/practice/practice.types';
 import type { RecallConfidence } from '../../../components/learning/Flashcard';
 import { useProgressRepository } from '../../../app/providers/ProgressRepositoryProvider';
 
-export function getVocabularyReviewId(lessonId: number, packIndex: number, itemIndex: number) {
-  return `lesson-${lessonId}-vocabulary-${packIndex}-${itemIndex}`;
-}
-
-export function getStableVocabularyReviewId(lessonId: number, krWord: string) {
-  return `lesson-${lessonId}-vocab-${encodeURIComponent(krWord)}`;
-}
-
 function createId(prefix: string) {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
