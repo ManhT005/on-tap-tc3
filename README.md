@@ -55,6 +55,8 @@ Sau khi sửa nội dung, chạy `npm run generate:manifest` và cập nhật co
 
 ## Tài liệu bàn giao
 
+- [Báo cáo triển khai và các gate còn lại](docs/IMPLEMENTATION_REPORT_2026-10-11.md)
+- [Regression](docs/qa/REGRESSION_REPORT.md), [test matrix](docs/qa/TEST_MATRIX.md), [P2 closure](docs/phase_2/PHASE_2_CLOSURE_REPORT.md)
 - [Hướng dẫn người học](docs/USER_GUIDE.md)
 - [Kế hoạch nhánh](docs/IMPLEMENTATION_BRANCHES_2026-10-11.md)
 - [Master plan](docs/ON_TAP_TC3_COMPLETION_MASTER_PLAN_2026-10-11.md)
