@@ -7,6 +7,7 @@ import { useProgressRepository } from '../../../app/providers/ProgressRepository
 import { Button } from '../../../components/ui/Button';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { ReadingQuestion } from './ReadingQuestion';
+import { ContextualVocabulary } from '../../vocabulary/components/ContextualVocabulary';
 
 function createId(prefix: string) {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -120,9 +121,7 @@ export function ReadingPractice() {
           <article className="reading-passage card">
             <p className="eyebrow">{passage.type}</p>
             <h2>{passage.title}</h2>
-            <p lang="ko" className="reading-passage__text">
-              {passage.koreanText}
-            </p>
+            <ContextualVocabulary key={passage.id} text={passage.koreanText} lessonId={lessonId} />
             {showTranslation ? (
               <p className="reading-passage__translation">{passage.vietnameseTranslation}</p>
             ) : null}

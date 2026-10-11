@@ -4,6 +4,7 @@ import { Skeleton } from '../components/ui/Skeleton';
 import { ReviewQueueItem } from '../components/learning/ReviewQueueItem';
 import { useReviewQueue } from '../features/review/state/use-review-queue';
 import { Button } from '../components/ui/Button';
+import { Link } from 'react-router-dom';
 
 export function ReviewPage() {
   const { dueItems, recentMistakes, loading, error, orphanCount, grade, gradingKeys, refresh } =
@@ -47,13 +48,23 @@ export function ReviewPage() {
         ) : validDueItems.length ? (
           <div className="review-queue">
             {validDueItems.map(({ item, content }) => (
-              <ReviewQueueItem
-                key={`${item.itemType}:${item.itemId}`}
-                item={item}
-                content={content}
-                isSubmitting={gradingKeys.has(`${item.itemType}:${item.itemId}`)}
-                onGrade={(confidence) => grade(item, confidence)}
-              />
+              <div key={`${item.itemType}:${item.itemId}`}>
+                <ReviewQueueItem
+                  key={`${item.itemType}:${item.itemId}`}
+                  item={item}
+                  content={content}
+                  isSubmitting={gradingKeys.has(`${item.itemType}:${item.itemId}`)}
+                  onGrade={(confidence) => grade(item, confidence)}
+                />
+                {item.itemType === 'vocabulary' && /^vocab-\d{2}-/.test(item.itemId) ? (
+                  <Link
+                    className="button button--secondary button--md"
+                    to={`/vocabulary?lesson=${Number(item.itemId.split('-')[1])}&mode=flashcard&word=${item.itemId}`}
+                  >
+                    Mở từ trong Vocabulary Lab
+                  </Link>
+                ) : null}
+              </div>
             ))}
           </div>
         ) : (

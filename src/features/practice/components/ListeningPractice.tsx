@@ -8,6 +8,7 @@ import { useProgressRepository } from '../../../app/providers/ProgressRepository
 import { ListeningPlayer } from '../../../components/learning/ListeningPlayer';
 import { Button } from '../../../components/ui/Button';
 import { ReadingQuestion } from './ReadingQuestion';
+import { ContextualVocabulary } from '../../vocabulary/components/ContextualVocabulary';
 
 function ListeningSession({ passage }: { passage: ListeningPassage }) {
   const { repository } = useProgressRepository();
@@ -57,9 +58,11 @@ function ListeningSession({ passage }: { passage: ListeningPassage }) {
       </Button>
       {reveal ? (
         <div className="card">
-          <p className="preserve-lines" lang="ko">
-            {passage.transcript}
-          </p>
+          <ContextualVocabulary
+            key={passage.id}
+            text={passage.transcript}
+            lessonId={passage.lessonId}
+          />
           <p>{passage.translation}</p>
         </div>
       ) : null}

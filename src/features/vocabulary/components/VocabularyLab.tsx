@@ -10,6 +10,8 @@ import { VocabularyFlashcard } from './VocabularyFlashcard';
 import { VocabularyCatalog } from './VocabularyCatalog';
 import { Button } from '../../../components/ui/Button';
 import { PageHeader } from '../../../components/ui/PageHeader';
+import { getLessonReading } from '../../../domain/learning/lesson.service';
+import { ContextualVocabulary } from './ContextualVocabulary';
 
 const entries = adaptVocabulary(VOCABULARY_ENRICHMENT);
 const modes = [
@@ -50,6 +52,7 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
     : undefined;
   const studied = state.progress?.steps?.vocabularyIds ?? [];
   const now = new Date().toISOString();
+  const reading = getLessonReading(lessonId);
   const filtered = filterVocabulary(entries, {
     lessonId,
     filter,
@@ -241,7 +244,24 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
         </nav>
         <section className="vocab-main card" aria-label="Khu học từ">
           <h2>{modes.find((item) => item.id === mode)?.label}</h2>
-          {mode === 'list' ? (
+          {mode === 'context' ? (
+            <>
+              <p>
+                Đọc học liệu của bài và tra nguyên dạng từ. Câu ví dụ trên flashcard chỉ xuất hiện
+                khi được kiểm duyệt.
+              </p>
+              {reading.ok && reading.data[0] ? (
+                <ContextualVocabulary
+                  key={lessonId}
+                  text={reading.data[0].koreanText}
+                  lessonId={lessonId}
+                  defaultEnabled
+                />
+              ) : (
+                <p>Chưa có đoạn đọc.</p>
+              )}
+            </>
+          ) : mode === 'list' ? (
             <VocabularyCatalog
               key={`${query}:${filter}`}
               entries={filtered}

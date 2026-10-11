@@ -181,6 +181,77 @@
 .korean-speech-controls p {
   flex-basis: 100%;
 }
+.context-word {
+  font: inherit;
+  display: inline;
+  color: var(--color-brand-hover);
+  border: 0;
+  border-bottom: 1px dashed var(--color-brand-primary);
+  background: var(--color-brand-soft);
+  border-radius: 3px;
+  padding: 0 2px;
+  min-height: 44px;
+  min-width: 44px;
+  cursor: pointer;
+}
+.vocab-definition {
+  width: min(650px, calc(100% - 24px));
+  max-height: calc(100dvh - 48px);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  padding: 24px;
+  overflow: auto;
+}
+.vocab-definition::backdrop {
+  background: rgb(0 0 0 / 45%);
+}
+.vocab-definition__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.vocab-definition__header h2 {
+  font-size: var(--text-lg);
+  margin: 0;
+}
+.vocab-definition__entry {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-border-default);
+}
+.vocab-definition__entry h3 {
+  margin: 0;
+  font-size: var(--text-xl);
+}
+.vocab-lookup-form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: end;
+  margin-top: 20px;
+}
+.vocab-lookup-form label {
+  display: grid;
+  flex: 1 1 200px;
+  gap: 6px;
+}
+.vocab-lookup-form input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+}
+@media (max-width: 680px) {
+  .vocab-definition {
+    margin: auto auto 12px;
+    padding: 16px;
+    max-height: 85dvh;
+  }
+}
 .primary-nav {
   flex-wrap: wrap;
 }
