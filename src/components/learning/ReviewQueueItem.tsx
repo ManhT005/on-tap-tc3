@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { ReviewStatus } from '../../data/schemas';
 import type { ReviewPrompt } from '../../domain/review/review-content';
 import type { ReviewConfidence } from '../../domain/review/review-engine';
@@ -8,12 +8,37 @@ import { Card } from '../ui/Card';
 export type ReviewQueueItemProps = {
   item: ReviewStatus;
   content: ReviewPrompt;
-  onGrade: (confidence: ReviewConfidence) => void;
+  onGrade: (confidence: ReviewConfidence) => void | Promise<void>;
+  isSubmitting?: boolean;
 };
 
-export function ReviewQueueItem({ item, content, onGrade }: ReviewQueueItemProps) {
+export function ReviewQueueItem({
+  item,
+  content,
+  onGrade,
+  isSubmitting = false,
+}: ReviewQueueItemProps) {
   const [revealed, setRevealed] = useState(false);
   const [confidence, setConfidence] = useState<ReviewConfidence | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const lock = useRef(false);
+  const busy = saving || isSubmitting;
+
+  async function save() {
+    if (lock.current || busy || confidence === null) return;
+    lock.current = true;
+    setSaving(true);
+    setError(null);
+    try {
+      await onGrade(confidence);
+    } catch {
+      setError('Kết quả chưa được xác nhận lưu. Vui lòng thử lại.');
+    } finally {
+      lock.current = false;
+      setSaving(false);
+    }
+  }
 
   return (
     <Card as="article" className="review-queue-item">
@@ -51,19 +76,21 @@ export function ReviewQueueItem({ item, content, onGrade }: ReviewQueueItemProps
             }
             type="button"
             aria-pressed={confidence === value}
-            disabled={!revealed}
+            disabled={!revealed || busy}
             onClick={() => setConfidence(value)}
           >
             {value}
           </button>
         ))}
       </div>
-      <Button
-        disabled={!revealed || confidence === null}
-        onClick={() => confidence && onGrade(confidence)}
-      >
-        Lưu kết quả ôn
+      <Button disabled={!revealed || confidence === null || busy} onClick={() => void save()}>
+        {busy ? 'Đang lưu...' : 'Lưu kết quả ôn'}
       </Button>
+      {error ? (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      ) : null}
     </Card>
   );
 }

@@ -38,6 +38,8 @@ export function withStorageRecovery(
           : health.lastPersistedAt,
       };
       setStatus('persistent');
+      if (write && typeof window !== 'undefined')
+        window.dispatchEvent(new Event('tc3-progress-changed'));
       return result;
     } catch (error) {
       health = { ...health, error };

@@ -3,9 +3,11 @@ import { PageHeader } from '../components/ui/PageHeader';
 import { Skeleton } from '../components/ui/Skeleton';
 import { ReviewQueueItem } from '../components/learning/ReviewQueueItem';
 import { useReviewQueue } from '../features/review/state/use-review-queue';
+import { Button } from '../components/ui/Button';
 
 export function ReviewPage() {
-  const { dueItems, recentMistakes, loading, error, orphanCount, grade } = useReviewQueue();
+  const { dueItems, recentMistakes, loading, error, orphanCount, grade, gradingKeys, refresh } =
+    useReviewQueue();
   const validDueItems = dueItems.filter(
     (entry): entry is typeof entry & { content: NonNullable<typeof entry.content> } =>
       entry.content !== null,
@@ -22,13 +24,16 @@ export function ReviewPage() {
       {error ? (
         <p className="form-error" role="alert">
           {error}
+          <Button variant="secondary" onClick={() => void refresh()}>
+            Thử lại
+          </Button>
         </p>
       ) : null}
 
       {orphanCount > 0 ? (
         <p className="muted-copy" role="note">
           ℹ️ {orphanCount} mục ôn tập không tìm thấy nội dung tương ứng (có thể do nội dung đã thay
-          đổi). Các mục này không ảnh hưởng đến tiến độ.
+          đổi). Dữ liệu được giữ để khôi phục; các mục này không nằm trong số mục có thể ôn.
         </p>
       ) : null}
 
@@ -46,7 +51,8 @@ export function ReviewPage() {
                 key={`${item.itemType}:${item.itemId}`}
                 item={item}
                 content={content}
-                onGrade={(confidence) => void grade(item, confidence)}
+                isSubmitting={gradingKeys.has(`${item.itemType}:${item.itemId}`)}
+                onGrade={(confidence) => grade(item, confidence)}
               />
             ))}
           </div>

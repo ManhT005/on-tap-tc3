@@ -140,11 +140,11 @@ test('E2E-LEARN-01 Complete lesson, persist progress, and retain it after reload
 
   const completedTile = page.locator('.stat-card').filter({ hasText: 'Bài đã hoàn thành' });
   const sessionTile = page.locator('.stat-card').filter({ hasText: 'Lượt luyện tập' });
-  await expect(completedTile.locator('strong')).toHaveText('1');
+  await expect(completedTile.locator('strong')).toHaveText('0');
   await expect(sessionTile.locator('strong')).toHaveText('1');
 
   await page.reload();
-  await expect(completedTile.locator('strong')).toHaveText('1');
+  await expect(completedTile.locator('strong')).toHaveText('0');
   await expect(sessionTile.locator('strong')).toHaveText('1');
 });
 

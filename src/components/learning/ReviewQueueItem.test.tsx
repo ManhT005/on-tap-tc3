@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { ReviewQueueItem } from './ReviewQueueItem';
 
@@ -16,6 +16,33 @@ const item = {
 };
 
 describe('ReviewQueueItem', () => {
+  it('locks save and confidence while a write is pending and allows retry after failure', async () => {
+    let rejectWrite: (error: Error) => void = () => undefined;
+    const onGrade = vi.fn(
+      () =>
+        new Promise<void>((_resolve, reject) => {
+          rejectWrite = reject;
+        }),
+    );
+    render(
+      <ReviewQueueItem
+        item={item}
+        content={{ prompt: 'Câu hỏi', answer: 'Đáp án' }}
+        onGrade={onGrade}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Hiện đáp án' }));
+    fireEvent.click(screen.getByRole('button', { name: '3' }));
+    const save = screen.getByRole('button', { name: 'Lưu kết quả ôn' });
+    fireEvent.click(save);
+    fireEvent.click(save);
+    expect(onGrade).toHaveBeenCalledOnce();
+    expect(screen.getByRole('button', { name: 'Đang lưu...' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: '3' })).toBeDisabled();
+    await act(async () => rejectWrite(new Error('quota')));
+    expect(screen.getByRole('alert')).toHaveTextContent('chưa được xác nhận lưu');
+    expect(screen.getByRole('button', { name: 'Lưu kết quả ôn' })).toBeEnabled();
+  });
   it('requires reveal and confidence before saving a review grade', () => {
     const onGrade = vi.fn();
     render(

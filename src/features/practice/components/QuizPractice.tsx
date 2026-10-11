@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { COURSE_STRUCTURE } from '../../../data/course';
 import { QUIZ_BANK } from '../../../data/quiz-bank';
 import { completePracticeSession } from '../../../domain/practice/complete-practice';
@@ -39,6 +39,7 @@ export function selectPracticeQuestions<T>(
 }
 
 export function QuizPractice() {
+  const submitLock = useRef(false);
   const { repository } = useProgressRepository();
   const [filter, setFilter] = useState<QuizFilter>('all');
   const [lessonId, setLessonId] = useState(1);
@@ -57,7 +58,11 @@ export function QuizPractice() {
       .getReviewItems()
       .then((items) => {
         setMistakeIds(
-          new Set(items.filter((item) => item.itemType === 'question').map((item) => item.itemId)),
+          new Set(
+            items
+              .filter((item) => item.itemType === 'question' && item.wrongCount > 0)
+              .map((item) => item.itemId),
+          ),
         );
       })
       .catch(() => {
@@ -76,7 +81,9 @@ export function QuizPractice() {
         if (active) {
           setMistakeIds(
             new Set(
-              items.filter((item) => item.itemType === 'question').map((item) => item.itemId),
+              items
+                .filter((item) => item.itemType === 'question' && item.wrongCount > 0)
+                .map((item) => item.itemId),
             ),
           );
         }
@@ -119,14 +126,15 @@ export function QuizPractice() {
   }
 
   async function submit() {
-    if (!session || result || submitting) return;
+    if (!session || result || submitLock.current) return;
+    submitLock.current = true;
 
     setSubmitting(true);
     setError(null);
     try {
       const completed = await completePracticeSession(
         { ...session, answers },
-        availableQuestions.map(({ id, correctIndex }) => ({ id, correctIndex })),
+        QUIZ_BANK.map(({ id, correctIndex }) => ({ id, correctIndex })),
         repository,
         { resultId: `quiz-result-${session.id}`, completedAt: new Date().toISOString() },
       );
@@ -137,13 +145,14 @@ export function QuizPractice() {
     } catch {
       setError('Không lưu được kết quả bài quiz.');
     } finally {
+      submitLock.current = false;
       setSubmitting(false);
     }
   }
 
   const sessionQuestions = session
     ? session.questionIds
-        .map((id) => availableQuestions.find((question) => String(question.id) === id))
+        .map((id) => QUIZ_BANK.find((question) => String(question.id) === id))
         .filter((question) => question !== undefined)
     : [];
   const allAnswered =
@@ -166,7 +175,7 @@ export function QuizPractice() {
           >
             <option value="all">Tất cả bài</option>
             <option value="lesson">Theo bài</option>
-            <option value="mistakes">Câu sai</option>
+            <option value="mistakes">Câu đã từng sai</option>
           </select>
         </label>
         {filter === 'lesson' ? (

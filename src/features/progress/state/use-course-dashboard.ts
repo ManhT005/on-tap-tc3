@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getLessons } from '../../../domain/learning/course.service';
 import type { CourseProgress, LessonProgress } from '../../../domain/progress/progress.types';
 import { useProgressRepository } from '../../../app/providers/ProgressRepositoryProvider';
+import { getReviewPrompt } from '../../../domain/review/review-content';
 
 export type CourseDashboardData = {
   progress: CourseProgress;
@@ -10,6 +11,23 @@ export type CourseDashboardData = {
 
 export function useCourseDashboard(reloadKey = 0) {
   const { repository, storageRevision } = useProgressRepository();
+  const [refreshTick, setRefreshTick] = useState(0);
+  useEffect(() => {
+    const refresh = () => setRefreshTick((value) => value + 1);
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') refresh();
+    };
+    const timer = window.setInterval(refresh, 30_000);
+    window.addEventListener('focus', refresh);
+    window.addEventListener('tc3-progress-changed', refresh);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener('focus', refresh);
+      window.removeEventListener('tc3-progress-changed', refresh);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
   const [state, setState] = useState<{
     key: number;
     data: CourseDashboardData | null;
@@ -28,13 +46,21 @@ export function useCourseDashboard(reloadKey = 0) {
 
     Promise.all([
       repository.getCourseProgress(),
+      repository.getReviewItems(),
       Promise.all(
         lessons.map(
           async (lesson) => [lesson.id, await repository.getLessonProgress(lesson.id)] as const,
         ),
       ),
     ])
-      .then(([progress, progressEntries]) => {
+      .then(([progress, reviewItems, progressEntries]) => {
+        const now = new Date().toISOString();
+        progress = {
+          ...progress,
+          reviewsDue: reviewItems.filter(
+            (item) => item.nextReviewAt <= now && getReviewPrompt(item) !== null,
+          ).length,
+        };
         const progressByLesson = new Map<number, LessonProgress | null>(progressEntries);
         const nextLesson =
           lessons.find((lesson) => progressByLesson.get(lesson.id)?.status === 'IN_PROGRESS') ??
@@ -63,7 +89,7 @@ export function useCourseDashboard(reloadKey = 0) {
     return () => {
       active = false;
     };
-  }, [repository, reloadKey, storageRevision]);
+  }, [repository, reloadKey, storageRevision, refreshTick]);
 
   const isCurrent = state.key === reloadKey;
   return {

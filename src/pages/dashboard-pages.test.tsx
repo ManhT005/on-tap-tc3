@@ -30,7 +30,7 @@ async function createSeededRepository() {
   ];
   const reviews: ReviewStatus[] = [
     {
-      itemId: 'vocabulary-1',
+      itemId: 'vocab-01-0001',
       itemType: 'vocabulary',
       repetitions: 1,
       correctCount: 0,
@@ -42,7 +42,7 @@ async function createSeededRepository() {
       box: 0,
     },
     {
-      itemId: 'grammar-1',
+      itemId: 'grammar-01-001',
       itemType: 'grammar',
       repetitions: 1,
       correctCount: 1,
