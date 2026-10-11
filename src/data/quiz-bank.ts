@@ -1,4 +1,5 @@
 import { LegacyQuizItemSchema } from './schemas';
+import { QUIZ_EXPANSION } from './quiz-expansion';
 
 const raw = [
   // BÀI 01
@@ -1980,4 +1981,6 @@ const raw = [
   },
 ];
 
-export const QUIZ_BANK = raw.map((item) => LegacyQuizItemSchema.parse(item));
+export const QUIZ_BANK = [...raw, ...QUIZ_EXPANSION].map((item) =>
+  LegacyQuizItemSchema.parse(item),
+);

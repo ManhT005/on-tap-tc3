@@ -51,6 +51,19 @@ for (const key of Object.keys(READING_BANK)) {
 }
 
 const validLessonIds = new Set(COURSE_STRUCTURE.map((lesson) => lesson.id));
+const contentIds = new Set<string>();
+for (const [lessonId, lesson] of Object.entries(LESSONS_DATA)) {
+  for (const item of [...lesson.vocabulary.flatMap((pack) => pack.items), ...lesson.grammar]) {
+    if (!item.id) issues.push(`Lesson ${lessonId}: missing immutable item ID`);
+    else if (contentIds.has(item.id))
+      issues.push(`Lesson ${lessonId}: duplicate item ID ${item.id}`);
+    else contentIds.add(item.id);
+  }
+}
+for (const question of QUIZ_BANK) {
+  for (const target of question.targetIds ?? [])
+    if (!contentIds.has(target)) issues.push(`Quiz ${question.id}: unknown target ${target}`);
+}
 
 // Validate quiz questions
 for (const q of QUIZ_BANK) {
@@ -60,8 +73,8 @@ for (const q of QUIZ_BANK) {
   if (!q.question?.trim()) {
     issues.push(`quiz-bank.ts: question ${q.id} has empty question text`);
   }
-  if (!Array.isArray(q.options) || q.options.length < 2) {
-    issues.push(`quiz-bank.ts: question ${q.id} must have at least 2 options`);
+  if (!Array.isArray(q.options) || q.options.length !== 4) {
+    issues.push(`quiz-bank.ts: question ${q.id} must have exactly 4 options`);
   } else {
     for (let i = 0; i < q.options.length; i += 1) {
       if (!q.options[i]?.trim()) {
@@ -100,8 +113,8 @@ for (const passage of readingPassages) {
         `reading-bank.ts: question ${q.id} in passage ${passage.id} has empty question text`,
       );
     }
-    if (!Array.isArray(q.options) || q.options.length < 2) {
-      issues.push(`reading-bank.ts: question ${q.id} must have at least 2 options`);
+    if (!Array.isArray(q.options) || q.options.length !== 4) {
+      issues.push(`reading-bank.ts: question ${q.id} must have exactly 4 options`);
     } else {
       for (let i = 0; i < q.options.length; i += 1) {
         if (!q.options[i]?.trim()) {
@@ -156,20 +169,20 @@ for (let lessonId = 1; lessonId <= 15; lessonId += 1) {
   }
 }
 
-// Coverage warnings (separate from fatal schema issues)
+// Structural coverage is a blocking gate; language approval is separate.
 for (let lessonId = 1; lessonId <= 15; lessonId += 1) {
   const quizCount = QUIZ_BANK.filter((q) => q.lessonId === lessonId).length;
   const readingCount = (READING_BANK[String(lessonId)] ?? []).length;
   const writingCount = WRITING_BANK.filter((p) => p.lessonId === lessonId).length;
 
-  if (quizCount === 0) {
-    warnings.push(`Lesson ${lessonId}: 0 quiz questions (planned for Phase 3)`);
+  if (quizCount < (process.argv.includes('--phase2') ? 8 : 12)) {
+    issues.push(`Lesson ${lessonId}: insufficient quiz coverage (${quizCount})`);
   }
-  if (readingCount === 0) {
-    warnings.push(`Lesson ${lessonId}: 0 reading passages (planned for Phase 3)`);
+  if (readingCount < 2) {
+    issues.push(`Lesson ${lessonId}: fewer than 2 reading passages`);
   }
-  if (writingCount === 0) {
-    warnings.push(`Lesson ${lessonId}: 0 writing prompts (planned for Phase 3)`);
+  if (writingCount < 2) {
+    issues.push(`Lesson ${lessonId}: fewer than 2 writing prompts`);
   }
 }
 

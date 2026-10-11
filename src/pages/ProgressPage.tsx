@@ -6,6 +6,8 @@ import { Skeleton } from '../components/ui/Skeleton';
 import { Button } from '../components/ui/Button';
 import { useProgressRepository } from '../app/providers/ProgressRepositoryProvider';
 import { useCourseDashboard } from '../features/progress/state/use-course-dashboard';
+import { PracticeHistory } from '../features/progress/components/PracticeHistory';
+import { BackupPanel } from '../features/progress/components/BackupPanel';
 
 export function ProgressPage() {
   const { storageStatus } = useProgressRepository();
@@ -58,6 +60,8 @@ export function ProgressPage() {
           <StatTile label="Ngữ pháp đã ôn" value={progress.grammarReviewed} />
         </div>
       )}
+      <PracticeHistory />
+      <BackupPanel />
     </section>
   );
 }

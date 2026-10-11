@@ -992,6 +992,31 @@ a {
   align-items: center;
 }
 
+.history-entry {
+  margin-block: 12px;
+  overflow-wrap: anywhere;
+}
+.history-entry summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding-block: 10px;
+}
+.history-answer {
+  border-top: 1px solid var(--color-border-default);
+  padding-block: 12px;
+}
+.preserve-lines {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.practice-controls label {
+  min-width: 0;
+}
+.practice-controls input[type='file'] {
+  width: 100%;
+  max-width: 100%;
+}
+
 @media (max-width: 680px) {
   .app-header {
     align-items: flex-start;

@@ -1,6 +1,13 @@
 import type { ReviewStatus } from '../../data/schemas';
 import { applyReviewCommand, type ReviewCommand } from '../../domain/review/review-command';
 import { applyLessonEvent, type LessonEvent } from '../../domain/progress/lesson-progress';
+import {
+  normalizeSnapshot,
+  snapshotFingerprint,
+  WritingDraftSchema,
+  type ProgressSnapshot,
+  type WritingDraft,
+} from '../../domain/progress/backup';
 import type { PracticeResult } from '../../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../../domain/progress/progress.types';
 import type { PracticeCompletionCommand, ProgressRepository } from '../progress.repository';
@@ -41,7 +48,9 @@ export class IndexedDbProgressRepository implements ProgressRepository {
     // BUG-P2-007: Exclude SELF_ASSESSED writing results from objective accuracy.
     // Legacy results without assessmentType are treated as AUTO_GRADED.
     const gradedResults = results.filter(
-      (r) => (r.assessmentType ?? 'AUTO_GRADED') === 'AUTO_GRADED',
+      (r) =>
+        (r.assessmentType ?? (r.mode === 'writing' ? 'SELF_ASSESSED' : 'AUTO_GRADED')) ===
+        'AUTO_GRADED',
     );
     const correctAnswers = gradedResults.reduce((total, result) => total + result.correct, 0);
     const totalAnswers = gradedResults.reduce((total, result) => total + result.total, 0);
@@ -106,6 +115,93 @@ export class IndexedDbProgressRepository implements ProgressRepository {
   async savePracticeResult(result: PracticeResult): Promise<void> {
     const database = await this.getDatabase();
     await database.put('practice_results', result);
+  }
+
+  async getPracticeResults(): Promise<PracticeResult[]> {
+    const database = await this.getDatabase();
+    return (await database.getAll('practice_results')).sort((a, b) =>
+      b.completedAt.localeCompare(a.completedAt),
+    );
+  }
+
+  async getWritingDraft(lessonId: number, promptId: string): Promise<WritingDraft | null> {
+    const database = await this.getDatabase();
+    const setting = await database.get('settings', `writing-draft:${lessonId}:${promptId}`);
+    return setting ? WritingDraftSchema.parse(setting.value) : null;
+  }
+
+  async saveWritingDraft(draft: WritingDraft): Promise<void> {
+    WritingDraftSchema.parse(draft);
+    const database = await this.getDatabase();
+    const key = `writing-draft:${draft.lessonId}:${draft.promptId}`;
+    const tx = database.transaction('settings', 'readwrite');
+    const current = await tx.store.get(key);
+    if (!current || current.updatedAt <= draft.updatedAt)
+      await tx.store.put({ key, value: draft, updatedAt: draft.updatedAt });
+    await tx.done;
+  }
+
+  async getSnapshot(): Promise<ProgressSnapshot> {
+    const database = await this.getDatabase();
+    const tx = database.transaction([
+      'lesson_progress',
+      'review_status',
+      'practice_results',
+      'completion_receipts',
+      'settings',
+    ]);
+    const [lessons, reviewItems, results, receipts, settings] = await Promise.all([
+      tx.objectStore('lesson_progress').getAll(),
+      tx.objectStore('review_status').getAll(),
+      tx.objectStore('practice_results').getAll(),
+      tx.objectStore('completion_receipts').getAll(),
+      tx.objectStore('settings').getAll(),
+    ]);
+    await tx.done;
+    return { lessons, reviewItems, results, receipts, settings };
+  }
+
+  async restoreSnapshot(
+    input: ProgressSnapshot,
+    expectedCurrent?: ProgressSnapshot,
+  ): Promise<void> {
+    const snapshot = normalizeSnapshot(input);
+    const database = await this.getDatabase();
+    const tx = database.transaction(
+      ['lesson_progress', 'review_status', 'practice_results', 'completion_receipts', 'settings'],
+      'readwrite',
+    );
+    try {
+      if (expectedCurrent) {
+        const [lessons, reviewItems, results, receipts, settings] = await Promise.all([
+          tx.objectStore('lesson_progress').getAll(),
+          tx.objectStore('review_status').getAll(),
+          tx.objectStore('practice_results').getAll(),
+          tx.objectStore('completion_receipts').getAll(),
+          tx.objectStore('settings').getAll(),
+        ]);
+        if (
+          snapshotFingerprint({ lessons, reviewItems, results, receipts, settings }) !==
+          snapshotFingerprint(expectedCurrent)
+        )
+          throw new Error('Data changed since backup; export again before replacing.');
+      }
+      for (const name of tx.objectStoreNames) await tx.objectStore(name).clear();
+      for (const item of snapshot.lessons) await tx.objectStore('lesson_progress').add(item);
+      for (const item of snapshot.reviewItems) await tx.objectStore('review_status').add(item);
+      for (const item of snapshot.results) await tx.objectStore('practice_results').add(item);
+      for (const item of snapshot.receipts) await tx.objectStore('completion_receipts').add(item);
+      for (const item of snapshot.settings) await tx.objectStore('settings').add(item);
+      await tx.done;
+    } catch (error) {
+      try {
+        tx.abort();
+      } catch {
+        /* already aborted */
+      }
+      await tx.done.catch(() => undefined);
+      throw error;
+    }
   }
 
   async applyReview(command: ReviewCommand): Promise<ReviewStatus> {

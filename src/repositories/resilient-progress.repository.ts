@@ -66,6 +66,12 @@ export function withStorageRecovery(
     saveReviewItem: (item) => run(() => primary.saveReviewItem(item), true),
     applyReview: (command) => run(() => primary.applyReview(command), true),
     savePracticeResult: (result) => run(() => primary.savePracticeResult(result), true),
+    getPracticeResults: () => run(() => primary.getPracticeResults()),
+    getWritingDraft: (lessonId, promptId) => run(() => primary.getWritingDraft(lessonId, promptId)),
+    saveWritingDraft: (draft) => run(() => primary.saveWritingDraft(draft), true),
+    getSnapshot: () => run(() => primary.getSnapshot()),
+    restoreSnapshot: (snapshot, expectedCurrent) =>
+      run(() => primary.restoreSnapshot(snapshot, expectedCurrent), true),
     commitPracticeCompletion: (command) =>
       run(() => primary.commitPracticeCompletion(command), true),
   };

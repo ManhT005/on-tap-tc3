@@ -3,6 +3,10 @@ import type { AssessmentType, PracticeResult, PracticeSession } from './practice
 export type ScorableQuestion = {
   id: string | number;
   correctIndex: number;
+  question?: string;
+  options?: string[];
+  explanation?: string;
+  evidence?: string;
 };
 
 export type ScorePracticeOptions = {
@@ -10,12 +14,13 @@ export type ScorePracticeOptions = {
   completedAt: string;
   /** BUG-P2-007: Set to SELF_ASSESSED for Writing so it is excluded from objective accuracy. */
   assessmentType?: AssessmentType;
+  responses?: Record<string, string>;
 };
 
 export function scorePractice(
   session: PracticeSession,
   questions: readonly ScorableQuestion[],
-  { resultId, completedAt, assessmentType = 'AUTO_GRADED' }: ScorePracticeOptions,
+  { resultId, completedAt, assessmentType = 'AUTO_GRADED', responses }: ScorePracticeOptions,
 ): PracticeResult {
   const questionById = new Map(questions.map((question) => [String(question.id), question]));
   const wrongQuestionIds: string[] = [];
@@ -36,6 +41,21 @@ export function scorePractice(
 
   const total = session.questionIds.length;
   const wrong = total - correct;
+  const questionSnapshots = session.questionIds.flatMap((id) => {
+    const question = questionById.get(id);
+    return question?.question && question.options
+      ? [
+          {
+            id,
+            question: question.question,
+            options: [...question.options],
+            correctIndex: question.correctIndex,
+            ...(question.explanation ? { explanation: question.explanation } : {}),
+            ...(question.evidence ? { evidence: question.evidence } : {}),
+          },
+        ]
+      : [];
+  });
 
   return {
     id: resultId,
@@ -52,5 +72,7 @@ export function scorePractice(
     answers: { ...session.answers },
     startedAt: session.startedAt,
     completedAt,
+    ...(responses ? { responses: { ...responses } } : {}),
+    ...(questionSnapshots.length ? { questionSnapshots } : {}),
   };
 }

@@ -1,6 +1,7 @@
 import type { ReviewStatus } from '../data/schemas';
 import type { ReviewCommand } from '../domain/review/review-command';
 import type { LessonEvent } from '../domain/progress/lesson-progress';
+import type { ProgressSnapshot, WritingDraft } from '../domain/progress/backup';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
 
@@ -26,6 +27,12 @@ export interface ProgressRepository {
   saveReviewItem(item: ReviewStatus): Promise<void>;
   applyReview(command: ReviewCommand): Promise<ReviewStatus>;
   savePracticeResult(result: PracticeResult): Promise<void>;
+  getPracticeResults(): Promise<PracticeResult[]>;
+  getWritingDraft(lessonId: number, promptId: string): Promise<WritingDraft | null>;
+  saveWritingDraft(draft: WritingDraft): Promise<void>;
+  getSnapshot(): Promise<ProgressSnapshot>;
+  /** Validates before replacing all stores in one transaction. Caller backs up first. */
+  restoreSnapshot(snapshot: ProgressSnapshot, expectedCurrent?: ProgressSnapshot): Promise<void>;
 
   /**
    * Atomically commit a practice session's result, review updates, and lesson

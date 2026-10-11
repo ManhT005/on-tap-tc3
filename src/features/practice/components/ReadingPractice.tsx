@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { COURSE_STRUCTURE } from '../../../data/course';
 import { getLessonReading } from '../../../domain/learning/lesson.service';
 import { completePracticeSession } from '../../../domain/practice/complete-practice';
@@ -13,6 +13,8 @@ function createId(prefix: string) {
 }
 
 export function ReadingPractice() {
+  const submitLock = useRef(false);
+  const attempt = useRef({ id: createId('reading-session'), startedAt: new Date().toISOString() });
   const { repository } = useProgressRepository();
   const [lessonId, setLessonId] = useState(1);
   const [passageIndex, setPassageIndex] = useState(0);
@@ -28,22 +30,23 @@ export function ReadingPractice() {
   const passage = readingResult.ok ? readingResult.data[passageIndex] : undefined;
 
   async function submit() {
-    if (!passage || submitted || submitting) return;
+    if (!passage || submitted || submitLock.current) return;
+    submitLock.current = true;
 
     setSubmitting(true);
     setError(null);
     const session = createPracticeSession({
-      id: createId('reading-session'),
+      id: attempt.current.id,
       lessonId,
       mode: 'reading',
       questionIds: passage.questions.map((question) => question.id),
-      startedAt: new Date().toISOString(),
+      startedAt: attempt.current.startedAt,
     });
 
     try {
       const completed = await completePracticeSession(
         { ...session, answers },
-        passage.questions.map(({ id, correctIndex }) => ({ id, correctIndex })),
+        passage.questions,
         repository,
         { resultId: `reading-result-${session.id}`, completedAt: new Date().toISOString() },
       );
@@ -52,11 +55,14 @@ export function ReadingPractice() {
     } catch {
       setError('Không lưu được kết quả đọc hiểu.');
     } finally {
+      submitLock.current = false;
       setSubmitting(false);
     }
   }
 
   function resetPassage(nextPassageIndex = passageIndex) {
+    if (submitLock.current) return;
+    attempt.current = { id: createId('reading-session'), startedAt: new Date().toISOString() };
     setPassageIndex(nextPassageIndex);
     setAnswers({});
     setSubmitted(false);
@@ -73,6 +79,7 @@ export function ReadingPractice() {
           Bài học
           <select
             value={lessonId}
+            disabled={submitting}
             onChange={(event) => {
               setLessonId(Number(event.target.value));
               resetPassage(0);
@@ -90,6 +97,7 @@ export function ReadingPractice() {
             Bài đọc
             <select
               value={passageIndex}
+              disabled={submitting}
               onChange={(event) => resetPassage(Number(event.target.value))}
             >
               {readingResult.data.map((item, index) => (

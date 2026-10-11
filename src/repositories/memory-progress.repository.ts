@@ -1,6 +1,14 @@
 import type { ReviewStatus } from '../data/schemas';
 import { applyReviewCommand, type ReviewCommand } from '../domain/review/review-command';
 import { applyLessonEvent, type LessonEvent } from '../domain/progress/lesson-progress';
+import {
+  normalizeSnapshot,
+  snapshotFingerprint,
+  WritingDraftSchema,
+  type ProgressSnapshot,
+  type WritingDraft,
+} from '../domain/progress/backup';
+import type { AppSetting } from '../domain/progress/progress.types';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
 import type { PracticeCompletionCommand, ProgressRepository } from './progress.repository';
@@ -11,6 +19,7 @@ export class MemoryProgressRepository implements ProgressRepository {
   private readonly practiceResults = new Map<string, PracticeResult>();
   private readonly receipts = new Map<string, string>();
   private readonly reviewReceipts = new Map<string, ReviewStatus>();
+  private readonly settings = new Map<string, AppSetting>();
   private readonly now: () => Date;
 
   constructor(now: () => Date = () => new Date()) {
@@ -23,7 +32,9 @@ export class MemoryProgressRepository implements ProgressRepository {
     const results = [...this.practiceResults.values()];
     // BUG-P2-007: Exclude SELF_ASSESSED writing results from objective accuracy.
     const gradedResults = results.filter(
-      (r) => (r.assessmentType ?? 'AUTO_GRADED') === 'AUTO_GRADED',
+      (r) =>
+        (r.assessmentType ?? (r.mode === 'writing' ? 'SELF_ASSESSED' : 'AUTO_GRADED')) ===
+        'AUTO_GRADED',
     );
     const correctAnswers = gradedResults.reduce((total, result) => total + result.correct, 0);
     const totalAnswers = gradedResults.reduce((total, result) => total + result.total, 0);
@@ -70,6 +81,71 @@ export class MemoryProgressRepository implements ProgressRepository {
 
   async savePracticeResult(result: PracticeResult): Promise<void> {
     this.practiceResults.set(result.id, result);
+  }
+
+  async getPracticeResults(): Promise<PracticeResult[]> {
+    return structuredClone(
+      [...this.practiceResults.values()].sort((a, b) => b.completedAt.localeCompare(a.completedAt)),
+    );
+  }
+  async getWritingDraft(lessonId: number, promptId: string): Promise<WritingDraft | null> {
+    const setting = this.settings.get(`writing-draft:${lessonId}:${promptId}`);
+    return setting ? WritingDraftSchema.parse(structuredClone(setting.value)) : null;
+  }
+  async saveWritingDraft(draft: WritingDraft): Promise<void> {
+    WritingDraftSchema.parse(draft);
+    const key = `writing-draft:${draft.lessonId}:${draft.promptId}`;
+    const current = this.settings.get(key);
+    if (!current || current.updatedAt <= draft.updatedAt)
+      this.settings.set(key, { key, value: structuredClone(draft), updatedAt: draft.updatedAt });
+  }
+  async getSnapshot(): Promise<ProgressSnapshot> {
+    return this.snapshot();
+  }
+  private snapshot(): ProgressSnapshot {
+    const settings = new Map(this.settings);
+    for (const [eventId, item] of this.reviewReceipts) {
+      const key = `review-event:${eventId}`;
+      settings.set(key, { key, value: item, updatedAt: item.lastReviewedAt });
+    }
+    return structuredClone({
+      lessons: [...this.lessons.values()],
+      reviewItems: [...this.reviewItems.values()],
+      results: [...this.practiceResults.values()],
+      receipts: [...this.receipts].map(([sessionId, resultId]) => ({
+        sessionId,
+        resultId,
+        completedAt: this.practiceResults.get(resultId)!.completedAt,
+      })),
+      settings: [...settings.values()],
+    });
+  }
+  async restoreSnapshot(
+    input: ProgressSnapshot,
+    expectedCurrent?: ProgressSnapshot,
+  ): Promise<void> {
+    const snapshot = structuredClone(normalizeSnapshot(input));
+    if (
+      expectedCurrent &&
+      snapshotFingerprint(this.snapshot()) !== snapshotFingerprint(expectedCurrent)
+    )
+      throw new Error('Data changed since backup; export again before replacing.');
+    this.lessons.clear();
+    this.reviewItems.clear();
+    this.practiceResults.clear();
+    this.receipts.clear();
+    this.settings.clear();
+    this.reviewReceipts.clear();
+    for (const item of snapshot.lessons) this.lessons.set(item.lessonId, item);
+    for (const item of snapshot.reviewItems)
+      this.reviewItems.set(`${item.itemType}:${item.itemId}`, item);
+    for (const item of snapshot.results) this.practiceResults.set(item.id, item);
+    for (const item of snapshot.receipts) this.receipts.set(item.sessionId, item.resultId);
+    for (const item of snapshot.settings) {
+      this.settings.set(item.key, item);
+      if (item.key.startsWith('review-event:'))
+        this.reviewReceipts.set(item.key.slice('review-event:'.length), item.value as ReviewStatus);
+    }
   }
 
   async applyReview(command: ReviewCommand): Promise<ReviewStatus> {

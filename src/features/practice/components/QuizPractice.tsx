@@ -134,7 +134,7 @@ export function QuizPractice() {
     try {
       const completed = await completePracticeSession(
         { ...session, answers },
-        QUIZ_BANK.map(({ id, correctIndex }) => ({ id, correctIndex })),
+        QUIZ_BANK,
         repository,
         { resultId: `quiz-result-${session.id}`, completedAt: new Date().toISOString() },
       );

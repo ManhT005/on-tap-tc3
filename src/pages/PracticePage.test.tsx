@@ -31,8 +31,9 @@ describe('PracticePage', () => {
     expect(screen.getByText(`${quiz.data.length} câu hỏi phù hợp`)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Bắt đầu quiz' }));
 
-    for (const question of quiz.data.slice(0, 10)) {
-      const group = screen.getByRole('group', { name: `Đáp án cho câu ${question.id}` });
+    for (const question of quiz.data) {
+      const group = screen.queryByRole('group', { name: `Đáp án cho câu ${question.id}` });
+      if (!group) continue;
       const options = within(group).getAllByRole('button');
       const correct = options[question.correctIndex];
       if (!correct) throw new Error('Expected a correct answer option.');

@@ -127,7 +127,7 @@ export function useLessonFlow(lessonId: number) {
     try {
       const completed = await completePracticeSession(
         { ...session, answers },
-        quizResult.data.map(({ id, correctIndex }) => ({ id, correctIndex })),
+        quizResult.data,
         repository,
         { resultId: `lesson-result-${session.id}`, completedAt: new Date().toISOString() },
       );

@@ -1,4 +1,4 @@
-export type PracticeMode = 'lesson' | 'quiz' | 'reading' | 'writing';
+export type PracticeMode = 'lesson' | 'quiz' | 'reading' | 'writing' | 'listening' | 'exam';
 
 /** AUTO_GRADED: scored objectively (quiz/reading correctIndex comparison).
  *  SELF_ASSESSED: user self-reports pass/fail (writing); excluded from objective accuracy. */
@@ -32,4 +32,13 @@ export type PracticeResult = {
   answers: Record<string, unknown>;
   startedAt: string;
   completedAt: string;
+  responses?: Record<string, string>;
+  questionSnapshots?: {
+    id: string;
+    question: string;
+    options: string[];
+    correctIndex: number;
+    explanation?: string;
+    evidence?: string;
+  }[];
 };
