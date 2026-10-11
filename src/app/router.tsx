@@ -20,6 +20,9 @@ const ProgressPage = lazy(() =>
 const ReviewPage = lazy(() =>
   import('../pages/ReviewPage').then((module) => ({ default: module.ReviewPage })),
 );
+const VocabularyPage = lazy(() =>
+  import('../pages/VocabularyPage').then((module) => ({ default: module.VocabularyPage })),
+);
 import { NotFoundPage } from '../pages/NotFoundPage';
 
 function RouteFallback() {
@@ -65,6 +68,14 @@ export const routes = [
         element: (
           <Suspense fallback={<RouteFallback />}>
             <ReviewPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'vocabulary',
+        element: (
+          <Suspense fallback={<RouteFallback />}>
+            <VocabularyPage />
           </Suspense>
         ),
       },

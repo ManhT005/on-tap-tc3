@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import '../../features/vocabulary/vocabulary.css';
 
 :root {
   font-family: var(--font-sans);

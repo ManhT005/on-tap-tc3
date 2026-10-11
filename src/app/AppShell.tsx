@@ -6,6 +6,7 @@ import { APP_VERSION } from './version';
 const navigationItems = [
   { to: '/', label: 'Home', end: true },
   { to: '/learn', label: 'Learn' },
+  { to: '/vocabulary', label: 'Vocabulary' },
   { to: '/review', label: 'Review' },
   { to: '/practice', label: 'Practice' },
   { to: '/progress', label: 'Progress' },

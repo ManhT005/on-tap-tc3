@@ -1,0 +1,214 @@
+.vocabulary-lab {
+  --vocab-accent: var(--color-brand-primary);
+}
+.vocab-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.vocab-filters label {
+  display: grid;
+  gap: 6px;
+  flex: 1 1 150px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+.vocab-filters select,
+.vocab-filters input {
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+}
+.vocab-progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  margin-bottom: 24px;
+  background: var(--color-brand-soft);
+  border-radius: var(--radius-lg);
+}
+.vocab-progress progress {
+  flex: 1 1 160px;
+  accent-color: var(--vocab-accent);
+  min-width: 0;
+  height: 12px;
+}
+.vocab-layout {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) 230px;
+  gap: 20px;
+  align-items: start;
+}
+.vocab-layout > * {
+  min-width: 0;
+}
+.vocab-modes {
+  display: grid;
+  gap: 8px;
+}
+.vocab-modes .button {
+  justify-content: flex-start;
+}
+.vocab-main,
+.vocab-rail,
+.vocab-lesson-summary {
+  padding: 24px;
+}
+.vocab-main h2,
+.vocab-rail h2 {
+  margin-top: 0;
+  font-size: var(--text-lg);
+}
+.vocab-rail dl {
+  display: grid;
+  gap: 8px;
+  font-size: var(--text-sm);
+}
+.vocab-rail dd {
+  margin: 0 0 12px;
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+.vocab-card {
+  text-align: center;
+  padding: 28px 20px;
+  min-height: 300px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-page);
+  margin: 12px 0 16px;
+  overflow-wrap: anywhere;
+}
+.vocab-hangul {
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.5;
+  margin: 24px 0;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.vocab-meaning {
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+.vocab-example {
+  padding: 12px;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-md);
+}
+.vocab-example p {
+  margin: 6px 0;
+}
+.vocab-grades {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+.vocab-grades .button {
+  white-space: normal;
+}
+.vocab-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0 12px;
+}
+.vocab-catalog {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.vocab-catalog__item {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  text-align: left;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.vocab-catalog__item:hover {
+  border-color: var(--vocab-accent);
+  background: var(--color-brand-soft);
+}
+.vocab-catalog__item strong {
+  font-size: var(--text-xl);
+}
+.vocab-catalog__item small {
+  color: var(--color-text-secondary);
+}
+.vocab-choices {
+  display: grid;
+  gap: 10px;
+}
+.vocab-preview {
+  line-height: 1.8;
+  padding-left: 22px;
+}
+.primary-nav {
+  flex-wrap: wrap;
+}
+@media (max-width: 1100px) {
+  .vocab-layout {
+    grid-template-columns: 160px minmax(0, 1fr);
+  }
+  .vocab-rail {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 680px) {
+  .vocab-layout {
+    display: block;
+  }
+  .vocab-modes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: 16px;
+  }
+  .vocab-modes .button {
+    justify-content: center;
+  }
+  .vocab-modes p,
+  .vocab-modes > a {
+    grid-column: 1 / -1;
+  }
+  .vocab-main,
+  .vocab-rail,
+  .vocab-lesson-summary {
+    padding: 16px;
+  }
+  .vocab-rail {
+    margin-top: 16px;
+  }
+  .vocab-card {
+    padding: 18px 12px;
+  }
+  .vocab-catalog {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .vocab-filters label {
+    flex-basis: 130px;
+  }
+  .vocab-grades {
+    gap: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vocabulary-lab *,
+  .vocabulary-lab *::before,
+  .vocabulary-lab *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

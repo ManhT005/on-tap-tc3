@@ -78,7 +78,7 @@ test('E2E-P1-008 Mobile navigation stays usable without page overflow', async ({
     );
 
     expect(pageOverflows, `Page overflowed at ${width}px`).toBe(false);
-    expect(linkHeights).toHaveLength(5);
+    expect(linkHeights).toHaveLength(6);
     expect(linkHeights.every((height) => height >= 44)).toBe(true);
 
     await navigation.getByRole('link', { name: 'Learn' }).click();

@@ -150,26 +150,37 @@ export function LessonLearningFlow({ lessonId }: { lessonId: number }) {
           </div>
           <p>{lesson.vocabulary.reduce((count, pack) => count + pack.items.length, 0)} mục từ</p>
         </div>
-        {lesson.vocabulary.map((pack, packIndex) => (
-          <section key={`${pack.category}-${packIndex}`} className="vocabulary-pack">
-            <h3>{pack.category}</h3>
-            <div className="learning-card-grid">
-              {pack.items.map((item) => {
-                const itemId = getContentItemId(item);
-                return (
-                  <VocabularyCard
-                    key={itemId}
-                    item={item}
-                    category={pack.sourceTag}
-                    markedForReview={reviewedVocabulary.has(itemId)}
-                    onMarkForReview={() => void markVocabularyForReview(itemId)}
-                    onConfidence={(confidence) => void rateVocabulary(itemId, confidence)}
-                  />
-                );
-              })}
-            </div>
-          </section>
-        ))}
+        <div className="card vocab-lesson-summary">
+          <p>
+            Đã thao tác học {reviewedVocabulary.size}/
+            {lesson.vocabulary.flatMap((pack) => pack.items).length} từ. Học 10 từ mỗi lượt trong
+            Vocabulary Lab.
+          </p>
+          <div className="vocab-actions">
+            <Link
+              className="button button--primary button--md"
+              to={`/vocabulary?lesson=${lessonId}&mode=flashcard`}
+            >
+              Học từ vựng bài này
+            </Link>
+            <Link
+              className="button button--secondary button--md"
+              to={`/vocabulary?lesson=${lessonId}&mode=list`}
+            >
+              Xem toàn bộ từ
+            </Link>
+          </div>
+          <ul className="vocab-preview">
+            {lesson.vocabulary
+              .flatMap((pack) => pack.items)
+              .slice(0, 5)
+              .map((item) => (
+                <li key={item.id}>
+                  <strong lang="ko">{item.kr}</strong> · {item.vn}
+                </li>
+              ))}
+          </ul>
+        </div>
       </section>
 
       <section className="lesson-flow__section" aria-labelledby="grammar-title">
