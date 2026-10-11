@@ -69,7 +69,16 @@ function createCompletionCommand(
   return {
     sessionId: 'session-1',
     result: practiceResult,
-    reviewUpdates: [reviewUpdate],
+    reviewCommands: [
+      {
+        eventId: 'review-1',
+        itemId: 'q5',
+        itemType: 'question',
+        correct: false,
+        confidence: 1,
+        gradedAt: reviewUpdate.lastReviewedAt,
+      },
+    ],
     lessonProgress,
     ...overrides,
   };
@@ -192,7 +201,16 @@ describe('IndexedDbProgressRepository', () => {
     // Submit again with same result ID
     await repository.commitPracticeCompletion({
       ...command,
-      reviewUpdates: [{ ...reviewUpdate, wrongCount: 999 }],
+      reviewCommands: [
+        {
+          eventId: 'review-retry',
+          itemId: 'q5',
+          itemType: 'question',
+          correct: false,
+          confidence: 1,
+          gradedAt: reviewUpdate.lastReviewedAt,
+        },
+      ],
     });
 
     const reviewItems = await repository.getReviewItems();
@@ -243,6 +261,7 @@ describe('withMemoryFallback', () => {
       saveLessonProgress: vi.fn(),
       getReviewItems: vi.fn(),
       saveReviewItem: vi.fn(),
+      applyReview: vi.fn(),
       savePracticeResult: vi.fn(),
       commitPracticeCompletion: vi.fn(),
     };
@@ -263,6 +282,7 @@ describe('withMemoryFallback', () => {
       saveLessonProgress: vi.fn(),
       getReviewItems: vi.fn(),
       saveReviewItem: vi.fn(),
+      applyReview: vi.fn(),
       savePracticeResult: vi.fn(),
       commitPracticeCompletion: vi.fn().mockRejectedValue(new Error('IndexedDB unavailable')),
     };
@@ -301,6 +321,7 @@ describe('withMemoryFallback', () => {
       saveLessonProgress: vi.fn(),
       getReviewItems: vi.fn(),
       saveReviewItem: vi.fn(),
+      applyReview: vi.fn(),
       savePracticeResult: vi.fn(),
       commitPracticeCompletion: vi.fn(),
     };

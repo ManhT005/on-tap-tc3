@@ -1,4 +1,5 @@
 import type { ReviewStatus } from '../../data/schemas';
+import { applyReviewCommand, type ReviewCommand } from '../../domain/review/review-command';
 import type { PracticeResult } from '../../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../../domain/progress/progress.types';
 import type { PracticeCompletionCommand, ProgressRepository } from '../progress.repository';
@@ -82,6 +83,35 @@ export class IndexedDbProgressRepository implements ProgressRepository {
     await database.put('practice_results', result);
   }
 
+  async applyReview(command: ReviewCommand): Promise<ReviewStatus> {
+    const database = await this.getDatabase();
+    const tx = database.transaction(['review_status', 'settings'], 'readwrite');
+    try {
+      const key = `review-event:${command.eventId}`;
+      const receipt = await tx.objectStore('settings').get(key);
+      if (receipt) {
+        await tx.done;
+        return receipt.value as ReviewStatus;
+      }
+      const store = tx.objectStore('review_status');
+      const current = await store.get([command.itemType, command.itemId]);
+      const updated = applyReviewCommand(current, command);
+      if (!updated) throw new Error('Review item is not tracked.');
+      await store.put(updated);
+      await tx.objectStore('settings').add({ key, value: updated, updatedAt: command.gradedAt });
+      await tx.done;
+      return updated;
+    } catch (error) {
+      try {
+        tx.abort();
+      } catch {
+        /* already aborted */
+      }
+      await tx.done.catch(() => undefined);
+      throw error;
+    }
+  }
+
   async commitPracticeCompletion(command: PracticeCompletionCommand): Promise<PracticeResult> {
     const database = await this.getDatabase();
     const tx = database.transaction(
@@ -89,38 +119,51 @@ export class IndexedDbProgressRepository implements ProgressRepository {
       'readwrite',
     );
 
-    const receipt = await tx.objectStore('completion_receipts').get(command.sessionId);
-    const results = tx.objectStore('practice_results');
-    const existing = receipt
-      ? await results.get(receipt.resultId)
-      : ((await results.index('by-session-id').get(command.sessionId)) ??
-        (await results.get(command.result.id)));
-    if (existing) {
-      // Already committed — treat as no-op.
+    try {
+      const receipt = await tx.objectStore('completion_receipts').get(command.sessionId);
+      const results = tx.objectStore('practice_results');
+      const existing = receipt
+        ? await results.get(receipt.resultId)
+        : ((await results.index('by-session-id').get(command.sessionId)) ??
+          (await results.get(command.result.id)));
+      if (existing) {
+        // Already committed — treat as no-op.
+        await tx.done;
+        return existing;
+      }
+
+      // All writes happen inside this single transaction — any failure
+      // causes the entire transaction to roll back automatically.
+      const result = { ...command.result, sessionId: command.sessionId };
+      await results.add(result);
+      await tx.objectStore('completion_receipts').add({
+        sessionId: command.sessionId,
+        resultId: result.id,
+        completedAt: result.completedAt,
+      });
+
+      for (const event of command.reviewCommands) {
+        const store = tx.objectStore('review_status');
+        const current = await store.get([event.itemType, event.itemId]);
+        const updated = applyReviewCommand(current, event);
+        if (updated) await store.put(updated);
+      }
+
+      if (command.lessonProgress) {
+        await tx.objectStore('lesson_progress').put(command.lessonProgress);
+      }
+
       await tx.done;
-      return existing;
+      return result;
+    } catch (error) {
+      try {
+        tx.abort();
+      } catch {
+        /* already aborted */
+      }
+      await tx.done.catch(() => undefined);
+      throw error;
     }
-
-    // All writes happen inside this single transaction — any failure
-    // causes the entire transaction to roll back automatically.
-    const result = { ...command.result, sessionId: command.sessionId };
-    await results.add(result);
-    await tx.objectStore('completion_receipts').add({
-      sessionId: command.sessionId,
-      resultId: result.id,
-      completedAt: result.completedAt,
-    });
-
-    for (const item of command.reviewUpdates) {
-      await tx.objectStore('review_status').put(item);
-    }
-
-    if (command.lessonProgress) {
-      await tx.objectStore('lesson_progress').put(command.lessonProgress);
-    }
-
-    await tx.done;
-    return result;
   }
 
   async close(): Promise<void> {

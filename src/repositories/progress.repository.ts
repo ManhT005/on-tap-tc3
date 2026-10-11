@@ -1,4 +1,5 @@
 import type { ReviewStatus } from '../data/schemas';
+import type { ReviewCommand } from '../domain/review/review-command';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
 
@@ -11,7 +12,7 @@ export type PracticeCompletionCommand = {
   /** Stable session ID used for idempotency — duplicate commits are no-ops. */
   sessionId: string;
   result: PracticeResult;
-  reviewUpdates: ReviewStatus[];
+  reviewCommands: ReviewCommand[];
   lessonProgress?: LessonProgress;
 };
 
@@ -21,6 +22,7 @@ export interface ProgressRepository {
   saveLessonProgress(progress: LessonProgress): Promise<void>;
   getReviewItems(): Promise<ReviewStatus[]>;
   saveReviewItem(item: ReviewStatus): Promise<void>;
+  applyReview(command: ReviewCommand): Promise<ReviewStatus>;
   savePracticeResult(result: PracticeResult): Promise<void>;
 
   /**

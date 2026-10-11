@@ -1,4 +1,5 @@
 import type { ReviewStatus } from '../data/schemas';
+import { applyReviewCommand, type ReviewCommand } from '../domain/review/review-command';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
 import type { PracticeCompletionCommand, ProgressRepository } from './progress.repository';
@@ -8,6 +9,7 @@ export class MemoryProgressRepository implements ProgressRepository {
   private readonly reviewItems = new Map<string, ReviewStatus>();
   private readonly practiceResults = new Map<string, PracticeResult>();
   private readonly receipts = new Map<string, string>();
+  private readonly reviewReceipts = new Map<string, ReviewStatus>();
   private readonly now: () => Date;
 
   constructor(now: () => Date = () => new Date()) {
@@ -63,6 +65,17 @@ export class MemoryProgressRepository implements ProgressRepository {
     this.practiceResults.set(result.id, result);
   }
 
+  async applyReview(command: ReviewCommand): Promise<ReviewStatus> {
+    const receipt = this.reviewReceipts.get(command.eventId);
+    if (receipt) return structuredClone(receipt);
+    const key = `${command.itemType}:${command.itemId}`;
+    const updated = applyReviewCommand(this.reviewItems.get(key), command);
+    if (!updated) throw new Error('Review item is not tracked.');
+    this.reviewItems.set(key, structuredClone(updated));
+    this.reviewReceipts.set(command.eventId, structuredClone(updated));
+    return structuredClone(updated);
+  }
+
   async commitPracticeCompletion(command: PracticeCompletionCommand): Promise<PracticeResult> {
     // Idempotency: if a result with this ID already exists, skip entirely.
     const existing =
@@ -71,12 +84,16 @@ export class MemoryProgressRepository implements ProgressRepository {
     if (existing) return structuredClone(existing);
 
     const result = structuredClone({ ...command.result, sessionId: command.sessionId });
+    const updates = new Map(this.reviewItems);
+    for (const event of command.reviewCommands) {
+      const key = `${event.itemType}:${event.itemId}`;
+      const updated = applyReviewCommand(updates.get(key), event);
+      if (updated) updates.set(key, updated);
+    }
     this.practiceResults.set(result.id, result);
     this.receipts.set(command.sessionId, result.id);
 
-    for (const item of command.reviewUpdates) {
-      this.reviewItems.set(`${item.itemType}:${item.itemId}`, item);
-    }
+    for (const [key, item] of updates) this.reviewItems.set(key, structuredClone(item));
 
     if (command.lessonProgress) {
       this.lessons.set(command.lessonProgress.lessonId, command.lessonProgress);

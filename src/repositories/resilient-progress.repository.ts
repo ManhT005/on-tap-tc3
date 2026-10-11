@@ -1,4 +1,5 @@
 import type { ReviewStatus } from '../data/schemas';
+import type { ReviewCommand } from '../domain/review/review-command';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
 import type { PracticeCompletionCommand, ProgressRepository } from './progress.repository';
@@ -79,6 +80,11 @@ export function withMemoryFallback(
       run(
         () => primary.saveReviewItem(item),
         () => fallback.saveReviewItem(item),
+      ),
+    applyReview: (command: ReviewCommand): Promise<ReviewStatus> =>
+      run(
+        () => primary.applyReview(command),
+        () => fallback.applyReview(command),
       ),
     savePracticeResult: (result: PracticeResult): Promise<void> =>
       run(

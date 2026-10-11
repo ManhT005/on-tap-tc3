@@ -1,7 +1,5 @@
-import type { ReviewStatus } from '../../data/schemas';
 import type { ProgressRepository } from '../../repositories/progress.repository';
 import type { LessonProgress } from '../progress/progress.types';
-import { createReviewStatus, gradeReview } from '../review/review-engine';
 import type { PracticeSession } from './practice.types';
 import { scorePractice, type ScorableQuestion, type ScorePracticeOptions } from './score-practice';
 
@@ -13,25 +11,7 @@ export async function completePracticeSession(
 ) {
   const result = scorePractice(session, questions, options);
 
-  const now = new Date(options.completedAt);
-  const existingItems = await repository.getReviewItems();
-  const itemsByQuestion = new Map(
-    existingItems.filter((item) => item.itemType === 'question').map((item) => [item.itemId, item]),
-  );
   const wrongQuestionIds = new Set(result.wrongQuestionIds);
-
-  // Build all review updates in memory before committing.
-  const reviewUpdates: ReviewStatus[] = [];
-  for (const questionId of session.questionIds) {
-    const existing = itemsByQuestion.get(questionId);
-    const isWrong = wrongQuestionIds.has(questionId);
-
-    if (!existing && !isWrong) continue;
-
-    const reviewItem = existing ?? createReviewStatus(questionId, 'question', now);
-    const updated = gradeReview(reviewItem, !isWrong, isWrong ? 1 : 3, now);
-    reviewUpdates.push(updated);
-  }
 
   // Build lesson progress update if applicable.
   let lessonProgress: LessonProgress | undefined;
@@ -51,7 +31,15 @@ export async function completePracticeSession(
   return repository.commitPracticeCompletion({
     sessionId: session.id,
     result,
-    reviewUpdates,
+    reviewCommands: session.questionIds.map((itemId) => ({
+      eventId: `${session.id}:question:${itemId}`,
+      itemId,
+      itemType: 'question',
+      correct: !wrongQuestionIds.has(itemId),
+      confidence: wrongQuestionIds.has(itemId) ? 1 : 3,
+      gradedAt: options.completedAt,
+      onlyIfTracked: !wrongQuestionIds.has(itemId),
+    })),
     lessonProgress,
   });
 }
