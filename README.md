@@ -21,6 +21,8 @@ npm run preview -- --host 127.0.0.1
 ## Chức năng
 
 - 15 bài, 1.085 mục từ, 42 cấu trúc ngữ pháp, 180 quiz, 39 bài đọc, 30 đề viết.
+- Vocabulary Lab tại `/vocabulary`: batch 5/10/15 từ, Flashcard, danh sách tìm kiếm/phân trang, Nhớ nghĩa và ngữ cảnh; reload giữ phiên, đánh giá một lần/từ/phiên vào SRS.
+- Tra từ nội bộ trong Reading và Listening sau khi hiện lời thoại; nhiều nghĩa được giữ, dạng chưa khớp có tìm thủ công. Bộ phát tiếng Hàn dùng chung tránh phát chồng.
 - Checklist thực theo từng bước; reload giữ tiến độ. Nộp quiz riêng chưa hoàn thành toàn bộ bài.
 - IndexedDB v3, receipt theo session, atomic review read-modify-write, xử lý hai tab và retry.
 - Review tự cập nhật lịch đến hạn; các ID học liệu cố định và có migration từ ID cũ.
@@ -41,6 +43,7 @@ npm run format:check
 npm run test:coverage
 npm run check:manifest
 npm run validate:content
+npm run validate:vocab
 npm run audit:data -- --write-docs
 npm audit --audit-level=high
 npm run build
@@ -56,6 +59,7 @@ Sau khi sửa nội dung, chạy `npm run generate:manifest` và cập nhật co
 ## Tài liệu bàn giao
 
 - [Báo cáo triển khai và các gate còn lại](docs/IMPLEMENTATION_REPORT_2026-10-11.md)
+- [Vocabulary Lab: triển khai, nhánh và QA](docs/release/VOCABULARY_LAB_IMPLEMENTATION_REPORT_2026-10-11.md), [enrichment coverage](docs/content/VOCAB_ENRICHMENT_COVERAGE.md)
 - [Regression](docs/qa/REGRESSION_REPORT.md), [test matrix](docs/qa/TEST_MATRIX.md), [P2 closure](docs/phase_2/PHASE_2_CLOSURE_REPORT.md)
 - [Hướng dẫn người học](docs/USER_GUIDE.md)
 - [Kế hoạch nhánh](docs/IMPLEMENTATION_BRANCHES_2026-10-11.md)

@@ -1,5 +1,14 @@
 # Changelog
 
+## Vocabulary Lab — 2026-10-11 (beta development)
+
+- Dedicated `/vocabulary` route and compact Lesson entry; four modes, searchable/paginated catalog, 5/10/15-word batches, keyboard and mobile layouts.
+- Atomic session/SRS/lesson grading in existing IndexedDB v3 settings; resume, same-session replay protection, two-tab grading, quota rollback and backup/reset support.
+- Shared owner-based Korean speech and recorded-playback coordination; no English fallback or autoplay.
+- Exact-boundary longest-phrase contextual lookup in Reading and revealed Listening, ambiguous senses, local manual search, bookmarks and focus-restoring modal/bottom sheet. Exam does not mount lookup UI.
+- Vocabulary validator/CI gate, coverage audit and four editorial draft enrichments. No example/alias is marked approved; no recorded word audio added.
+- Final local regression: 159 unit/integration tests and 58 Chromium/Firefox E2E executions PASS.
+
 ## 0.3.0-beta.1 — 2026-10-11
 
 - IndexedDB v2/v3, session receipts, original result on replay, atomic review/lesson mutations and concurrency/rollback tests.

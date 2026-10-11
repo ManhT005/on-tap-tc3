@@ -2,7 +2,7 @@
 
 Base: `feature/completion-integration` at `b79fed3`. User-supplied plan and interactive mockup are preserved under `docs/release/`.
 
-- `/vocabulary?lesson=1&mode=flashcard|list|recall|context`; optional `word=<stableId>` opens that word in a small batch. Absent lesson selects the latest in-progress lesson. Invalid parameters have a visible fallback.
+- `/vocabulary?lesson=1&mode=flashcard|list|recall|context`; optional `word=<stableId>` opens that word in a small batch. Absent lesson selects the latest in-progress lesson. Invalid lesson has a visible Bài 01 fallback; unsupported mode defaults to Flashcard and an unknown word ID uses the regular batch.
 - Canonical entries adapt existing immutable vocabulary IDs. Legacy notes remain collocations, never approved translated examples. Pilot enrichment is editorial draft, not language/source sign-off. Approved examples/aliases require actual reviewer/source metadata.
 - Batch defaults to 10, supports 5/10/15, prioritizes unstudied and weak items. One active session per lesson lives in existing v3 `settings` under `vocabulary-session:<lessonId>`; no IndexedDB version change.
 - Grading commits session state, SRS event receipt and actual lesson item event in one transaction. First grade per word/session wins, including competing tabs. Previous/Next are viewing actions and never grade. Repeating a hard word requires a new session. Reveal state is transient and resets after reload.

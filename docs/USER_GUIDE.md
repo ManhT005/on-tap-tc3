@@ -4,6 +4,12 @@ Mở Learn và chọn bài. Phần Nhớ lại yêu cầu tự nhớ trước kh
 
 Review hiển thị mục đến hạn, tự cập nhật mỗi 30 giây và khi quay lại tab. Hiện đáp án, chọn mức độ ghi nhớ rồi lưu. Mục không còn tìm thấy nội dung được giữ để khôi phục và không được tính vào số mục có thể ôn. Bộ lọc quiz “Câu đã từng sai” gồm các câu từng sai, kể cả sau đó đã trả lời đúng.
 
+Vocabulary Lab mở từ menu Vocabulary hoặc nút “Học từ vựng bài này”. Mặc định học 10 từ; chọn 5/10/15 và bộ từ, sau đó bấm “Bắt đầu bộ đã chọn”. Flashcard ẩn nghĩa trước khi lật; chọn mức tự tin để lưu và chuyển từ. Previous/Next chỉ xem, không đánh giá lại trong cùng phiên. Reload giữ phiên nhưng ẩn lại nghĩa. Khi xong, có thể xem lại, ôn từ khó trong phiên mới hoặc tiếp tục batch. Chế độ Nhớ nghĩa ghi kết quả vào SRS, không cộng vào điểm thi; Danh sách có tìm kiếm/phân trang; Trong ngữ cảnh dùng đoạn đọc của bài.
+
+Nút phát âm dùng giọng Hàn của thiết bị, có tốc độ 0.75/1/1.25x và dừng khi đổi thẻ. Máy chưa có giọng Hàn sẽ có thông báo và nút tải lại danh sách giọng. “Cụm liên quan” là ghi chú cũ; câu mẫu và bản dịch chỉ hiện khi được kiểm duyệt. Hiện enrichment pilot còn chờ duyệt nên thẻ báo chưa có câu ví dụ được kiểm duyệt.
+
+Trong Reading hoặc lời thoại Listening đã hiện, bấm “Bật tra từ” rồi nhấn từ gạch chân. Panel giữ nguyên các nghĩa/mục từ khả dĩ, ưu tiên bài đang học nhưng không tự đoán dạng chia/tiểu từ. “Lưu để ôn” đánh dấu đúng ID, không tự hoàn thành bước học hoặc chấm điểm. Dùng tìm thủ công khi không khớp; lookup hoàn toàn trong 1.085 mục học liệu. Escape/Đóng đóng panel và trả focus. Exam không có panel tra từ.
+
 Practice có Quiz, Reading, Writing, Listening và Exam. Writing tự lưu bản nháp sau khi ngừng gõ khoảng 400 ms; hãy đợi trạng thái đã lưu hoặc bấm Lưu bản nháp trước khi reload. Đổi đề sẽ lưu đề cũ trước. Nội dung đã nộp nằm trong lịch sử. Tự đánh giá writing không phải chấm AI và không cộng vào độ chính xác khách quan.
 
 Listening có hai lời thoại/câu hỏi mỗi bài. Hiện dùng giọng tổng hợp tiếng Hàn của thiết bị; máy không có giọng Hàn sẽ báo chưa nghe được. Có tốc độ 0.75/1/1.25x, phát lại, dừng, lời thoại và bản dịch. Các lời thoại và giọng đọc chưa được người kiểm duyệt ngôn ngữ xác nhận.
