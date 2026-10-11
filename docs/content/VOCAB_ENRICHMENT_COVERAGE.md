@@ -26,3 +26,13 @@ Generated from immutable course entries; draft coverage is not language/source s
 | 15 | 72 | 0 | 0 | 0 |
 
 Pending aliases are excluded from contextual matching. Korean particles and conjugations are not guessed. Unknown contextual tokens require manual local search; token coverage is measured separately from example approval.
+
+## Context matching audit
+
+- Reading + Listening passages: 69
+- Unresolved Hangul token occurrences: 3452
+- Distinct unresolved tokens: 2339
+
+Examples of unresolved tokens (not guessed): 학년, 학생, 여러분, 이번, 학기, 기말시험은, 월, 일, 수, 부터, 화, 까지.
+
+Counts use Intl.Segmenter word spans; segmentation is not lemmatization. Existing loanword MT (Membership Training), vocab-01-0029, is retained as a known legacy exception.
