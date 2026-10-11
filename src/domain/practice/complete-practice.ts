@@ -1,5 +1,5 @@
 import type { ProgressRepository } from '../../repositories/progress.repository';
-import type { LessonProgress } from '../progress/progress.types';
+import type { LessonEvent } from '../progress/lesson-progress';
 import type { PracticeSession } from './practice.types';
 import { scorePractice, type ScorableQuestion, type ScorePracticeOptions } from './score-practice';
 
@@ -14,17 +14,9 @@ export async function completePracticeSession(
   const wrongQuestionIds = new Set(result.wrongQuestionIds);
 
   // Build lesson progress update if applicable.
-  let lessonProgress: LessonProgress | undefined;
+  let lessonEvent: LessonEvent | undefined;
   if (session.mode === 'lesson' && session.lessonId !== undefined && result.total > 0) {
-    const existingProgress = await repository.getLessonProgress(session.lessonId);
-    lessonProgress = {
-      lessonId: session.lessonId,
-      status: 'COMPLETED',
-      completionPercent: 100,
-      startedAt: existingProgress?.startedAt ?? session.startedAt,
-      updatedAt: options.completedAt,
-      completedAt: options.completedAt,
-    };
+    lessonEvent = { lessonId: session.lessonId, kind: 'quiz', occurredAt: options.completedAt };
   }
 
   // Commit everything atomically — no partial state on failure.
@@ -40,6 +32,6 @@ export async function completePracticeSession(
       gradedAt: options.completedAt,
       onlyIfTracked: !wrongQuestionIds.has(itemId),
     })),
-    lessonProgress,
+    lessonEvent,
   });
 }

@@ -1,19 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   getLessonById,
   getLessonGrammar,
   getLessonQuiz,
 } from '../../../domain/learning/lesson.service';
-import { createReviewStatus, gradeReview } from '../../../domain/review/review-engine';
 import { completePracticeSession } from '../../../domain/practice/complete-practice';
 import { createPracticeSession } from '../../../domain/practice/practice-session';
 import type { PracticeResult } from '../../../domain/practice/practice.types';
+import type { LessonProgress } from '../../../domain/progress/progress.types';
+import type { ReviewCommand } from '../../../domain/review/review-command';
 import type { RecallConfidence } from '../../../components/learning/Flashcard';
 import { useProgressRepository } from '../../../app/providers/ProgressRepositoryProvider';
-
-function createId(prefix: string) {
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-}
+import { getLessonRequirements } from '../../../domain/progress/lesson-progress';
 
 export function useLessonFlow(lessonId: number) {
   const { repository } = useProgressRepository();
@@ -24,13 +22,15 @@ export function useLessonFlow(lessonId: number) {
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [result, setResult] = useState<PracticeResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [reviewedVocabulary, setReviewedVocabulary] = useState<Set<string>>(() => new Set());
+  const [progress, setProgress] = useState<LessonProgress | null>(null);
   const [loading, setLoading] = useState(() => lessonResult.ok);
   const [error, setError] = useState<string | null>(null);
-
+  const submitLock = useRef(false);
+  const itemLocks = useRef(new Set<string>());
+  const pendingEvents = useRef(new Map<string, ReviewCommand>());
   const [session] = useState(() =>
     createPracticeSession({
-      id: createId('lesson-session'),
+      id: crypto.randomUUID(),
       lessonId,
       mode: 'lesson',
       questionIds: quizResult.ok ? quizResult.data.map((question) => question.id) : [],
@@ -39,33 +39,12 @@ export function useLessonFlow(lessonId: number) {
   );
 
   useEffect(() => {
-    let active = true;
-
     if (!lessonResult.ok) return;
-
-    Promise.all([repository.getLessonProgress(lessonId), repository.getReviewItems()])
-      .then(async ([progress, reviewItems]) => {
-        if (!progress || progress.status !== 'COMPLETED') {
-          await repository.saveLessonProgress({
-            lessonId,
-            status: 'IN_PROGRESS',
-            completionPercent: progress?.completionPercent
-              ? Math.max(progress.completionPercent, 25)
-              : 25,
-            startedAt: progress?.startedAt ?? startedAt,
-            updatedAt: new Date().toISOString(),
-          });
-        }
-
-        if (active) {
-          setReviewedVocabulary(
-            new Set(
-              reviewItems
-                .filter((item) => item.itemType === 'vocabulary')
-                .map((item) => item.itemId),
-            ),
-          );
-        }
+    let active = true;
+    repository
+      .applyLessonEvent({ lessonId, kind: 'opened', occurredAt: startedAt })
+      .then((stored) => {
+        if (active) setProgress(stored);
       })
       .catch(() => {
         if (active) setError('Không tải được dữ liệu học. Vui lòng thử lại.');
@@ -73,85 +52,88 @@ export function useLessonFlow(lessonId: number) {
       .finally(() => {
         if (active) setLoading(false);
       });
-
     return () => {
       active = false;
     };
   }, [lessonId, lessonResult.ok, repository, startedAt]);
 
-  async function advanceLessonProgress(targetPercent: number) {
+  async function refreshProgress() {
+    const stored = await repository.getLessonProgress(lessonId);
+    setProgress(stored);
+  }
+
+  async function recordVocabulary(itemId: string, confidence?: RecallConfidence) {
+    if (itemLocks.current.has(itemId)) return;
+    itemLocks.current.add(itemId);
+    setError(null);
+    const now = new Date().toISOString();
+    const recall =
+      confidence !== undefined && getLessonRequirements(lessonId).recallIds.includes(itemId);
+    const command = pendingEvents.current.get(itemId) ?? {
+      eventId: crypto.randomUUID(),
+      itemId,
+      itemType: 'vocabulary' as const,
+      correct: confidence === undefined ? false : confidence >= 3,
+      confidence: confidence ?? 1,
+      gradedAt: now,
+      kind: confidence === undefined ? ('mark' as const) : ('grade' as const),
+      lessonEvent: {
+        lessonId,
+        kind: recall ? ('recall' as const) : ('vocabulary' as const),
+        itemId,
+        occurredAt: now,
+      },
+    };
+    pendingEvents.current.set(itemId, command);
     try {
-      const current = await repository.getLessonProgress(lessonId);
-      if (
-        current &&
-        current.status === 'IN_PROGRESS' &&
-        (current.completionPercent ?? 0) < targetPercent
-      ) {
-        await repository.saveLessonProgress({
-          ...current,
-          completionPercent: targetPercent,
-          updatedAt: new Date().toISOString(),
-        });
-      }
+      await repository.applyReview(command);
+      await refreshProgress();
+      pendingEvents.current.delete(itemId);
     } catch {
-      // Non-critical progress advancement
+      setError('Không lưu được bước học. Hãy thử lại thao tác để lưu an toàn.');
+    } finally {
+      itemLocks.current.delete(itemId);
     }
   }
 
-  async function markVocabularyForReview(itemId: string) {
+  async function markGrammarViewed(itemId: string) {
+    setError(null);
     try {
-      const existing = (await repository.getReviewItems()).find(
-        (item) => item.itemType === 'vocabulary' && item.itemId === itemId,
-      );
-      if (!existing) {
-        await repository.saveReviewItem(createReviewStatus(itemId, 'vocabulary', new Date()));
-      }
-      setReviewedVocabulary((current) => new Set(current).add(itemId));
-      await advanceLessonProgress(50);
+      await repository.applyLessonEvent({
+        lessonId,
+        kind: 'grammar',
+        itemId,
+        occurredAt: new Date().toISOString(),
+      });
+      await refreshProgress();
     } catch {
-      setError('Không lưu được mục từ vựng cần ôn.');
-    }
-  }
-
-  async function rateVocabulary(itemId: string, confidence: RecallConfidence) {
-    try {
-      const existing = (await repository.getReviewItems()).find(
-        (item) => item.itemType === 'vocabulary' && item.itemId === itemId,
-      );
-      const now = new Date();
-      const initial = existing ?? createReviewStatus(itemId, 'vocabulary', now);
-      await repository.saveReviewItem(gradeReview(initial, true, confidence, now));
-      setReviewedVocabulary((current) => new Set(current).add(itemId));
-      await advanceLessonProgress(50);
-    } catch {
-      setError('Không lưu được mức độ ghi nhớ.');
+      setError('Không lưu được bước ngữ pháp. Vui lòng thử lại.');
     }
   }
 
   function selectAnswer(questionId: number, answerIndex: number) {
+    if (submitLock.current || result) return;
     setAnswers((current) => ({ ...current, [String(questionId)]: answerIndex }));
   }
 
   async function submitPractice() {
-    // BUG-P2-001: resultId is derived from the stable session.id (created at mount),
-    // not from createId() on every call. Combined with submitting guard this ensures
-    // idempotency: the same session cannot produce more than one result.
-    const resultId = `lesson-result-${session.id}`;
-    if (!quizResult.ok || result || submitting) return;
+    if (!quizResult.ok || result || submitLock.current) return;
+    submitLock.current = true;
     setSubmitting(true);
     setError(null);
     try {
-      const completedAt = new Date().toISOString();
       const completed = await completePracticeSession(
         { ...session, answers },
         quizResult.data.map(({ id, correctIndex }) => ({ id, correctIndex })),
         repository,
-        { resultId, completedAt },
+        { resultId: `lesson-result-${session.id}`, completedAt: new Date().toISOString() },
       );
       setResult(completed);
+      await refreshProgress();
     } catch {
       setError('Không lưu được kết quả luyện tập. Vui lòng thử lại.');
     } finally {
+      submitLock.current = false;
       setSubmitting(false);
     }
   }
@@ -162,11 +144,15 @@ export function useLessonFlow(lessonId: number) {
     quizResult,
     answers,
     result,
-    reviewedVocabulary,
+    progress,
+    submitting,
+    reviewedVocabulary: new Set(progress?.steps?.vocabularyIds ?? []),
     loading,
     error,
-    markVocabularyForReview,
-    rateVocabulary,
+    markVocabularyForReview: (itemId: string) => recordVocabulary(itemId),
+    rateVocabulary: (itemId: string, confidence: RecallConfidence) =>
+      recordVocabulary(itemId, confidence),
+    markGrammarViewed,
     selectAnswer,
     submitPractice,
   };

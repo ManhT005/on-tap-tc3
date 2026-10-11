@@ -9,7 +9,7 @@ const questions = [
 ];
 
 describe('completePracticeSession', () => {
-  it('persists a result, completes the lesson, and queues missed questions', async () => {
+  it('persists a result and quiz step without falsely completing an unstudied lesson', async () => {
     const repository = new MemoryProgressRepository(() => new Date('2026-10-01T08:10:00.000Z'));
     const session = {
       ...createPracticeSession({
@@ -29,8 +29,8 @@ describe('completePracticeSession', () => {
 
     expect(result).toMatchObject({ score: 50, correct: 1, wrong: 1, wrongQuestionIds: ['2'] });
     await expect(repository.getLessonProgress(1)).resolves.toMatchObject({
-      status: 'COMPLETED',
-      completionPercent: 100,
+      status: 'IN_PROGRESS',
+      completionPercent: 20,
     });
     await expect(repository.getReviewItems()).resolves.toEqual([
       expect.objectContaining({

@@ -1,5 +1,6 @@
 import type { ReviewStatus } from '../data/schemas';
 import type { ReviewCommand } from '../domain/review/review-command';
+import type { LessonEvent } from '../domain/progress/lesson-progress';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
 
@@ -13,13 +14,14 @@ export type PracticeCompletionCommand = {
   sessionId: string;
   result: PracticeResult;
   reviewCommands: ReviewCommand[];
-  lessonProgress?: LessonProgress;
+  lessonEvent?: LessonEvent;
 };
 
 export interface ProgressRepository {
   getCourseProgress(): Promise<CourseProgress>;
   getLessonProgress(lessonId: number): Promise<LessonProgress | null>;
   saveLessonProgress(progress: LessonProgress): Promise<void>;
+  applyLessonEvent(event: LessonEvent): Promise<LessonProgress>;
   getReviewItems(): Promise<ReviewStatus[]>;
   saveReviewItem(item: ReviewStatus): Promise<void>;
   applyReview(command: ReviewCommand): Promise<ReviewStatus>;

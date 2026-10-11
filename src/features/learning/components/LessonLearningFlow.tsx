@@ -16,11 +16,14 @@ export function LessonLearningFlow({ lessonId }: { lessonId: number }) {
     quizResult,
     answers,
     result,
+    progress,
+    submitting,
     reviewedVocabulary,
     loading,
     error,
     markVocabularyForReview,
     rateVocabulary,
+    markGrammarViewed,
     selectAnswer,
     submitPractice,
   } = useLessonFlow(lessonId);
@@ -95,17 +98,24 @@ export function LessonLearningFlow({ lessonId }: { lessonId: number }) {
 
       <div className="learning-checklist" role="region" aria-label="Tiến độ bài học">
         <span className="learning-checklist__item">
-          {reviewedVocabulary.size > 0 ? '✅' : '⚪'} 01 Nhớ lại & Từ vựng (
-          {reviewedVocabulary.size} từ đã xem)
+          Nhớ lại: {progress?.steps?.recallIds.length ?? 0}/{recallItems.length} · Từ vựng:{' '}
+          {reviewedVocabulary.size}/{lesson.vocabulary.flatMap((pack) => pack.items).length}
         </span>
         <span className="learning-checklist__item">
-          ✅ 02 Ngữ pháp ({grammarResult.data.length} cấu trúc)
+          Ngữ pháp: {progress?.steps?.grammarIds.length ?? 0}/{grammarResult.data.length}
         </span>
         <span className="learning-checklist__item">
-          {result ? '✅' : allAnswered ? '🟡' : '⚪'} 03 Luyện tập ({Object.keys(answers).length}/
-          {quizResult.data.length} câu)
+          Luyện tập: {progress?.steps?.quickQuizCompleted ? 'Đã nộp' : 'Chưa nộp'} · Tiến độ:{' '}
+          {progress?.completionPercent ?? 0}%
         </span>
       </div>
+      <p className="muted-copy" role="note">
+        Tiến độ: nhớ lại 20%, từ vựng 40%, ngữ pháp 20%, nộp luyện tập 20%. Hoàn thành khi đã học đủ
+        các mục và nộp luyện tập.
+        {progress?.legacyCompletedAt
+          ? ' Lần hoàn thành theo cách tính cũ đã được giữ trong lịch sử; checklist này ghi nhận từng bước học.'
+          : ''}
+      </p>
 
       <section className="lesson-flow__section" aria-labelledby="recall-title">
         <div className="lesson-section-heading">
@@ -171,9 +181,22 @@ export function LessonLearningFlow({ lessonId }: { lessonId: number }) {
           <p>{grammarResult.data.length} cấu trúc</p>
         </div>
         <div className="grammar-grid">
-          {grammarResult.data.map((item, index) => (
-            <GrammarCard key={`${item.structure}-${index}`} item={item} index={index} />
-          ))}
+          {grammarResult.data.map((item, index) => {
+            const id = getContentItemId(item);
+            const checked = progress?.steps?.grammarIds.includes(id) ?? false;
+            return (
+              <div key={id}>
+                <GrammarCard item={item} index={index} />
+                <Button
+                  variant="secondary"
+                  disabled={checked}
+                  onClick={() => void markGrammarViewed(id)}
+                >
+                  {checked ? 'Đã học cấu trúc này' : 'Đánh dấu đã học cấu trúc này'}
+                </Button>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -215,8 +238,8 @@ export function LessonLearningFlow({ lessonId }: { lessonId: number }) {
                     để tăng hiệu quả ghi nhớ.
                   </p>
                 ) : null}
-                <Button disabled={!allAnswered} onClick={() => void submitPractice()}>
-                  Hoàn thành bài học
+                <Button disabled={!allAnswered || submitting} onClick={() => void submitPractice()}>
+                  {submitting ? 'Đang lưu...' : 'Nộp luyện tập nhanh'}
                 </Button>
               </>
             )}

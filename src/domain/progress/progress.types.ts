@@ -7,6 +7,16 @@ export type LessonProgress = {
   startedAt: string;
   updatedAt: string;
   completedAt?: string;
+  steps?: LessonSteps;
+  /** Historical completion recorded before event-based progress existed. */
+  legacyCompletedAt?: string;
+};
+
+export type LessonSteps = {
+  recallIds: string[];
+  vocabularyIds: string[];
+  grammarIds: string[];
+  quickQuizCompleted: boolean;
 };
 
 export type CourseProgress = {

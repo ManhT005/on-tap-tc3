@@ -100,14 +100,14 @@ async function completeLessonOneWithWrongAnswers(page: import('@playwright/test'
     await answerButtons.nth((question.correctIndex + 1) % question.options.length).click();
   }
 
-  await page.getByRole('button', { name: 'Hoàn thành bài học' }).click();
+  await page.getByRole('button', { name: 'Nộp luyện tập nhanh' }).click();
   await expect(page.getByRole('heading', { name: 'Bài luyện tập đã hoàn thành' })).toBeVisible();
 }
 
 async function setReviewItemDue(page: import('@playwright/test').Page, itemId: string) {
   await page.evaluate(async (reviewItemId) => {
     const database = await new Promise<IDBDatabase>((resolve, reject) => {
-      const request = indexedDB.open('on-tap-tc3', 1);
+      const request = indexedDB.open('on-tap-tc3');
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });

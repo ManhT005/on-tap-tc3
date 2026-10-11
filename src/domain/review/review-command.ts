@@ -1,4 +1,5 @@
 import type { ReviewStatus } from '../../data/schemas';
+import type { LessonEvent } from '../progress/lesson-progress';
 import { createReviewStatus, gradeReview, type ReviewConfidence } from './review-engine';
 
 /** An event, never a precomputed status from a UI snapshot. */
@@ -11,6 +12,7 @@ export type ReviewCommand = {
   gradedAt: string;
   kind?: 'grade' | 'mark';
   onlyIfTracked?: boolean;
+  lessonEvent?: LessonEvent;
 };
 
 export function applyReviewCommand(current: ReviewStatus | undefined, command: ReviewCommand) {

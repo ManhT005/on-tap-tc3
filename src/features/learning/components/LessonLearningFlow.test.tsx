@@ -8,7 +8,7 @@ import { MemoryProgressRepository } from '../../../repositories/memory-progress.
 import { LessonLearningFlow } from './LessonLearningFlow';
 
 describe('LessonLearningFlow', () => {
-  it('persists completion and queues incorrect practice answers', async () => {
+  it('persists actual steps and quiz completion without claiming an unstudied lesson is complete', async () => {
     const user = userEvent.setup();
     const repository = new MemoryProgressRepository(() => new Date('2026-10-01T08:00:00.000Z'));
     const quizResult = getLessonQuiz(1);
@@ -29,7 +29,7 @@ describe('LessonLearningFlow', () => {
     await waitFor(async () => {
       await expect(repository.getLessonProgress(1)).resolves.toMatchObject({
         status: 'IN_PROGRESS',
-        completionPercent: 25,
+        completionPercent: 0,
       });
     });
 
@@ -44,7 +44,7 @@ describe('LessonLearningFlow', () => {
     await waitFor(async () => {
       await expect(repository.getLessonProgress(1)).resolves.toMatchObject({
         status: 'IN_PROGRESS',
-        completionPercent: 50,
+        steps: { recallIds: ['vocab-01-0001'], vocabularyIds: ['vocab-01-0001'] },
       });
     });
 
@@ -57,14 +57,14 @@ describe('LessonLearningFlow', () => {
       await user.click(wrongOption);
     }
 
-    await user.click(screen.getByRole('button', { name: 'Hoàn thành bài học' }));
+    await user.click(screen.getByRole('button', { name: 'Nộp luyện tập nhanh' }));
     expect(
       await screen.findByRole('heading', { name: 'Bài luyện tập đã hoàn thành' }),
     ).toBeInTheDocument();
     await waitFor(async () => {
       await expect(repository.getLessonProgress(1)).resolves.toMatchObject({
-        status: 'COMPLETED',
-        completionPercent: 100,
+        status: 'IN_PROGRESS',
+        steps: { quickQuizCompleted: true },
       });
     });
 

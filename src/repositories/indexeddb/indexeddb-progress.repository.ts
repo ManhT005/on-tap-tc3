@@ -1,5 +1,6 @@
 import type { ReviewStatus } from '../../data/schemas';
 import { applyReviewCommand, type ReviewCommand } from '../../domain/review/review-command';
+import { applyLessonEvent, type LessonEvent } from '../../domain/progress/lesson-progress';
 import type { PracticeResult } from '../../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../../domain/progress/progress.types';
 import type { PracticeCompletionCommand, ProgressRepository } from '../progress.repository';
@@ -68,6 +69,25 @@ export class IndexedDbProgressRepository implements ProgressRepository {
     await database.put('lesson_progress', progress);
   }
 
+  async applyLessonEvent(event: LessonEvent): Promise<LessonProgress> {
+    const database = await this.getDatabase();
+    const tx = database.transaction('lesson_progress', 'readwrite');
+    try {
+      const progress = applyLessonEvent(await tx.store.get(event.lessonId), event);
+      await tx.store.put(progress);
+      await tx.done;
+      return progress;
+    } catch (error) {
+      try {
+        tx.abort();
+      } catch {
+        /* already aborted */
+      }
+      await tx.done.catch(() => undefined);
+      throw error;
+    }
+  }
+
   async getReviewItems(): Promise<ReviewStatus[]> {
     const database = await this.getDatabase();
     return database.getAll('review_status');
@@ -85,7 +105,7 @@ export class IndexedDbProgressRepository implements ProgressRepository {
 
   async applyReview(command: ReviewCommand): Promise<ReviewStatus> {
     const database = await this.getDatabase();
-    const tx = database.transaction(['review_status', 'settings'], 'readwrite');
+    const tx = database.transaction(['review_status', 'settings', 'lesson_progress'], 'readwrite');
     try {
       const key = `review-event:${command.eventId}`;
       const receipt = await tx.objectStore('settings').get(key);
@@ -98,6 +118,14 @@ export class IndexedDbProgressRepository implements ProgressRepository {
       const updated = applyReviewCommand(current, command);
       if (!updated) throw new Error('Review item is not tracked.');
       await store.put(updated);
+      if (command.lessonEvent) {
+        const lessons = tx.objectStore('lesson_progress');
+        const progress = applyLessonEvent(
+          await lessons.get(command.lessonEvent.lessonId),
+          command.lessonEvent,
+        );
+        await lessons.put(progress);
+      }
       await tx.objectStore('settings').add({ key, value: updated, updatedAt: command.gradedAt });
       await tx.done;
       return updated;
@@ -149,8 +177,11 @@ export class IndexedDbProgressRepository implements ProgressRepository {
         if (updated) await store.put(updated);
       }
 
-      if (command.lessonProgress) {
-        await tx.objectStore('lesson_progress').put(command.lessonProgress);
+      if (command.lessonEvent) {
+        const lessons = tx.objectStore('lesson_progress');
+        await lessons.put(
+          applyLessonEvent(await lessons.get(command.lessonEvent.lessonId), command.lessonEvent),
+        );
       }
 
       await tx.done;

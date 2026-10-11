@@ -79,7 +79,7 @@ function createCompletionCommand(
         gradedAt: reviewUpdate.lastReviewedAt,
       },
     ],
-    lessonProgress,
+    lessonEvent: { lessonId: 1, kind: 'quiz', occurredAt: practiceResult.completedAt },
     ...overrides,
   };
 }
@@ -189,7 +189,7 @@ describe('IndexedDbProgressRepository', () => {
     expect(reviewItems[0]!.itemId).toBe('q5');
 
     const progress = await repository.getLessonProgress(1);
-    expect(progress?.status).toBe('COMPLETED');
+    expect(progress?.status).toBe('IN_PROGRESS');
     await repository.close();
   });
 
@@ -238,7 +238,7 @@ describe('MemoryProgressRepository', () => {
     expect(reviewItems).toHaveLength(1);
 
     const progress = await repository.getLessonProgress(1);
-    expect(progress?.status).toBe('COMPLETED');
+    expect(progress?.status).toBe('IN_PROGRESS');
   });
 
   it('is idempotent — duplicate commit is a no-op', async () => {
@@ -259,6 +259,7 @@ describe('withMemoryFallback', () => {
       getCourseProgress: vi.fn().mockRejectedValue(new Error('IndexedDB unavailable')),
       getLessonProgress: vi.fn(),
       saveLessonProgress: vi.fn(),
+      applyLessonEvent: vi.fn(),
       getReviewItems: vi.fn(),
       saveReviewItem: vi.fn(),
       applyReview: vi.fn(),
@@ -280,6 +281,7 @@ describe('withMemoryFallback', () => {
       getCourseProgress: vi.fn(),
       getLessonProgress: vi.fn(),
       saveLessonProgress: vi.fn(),
+      applyLessonEvent: vi.fn(),
       getReviewItems: vi.fn(),
       saveReviewItem: vi.fn(),
       applyReview: vi.fn(),
@@ -319,6 +321,7 @@ describe('withMemoryFallback', () => {
       getCourseProgress: vi.fn().mockRejectedValue(new Error('quota exceeded')),
       getLessonProgress: vi.fn().mockRejectedValue(new Error('quota exceeded')),
       saveLessonProgress: vi.fn(),
+      applyLessonEvent: vi.fn(),
       getReviewItems: vi.fn(),
       saveReviewItem: vi.fn(),
       applyReview: vi.fn(),

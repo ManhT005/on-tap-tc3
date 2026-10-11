@@ -1,5 +1,6 @@
 import type { ReviewStatus } from '../data/schemas';
 import type { ReviewCommand } from '../domain/review/review-command';
+import type { LessonEvent } from '../domain/progress/lesson-progress';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
 import type { PracticeCompletionCommand, ProgressRepository } from './progress.repository';
@@ -70,6 +71,11 @@ export function withMemoryFallback(
       run(
         () => primary.saveLessonProgress(progress),
         () => fallback.saveLessonProgress(progress),
+      ),
+    applyLessonEvent: (event: LessonEvent): Promise<LessonProgress> =>
+      run(
+        () => primary.applyLessonEvent(event),
+        () => fallback.applyLessonEvent(event),
       ),
     getReviewItems: (): Promise<ReviewStatus[]> =>
       run(

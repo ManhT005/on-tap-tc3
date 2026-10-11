@@ -1,5 +1,6 @@
 import type { ReviewStatus } from '../data/schemas';
 import { applyReviewCommand, type ReviewCommand } from '../domain/review/review-command';
+import { applyLessonEvent, type LessonEvent } from '../domain/progress/lesson-progress';
 import type { PracticeResult } from '../domain/practice/practice.types';
 import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
 import type { PracticeCompletionCommand, ProgressRepository } from './progress.repository';
@@ -53,6 +54,12 @@ export class MemoryProgressRepository implements ProgressRepository {
     this.lessons.set(progress.lessonId, progress);
   }
 
+  async applyLessonEvent(event: LessonEvent): Promise<LessonProgress> {
+    const progress = applyLessonEvent(this.lessons.get(event.lessonId), event);
+    this.lessons.set(event.lessonId, structuredClone(progress));
+    return structuredClone(progress);
+  }
+
   async getReviewItems(): Promise<ReviewStatus[]> {
     return [...this.reviewItems.values()];
   }
@@ -71,8 +78,12 @@ export class MemoryProgressRepository implements ProgressRepository {
     const key = `${command.itemType}:${command.itemId}`;
     const updated = applyReviewCommand(this.reviewItems.get(key), command);
     if (!updated) throw new Error('Review item is not tracked.');
+    const progress = command.lessonEvent
+      ? applyLessonEvent(this.lessons.get(command.lessonEvent.lessonId), command.lessonEvent)
+      : undefined;
     this.reviewItems.set(key, structuredClone(updated));
     this.reviewReceipts.set(command.eventId, structuredClone(updated));
+    if (progress) this.lessons.set(progress.lessonId, structuredClone(progress));
     return structuredClone(updated);
   }
 
@@ -84,6 +95,9 @@ export class MemoryProgressRepository implements ProgressRepository {
     if (existing) return structuredClone(existing);
 
     const result = structuredClone({ ...command.result, sessionId: command.sessionId });
+    const progress = command.lessonEvent
+      ? applyLessonEvent(this.lessons.get(command.lessonEvent.lessonId), command.lessonEvent)
+      : undefined;
     const updates = new Map(this.reviewItems);
     for (const event of command.reviewCommands) {
       const key = `${event.itemType}:${event.itemId}`;
@@ -95,9 +109,7 @@ export class MemoryProgressRepository implements ProgressRepository {
 
     for (const [key, item] of updates) this.reviewItems.set(key, structuredClone(item));
 
-    if (command.lessonProgress) {
-      this.lessons.set(command.lessonProgress.lessonId, command.lessonProgress);
-    }
+    if (progress) this.lessons.set(progress.lessonId, structuredClone(progress));
     return structuredClone(result);
   }
 }
