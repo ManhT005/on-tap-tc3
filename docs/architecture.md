@@ -131,3 +131,13 @@ Phase 0 đã tạo ra nền móng cần thiết để Phase 1 bắt đầu:
 - định hướng design và IA đã được thống nhất.
 
 Những việc còn lại trong Phase 1 là xây UI thật, design system, persistence và review engine, chứ không phải làm lại toàn bộ architecture.
+
+## 8. Implementation 0.3.0-beta.1 (2026-10-11)
+
+Các phần trên ghi lại quyết định Phase 0. Bản triển khai hiện tại giữ chuỗi UI → feature/hooks → domain → repository → IndexedDB, với Memory adapter cho test và fail-closed storage recovery trong production.
+
+Schema DB v3 chứa lesson steps, review states, practice results, completion receipts và typed settings cho drafts/exams. Review/lesson mutations đọc trạng thái mới nhất trong cùng transaction; completed session có một receipt. Exam snapshots giữ câu hỏi và deadline độc lập với ngân hàng hiện tại. JSON restore được validate trước và thay atomically, với kiểm tra dữ liệu thay đổi sau backup.
+
+Manifest nhẹ sinh từ học liệu cung cấp required IDs và identity availability; Home/storage không cần import toàn bộ nội dung bài học. Route vẫn lazy-load. Vendor chunks được cấu hình theo [Rolldown code splitting](https://rolldown.rs/reference/OutputOptions.codeSplitting); CI có budget bundle định lượng.
+
+Xem ADRs: `architecture/CONTENT_IDENTITY_MIGRATION.md`, `architecture/LESSON_PROGRESS.md`, `architecture/STORAGE_RECOVERY.md`, `architecture/EXAM_PERSISTENCE.md`. Listening dùng speech synthesis tạm thời; release recorded-audio gate và human approval chưa hoàn thành. Hướng dẫn vận hành/backup/release và các gate nằm trong `docs/release/` và `docs/qa/`.

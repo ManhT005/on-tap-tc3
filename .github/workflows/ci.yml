@@ -3,42 +3,74 @@ name: CI
 on:
   pull_request:
   push:
-    branches:
-      - main
-      - develop
-      - feature/**
+    branches: [main, develop, 'feature/**', 'fix/**', 'feat/**', 'chore/**', 'release/**']
+    tags: ['v*']
+  workflow_dispatch:
 
 jobs:
   validate:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run test:coverage
+      - run: npm run check:manifest
+      - run: npm run validate:vocab
+      - run: npm run validate:content
+      - run: npm run audit:data -- --write-docs
+      - run: git diff --exit-code -- docs/content/CONTENT_COVERAGE.md
+      - run: npm audit --audit-level=high
+      - run: npm run build
+      - run: npm run check:bundle
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unit-coverage
+          path: coverage/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        with:
+          name: production-preview
+          path: dist/
+          retention-days: 14
 
-      - name: Install dependencies
-        run: npm ci
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-results
+          path: |
+            node_modules/.cache/playwright-report/
+            node_modules/.cache/playwright-test-results/
+          include-hidden-files: true
+          retention-days: 14
 
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Test
-        run: npm test -- --run
-
-      - name: Validate content
-        run: npm run validate:content
-
-      - name: Audit data
-        run: npm run audit:data
-
-      - name: Build
-        run: npm run build
+  release_content:
+    if: startsWith(github.ref, 'refs/tags/v') && !startsWith(github.ref, 'refs/tags/v0.')
+    needs: [validate, e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run validate:release

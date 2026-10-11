@@ -1,25 +1,34 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet } from 'react-router-dom';
+import { useProgressRepository } from './providers/ProgressRepositoryProvider';
+import { Button } from '../components/ui/Button';
+import { APP_VERSION } from './version';
 
 const navigationItems = [
   { to: '/', label: 'Home', end: true },
   { to: '/learn', label: 'Learn' },
+  { to: '/vocabulary', label: 'Vocabulary' },
   { to: '/review', label: 'Review' },
   { to: '/practice', label: 'Practice' },
   { to: '/progress', label: 'Progress' },
 ];
 
 export function AppShell() {
+  const { storageError, retryStorage } = useProgressRepository();
+
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main-content">
+        Bỏ qua điều hướng
+      </a>
       <header className="app-header">
-        <a className="brand" href="/" aria-label="Ôn tiếng Hàn Trung cấp 3, trang chủ">
+        <Link className="brand" to="/" aria-label="Ôn tiếng Hàn Trung cấp 3, trang chủ">
           <span className="brand-mark" aria-hidden="true">
             한
           </span>
           <span>
             Ôn tiếng Hàn <strong>TC3</strong>
           </span>
-        </a>
+        </Link>
         <nav className="primary-nav" aria-label="Điều hướng chính">
           {navigationItems.map(({ to, label, end }) => (
             <NavLink
@@ -33,9 +42,20 @@ export function AppShell() {
           ))}
         </nav>
       </header>
-      <main className="page-content">
+      <main id="main-content" className="page-content" tabIndex={-1}>
+        {storageError ? (
+          <div className="storage-warning" role="alert">
+            <p>{storageError}</p>
+            <Button variant="secondary" onClick={() => void retryStorage()}>
+              Thử kết nối lại bộ nhớ
+            </Button>
+          </div>
+        ) : null}
         <Outlet />
       </main>
+      <footer className="app-footer">
+        TC3 {APP_VERSION} · Dữ liệu học trên trình duyệt hiện tại
+      </footer>
     </div>
   );
 }

@@ -1,11 +1,35 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { AppShell } from './AppShell';
 
-function Placeholder({ title }: { title: string }) {
+const HomePage = lazy(() =>
+  import('../pages/HomePage').then((module) => ({ default: module.HomePage })),
+);
+const LearnPage = lazy(() =>
+  import('../pages/LearnPage').then((module) => ({ default: module.LearnPage })),
+);
+const LessonPage = lazy(() =>
+  import('../pages/LessonPage').then((module) => ({ default: module.LessonPage })),
+);
+const PracticePage = lazy(() =>
+  import('../pages/PracticePage').then((module) => ({ default: module.PracticePage })),
+);
+const ProgressPage = lazy(() =>
+  import('../pages/ProgressPage').then((module) => ({ default: module.ProgressPage })),
+);
+const ReviewPage = lazy(() =>
+  import('../pages/ReviewPage').then((module) => ({ default: module.ReviewPage })),
+);
+const VocabularyPage = lazy(() =>
+  import('../pages/VocabularyPage').then((module) => ({ default: module.VocabularyPage })),
+);
+import { NotFoundPage } from '../pages/NotFoundPage';
+
+function RouteFallback() {
   return (
-    <section className="page-placeholder">
-      <h1>{title}</h1>
-      <p>Màn hình này sẽ được triển khai ở phase tiếp theo.</p>
+    <section className="page-panel" role="status" aria-label="Đang tải trang">
+      <div className="skeleton" style={{ height: '48px' }} />
+      <div className="skeleton" style={{ height: '180px' }} />
     </section>
   );
 }
@@ -15,15 +39,63 @@ export const routes = [
     path: '/',
     element: <AppShell />,
     children: [
-      { index: true, element: <Placeholder title="Home" /> },
-      { path: 'learn', element: <Placeholder title="Learn" /> },
+      {
+        index: true,
+        element: (
+          <Suspense fallback={<RouteFallback />}>
+            <HomePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'learn',
+        element: (
+          <Suspense fallback={<RouteFallback />}>
+            <LearnPage />
+          </Suspense>
+        ),
+      },
       {
         path: 'learn/:lessonId',
-        element: <Placeholder title="Lesson Detail" />,
+        element: (
+          <Suspense fallback={<RouteFallback />}>
+            <LessonPage />
+          </Suspense>
+        ),
       },
-      { path: 'review', element: <Placeholder title="Review" /> },
-      { path: 'practice', element: <Placeholder title="Practice" /> },
-      { path: 'progress', element: <Placeholder title="Progress" /> },
+      {
+        path: 'review',
+        element: (
+          <Suspense fallback={<RouteFallback />}>
+            <ReviewPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'vocabulary',
+        element: (
+          <Suspense fallback={<RouteFallback />}>
+            <VocabularyPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'practice',
+        element: (
+          <Suspense fallback={<RouteFallback />}>
+            <PracticePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'progress',
+        element: (
+          <Suspense fallback={<RouteFallback />}>
+            <ProgressPage />
+          </Suspense>
+        ),
+      },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ];
