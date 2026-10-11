@@ -7,6 +7,7 @@ export class MemoryProgressRepository implements ProgressRepository {
   private readonly lessons = new Map<number, LessonProgress>();
   private readonly reviewItems = new Map<string, ReviewStatus>();
   private readonly practiceResults = new Map<string, PracticeResult>();
+  private readonly receipts = new Map<string, string>();
   private readonly now: () => Date;
 
   constructor(now: () => Date = () => new Date()) {
@@ -62,11 +63,16 @@ export class MemoryProgressRepository implements ProgressRepository {
     this.practiceResults.set(result.id, result);
   }
 
-  async commitPracticeCompletion(command: PracticeCompletionCommand): Promise<void> {
+  async commitPracticeCompletion(command: PracticeCompletionCommand): Promise<PracticeResult> {
     // Idempotency: if a result with this ID already exists, skip entirely.
-    if (this.practiceResults.has(command.result.id)) return;
+    const existing =
+      this.practiceResults.get(this.receipts.get(command.sessionId) ?? command.result.id) ??
+      [...this.practiceResults.values()].find((result) => result.sessionId === command.sessionId);
+    if (existing) return structuredClone(existing);
 
-    this.practiceResults.set(command.result.id, command.result);
+    const result = structuredClone({ ...command.result, sessionId: command.sessionId });
+    this.practiceResults.set(result.id, result);
+    this.receipts.set(command.sessionId, result.id);
 
     for (const item of command.reviewUpdates) {
       this.reviewItems.set(`${item.itemType}:${item.itemId}`, item);
@@ -75,5 +81,6 @@ export class MemoryProgressRepository implements ProgressRepository {
     if (command.lessonProgress) {
       this.lessons.set(command.lessonProgress.lessonId, command.lessonProgress);
     }
+    return structuredClone(result);
   }
 }

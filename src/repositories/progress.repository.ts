@@ -28,5 +28,5 @@ export interface ProgressRepository {
    * progress in a single transaction. Idempotent — if a result with the same
    * sessionId already exists, the call is a no-op.
    */
-  commitPracticeCompletion(command: PracticeCompletionCommand): Promise<void>;
+  commitPracticeCompletion(command: PracticeCompletionCommand): Promise<PracticeResult>;
 }

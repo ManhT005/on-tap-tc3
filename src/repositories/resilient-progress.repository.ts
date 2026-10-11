@@ -85,7 +85,7 @@ export function withMemoryFallback(
         () => primary.savePracticeResult(result),
         () => fallback.savePracticeResult(result),
       ),
-    commitPracticeCompletion: (command: PracticeCompletionCommand): Promise<void> =>
+    commitPracticeCompletion: (command: PracticeCompletionCommand): Promise<PracticeResult> =>
       run(
         () => primary.commitPracticeCompletion(command),
         () => fallback.commitPracticeCompletion(command),

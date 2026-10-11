@@ -39,6 +39,8 @@ export function scorePractice(
 
   return {
     id: resultId,
+    sessionId: session.id,
+    contentVersion: 'tc3-2026-10-11',
     ...(session.lessonId === undefined ? {} : { lessonId: session.lessonId }),
     mode: session.mode,
     assessmentType,

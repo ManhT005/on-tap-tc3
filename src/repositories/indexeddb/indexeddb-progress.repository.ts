@@ -82,24 +82,34 @@ export class IndexedDbProgressRepository implements ProgressRepository {
     await database.put('practice_results', result);
   }
 
-  async commitPracticeCompletion(command: PracticeCompletionCommand): Promise<void> {
+  async commitPracticeCompletion(command: PracticeCompletionCommand): Promise<PracticeResult> {
     const database = await this.getDatabase();
     const tx = database.transaction(
-      ['practice_results', 'review_status', 'lesson_progress'],
+      ['practice_results', 'review_status', 'lesson_progress', 'completion_receipts'],
       'readwrite',
     );
 
-    // Idempotency: if a result with the same ID already exists, skip entirely.
-    const existing = await tx.objectStore('practice_results').get(command.result.id);
+    const receipt = await tx.objectStore('completion_receipts').get(command.sessionId);
+    const results = tx.objectStore('practice_results');
+    const existing = receipt
+      ? await results.get(receipt.resultId)
+      : ((await results.index('by-session-id').get(command.sessionId)) ??
+        (await results.get(command.result.id)));
     if (existing) {
       // Already committed — treat as no-op.
       await tx.done;
-      return;
+      return existing;
     }
 
     // All writes happen inside this single transaction — any failure
     // causes the entire transaction to roll back automatically.
-    await tx.objectStore('practice_results').put(command.result);
+    const result = { ...command.result, sessionId: command.sessionId };
+    await results.add(result);
+    await tx.objectStore('completion_receipts').add({
+      sessionId: command.sessionId,
+      resultId: result.id,
+      completedAt: result.completedAt,
+    });
 
     for (const item of command.reviewUpdates) {
       await tx.objectStore('review_status').put(item);
@@ -110,6 +120,7 @@ export class IndexedDbProgressRepository implements ProgressRepository {
     }
 
     await tx.done;
+    return result;
   }
 
   async close(): Promise<void> {

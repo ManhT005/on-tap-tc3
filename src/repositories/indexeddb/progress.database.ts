@@ -4,7 +4,7 @@ import type { PracticeResult } from '../../domain/practice/practice.types';
 import type { AppSetting, LessonProgress } from '../../domain/progress/progress.types';
 
 export const PROGRESS_DATABASE_NAME = 'on-tap-tc3';
-export const PROGRESS_DATABASE_VERSION = 1;
+export const PROGRESS_DATABASE_VERSION = 2;
 
 interface ProgressDatabase extends DBSchema {
   lesson_progress: {
@@ -20,7 +20,11 @@ interface ProgressDatabase extends DBSchema {
   practice_results: {
     key: string;
     value: PracticeResult;
-    indexes: { 'by-completed-at': string; 'by-lesson-id': number };
+    indexes: { 'by-completed-at': string; 'by-lesson-id': number; 'by-session-id': string };
+  };
+  completion_receipts: {
+    key: string;
+    value: { sessionId: string; resultId: string; completedAt: string };
   };
   settings: {
     key: string;
@@ -55,7 +59,14 @@ export function openProgressDatabase(
         database.createObjectStore('settings', { keyPath: 'key' });
       }
 
-      void transaction;
+      const results = transaction.objectStore('practice_results');
+      if (!results.indexNames.contains('by-session-id')) {
+        // IndexedDB skips records with no sessionId: keep v1 records unchanged.
+        results.createIndex('by-session-id', 'sessionId', { unique: true });
+      }
+      if (!database.objectStoreNames.contains('completion_receipts')) {
+        database.createObjectStore('completion_receipts', { keyPath: 'sessionId' });
+      }
     },
   });
 }

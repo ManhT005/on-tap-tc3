@@ -48,12 +48,10 @@ export async function completePracticeSession(
   }
 
   // Commit everything atomically — no partial state on failure.
-  await repository.commitPracticeCompletion({
+  return repository.commitPracticeCompletion({
     sessionId: session.id,
     result,
     reviewUpdates,
     lessonProgress,
   });
-
-  return result;
 }
