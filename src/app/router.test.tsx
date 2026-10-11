@@ -21,7 +21,9 @@ describe.each(routeCases)('route %s', (path, title) => {
 
     render(<RouterProvider router={router} />);
 
-    expect(await screen.findByRole('heading', { name: title })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: title }, { timeout: 3000 }),
+    ).toBeInTheDocument();
   });
 });
 
@@ -31,18 +33,22 @@ it('navigates to a lesson and supports back navigation without a document reload
 
   render(<RouterProvider router={router} />);
 
-  const firstLessonLink = screen.getAllByRole('link', { name: 'Mở bài học' })[0];
+  const firstLessonLink = (await screen.findAllByRole('link', { name: 'Mở bài học' }))[0];
   if (!firstLessonLink) {
     throw new Error('Expected Learn to render a lesson link.');
   }
 
   await user.click(firstLessonLink);
   expect(router.state.location.pathname).toBe('/learn/1');
-  expect(await screen.findByRole('heading', { name: 'Bài 01' })).toBeInTheDocument();
+  expect(
+    await screen.findByRole('heading', { name: 'Bài 01' }, { timeout: 3000 }),
+  ).toBeInTheDocument();
 
   await router.navigate(-1);
   expect(router.state.location.pathname).toBe('/learn');
-  expect(await screen.findByRole('heading', { name: 'Learn' })).toBeInTheDocument();
+  expect(
+    await screen.findByRole('heading', { name: 'Learn' }, { timeout: 3000 }),
+  ).toBeInTheDocument();
 });
 
 it('provides a named navigation landmark and a focusable skip-link target', () => {

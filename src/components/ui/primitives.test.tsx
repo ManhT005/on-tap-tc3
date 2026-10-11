@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
-import { COURSE_STRUCTURE } from '../../data/course';
+import { getLessons } from '../../domain/learning/course.service';
 import { EmptyState } from './EmptyState';
 import { LessonCard } from './LessonCard';
 import { PageHeader } from './PageHeader';
@@ -39,7 +39,7 @@ describe('UI primitives', () => {
   });
 
   it('renders a lesson card with a link to its detail route', () => {
-    const firstLesson = COURSE_STRUCTURE[0];
+    const firstLesson = getLessons()[0];
     if (!firstLesson) {
       throw new Error('Expected the course structure to contain a lesson.');
     }

@@ -18,6 +18,7 @@ export const GrammarItemSchema = z.object({
 
 export const LegacyGrammarItemSchema = z
   .object({
+    id: z.string().min(1).optional(),
     structure: z.string().min(1),
     meaning: z.string().min(1),
     rule: z.string().min(1),

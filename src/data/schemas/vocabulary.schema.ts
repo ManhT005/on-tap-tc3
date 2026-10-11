@@ -28,6 +28,7 @@ export const VocabularyItemSchema = z.object({
 });
 
 export const LegacyVocabularyItemSchema = z.object({
+  id: z.string().min(1).optional(),
   kr: z.string().min(1),
   vn: z.string().min(1),
   note: z.string().optional(),

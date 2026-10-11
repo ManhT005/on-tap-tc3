@@ -1,14 +1,20 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
+import { useProgressRepository } from './providers/ProgressRepositoryProvider';
+import { Button } from '../components/ui/Button';
+import { APP_VERSION } from './version';
 
 const navigationItems = [
   { to: '/', label: 'Home', end: true },
   { to: '/learn', label: 'Learn' },
+  { to: '/vocabulary', label: 'Vocabulary' },
   { to: '/review', label: 'Review' },
   { to: '/practice', label: 'Practice' },
   { to: '/progress', label: 'Progress' },
 ];
 
 export function AppShell() {
+  const { storageError, retryStorage } = useProgressRepository();
+
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">
@@ -37,9 +43,19 @@ export function AppShell() {
         </nav>
       </header>
       <main id="main-content" className="page-content" tabIndex={-1}>
+        {storageError ? (
+          <div className="storage-warning" role="alert">
+            <p>{storageError}</p>
+            <Button variant="secondary" onClick={() => void retryStorage()}>
+              Thử kết nối lại bộ nhớ
+            </Button>
+          </div>
+        ) : null}
         <Outlet />
       </main>
-      <div className="toast-viewport" aria-live="polite" aria-atomic="true" />
+      <footer className="app-footer">
+        TC3 {APP_VERSION} · Dữ liệu học trên trình duyệt hiện tại
+      </footer>
     </div>
   );
 }

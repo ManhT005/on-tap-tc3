@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { MultipleChoiceOptionsSchema } from './mcq.schema';
 
 export const LegacyQuizItemSchema = z
   .object({
@@ -6,7 +7,10 @@ export const LegacyQuizItemSchema = z
     lessonId: z.number().int().min(1).max(15),
     type: z.string().min(1),
     question: z.string().min(1),
-    options: z.array(z.string()).min(2),
+    options: MultipleChoiceOptionsSchema,
+    skill: z.enum(['vocabulary', 'grammar', 'culture']).optional(),
+    difficulty: z.number().int().min(1).max(3).optional(),
+    targetIds: z.array(z.string().min(1)).optional(),
     correctIndex: z.number().int(),
     explanation: z.string().min(1),
     whyWrong: z.string().optional(),
@@ -35,9 +39,9 @@ export const LegacyReadingQuestionSchema = z
   .object({
     id: z.string().min(1),
     question: z.string().min(1),
-    options: z.array(z.string()).min(2),
+    options: MultipleChoiceOptionsSchema,
     correctIndex: z.number().int(),
-    evidence: z.string().optional(),
+    evidence: z.string().trim().min(1),
   })
   .refine(
     (question) => question.correctIndex >= 0 && question.correctIndex < question.options.length,

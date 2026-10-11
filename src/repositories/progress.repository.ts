@@ -1,0 +1,58 @@
+import type { ReviewStatus } from '../data/schemas';
+import type {
+  VocabularySession,
+  VocabularyMutation,
+} from '../domain/vocabulary/vocabulary-session';
+import type { ReviewCommand } from '../domain/review/review-command';
+import type { LessonEvent } from '../domain/progress/lesson-progress';
+import type { ProgressSnapshot, WritingDraft } from '../domain/progress/backup';
+import type { ExamAttempt, ExamMutation } from '../domain/exam/exam.types';
+import type { PracticeResult } from '../domain/practice/practice.types';
+import type { CourseProgress, LessonProgress } from '../domain/progress/progress.types';
+
+/**
+ * Command to atomically commit all data from a completed practice session.
+ * IndexedDB implementations must write all fields in a single transaction
+ * to prevent partial state when individual saves fail.
+ */
+export type PracticeCompletionCommand = {
+  /** Stable session ID used for idempotency — duplicate commits are no-ops. */
+  sessionId: string;
+  result: PracticeResult;
+  reviewCommands: ReviewCommand[];
+  lessonEvent?: LessonEvent;
+};
+
+export interface ProgressRepository {
+  getVocabularySession(lessonId: number): Promise<VocabularySession | null>;
+  startVocabularySession(
+    session: VocabularySession,
+    expectedSessionId?: string,
+  ): Promise<VocabularySession>;
+  mutateVocabularySession(mutation: VocabularyMutation): Promise<VocabularySession>;
+  getCourseProgress(): Promise<CourseProgress>;
+  getLessonProgress(lessonId: number): Promise<LessonProgress | null>;
+  saveLessonProgress(progress: LessonProgress): Promise<void>;
+  applyLessonEvent(event: LessonEvent): Promise<LessonProgress>;
+  getReviewItems(): Promise<ReviewStatus[]>;
+  saveReviewItem(item: ReviewStatus): Promise<void>;
+  applyReview(command: ReviewCommand): Promise<ReviewStatus>;
+  savePracticeResult(result: PracticeResult): Promise<void>;
+  getPracticeResults(): Promise<PracticeResult[]>;
+  getWritingDraft(lessonId: number, promptId: string): Promise<WritingDraft | null>;
+  saveWritingDraft(draft: WritingDraft): Promise<void>;
+  getSnapshot(): Promise<ProgressSnapshot>;
+  /** Validates before replacing all stores in one transaction. Caller backs up first. */
+  restoreSnapshot(snapshot: ProgressSnapshot, expectedCurrent?: ProgressSnapshot): Promise<void>;
+  createExamAttempt(attempt: ExamAttempt): Promise<ExamAttempt>;
+  getActiveExamAttempt(): Promise<ExamAttempt | null>;
+  mutateExamAttempt(mutation: ExamMutation): Promise<ExamAttempt>;
+  submitExamAttempt(attemptId: string): Promise<{ attempt: ExamAttempt; result: PracticeResult }>;
+
+  /**
+   * Atomically commit a practice session's result, review updates, and lesson
+   * progress in a single transaction. Idempotent — if a result with the same
+   * sessionId already exists, the call is a no-op.
+   */
+  commitPracticeCompletion(command: PracticeCompletionCommand): Promise<PracticeResult>;
+}
