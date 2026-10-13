@@ -5,16 +5,18 @@ import { Button } from '../ui/Button';
 export function KoreanSpeechControls({
   text,
   label = 'Nghe phát âm',
+  compact = false,
 }: {
   text: string;
   label?: string;
+  compact?: boolean;
 }) {
   const speech = useKoreanSpeech();
   const [rate, setRate] = useState(1);
   return (
-    <div className="korean-speech-controls">
+    <div className={`korean-speech-controls${compact ? ' korean-speech-controls--compact' : ''}`}>
       <label>
-        Tốc độ phát âm
+        <span>Tốc độ phát âm</span>
         <select
           value={rate}
           disabled={speech.playing}
@@ -37,7 +39,15 @@ export function KoreanSpeechControls({
           Dừng phát âm
         </Button>
       ) : null}
-      {!speech.available ? (
+      {!speech.available && compact ? (
+        <details className="speech-help">
+          <summary>Chưa có giọng Hàn · Xem hướng dẫn</summary>
+          <p>Cài giọng đọc tiếng Hàn trong cài đặt hệ điều hành rồi tải lại danh sách giọng.</p>
+          <Button variant="ghost" onClick={speech.refreshVoices}>
+            Tải lại danh sách giọng
+          </Button>
+        </details>
+      ) : !speech.available ? (
         <>
           <p role="status">
             Thiết bị chưa có giọng đọc tiếng Hàn. Cài giọng Hàn trong hệ điều hành hoặc dùng thiết

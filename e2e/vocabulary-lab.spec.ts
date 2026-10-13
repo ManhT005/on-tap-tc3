@@ -36,7 +36,8 @@ test('lesson has a compact lab entry; batch grades survive reload and previous v
   await expect(progress).toContainText('Phiên: 0/10');
   await expect(page.locator('.vocab-meaning')).toHaveCount(0);
   await page.getByRole('button', { name: 'Hiện nghĩa', exact: true }).click();
-  await expect(page.getByText('Chưa có câu ví dụ được kiểm duyệt.')).toBeVisible();
+  await expect(page.locator('.vocab-meaning')).toBeVisible();
+  await expect(page.getByText('Chưa có câu ví dụ được kiểm duyệt.')).toHaveCount(0);
   await page.getByRole('button', { name: '4 · Rất chắc' }).click();
   await expect(progress).toContainText('Phiên: 1/10');
   await page.reload();
@@ -174,4 +175,120 @@ test('lab keyboard and mobile layouts pass accessibility without grading from in
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: testInfo.outputPath('vocabulary-mobile.png'), fullPage: true });
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+});
+
+for (const viewport of [
+  { width: 360, height: 740 },
+  { width: 390, height: 844 },
+  { width: 430, height: 932 },
+]) {
+  test(`mobile study dock keeps the word and grading usable at ${viewport.width}px`, async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize(viewport);
+    await page.goto('/vocabulary?lesson=1');
+    const reveal = page.getByRole('button', { name: 'Hiện nghĩa', exact: true });
+    await expect(reveal).toBeVisible();
+    await expect(page.getByLabel('Tìm từ', { exact: true })).toBeHidden();
+    await expect(page.locator('.vocab-keyboard-hint')).toBeHidden();
+    await expect(page.locator('.vocab-rail')).toBeHidden();
+    await expect(page.getByRole('heading', { name: '학기', exact: true })).toBeVisible();
+    await reveal.click();
+    const dock = page.locator('.vocab-study-controls');
+    await expect(page.locator('.vocab-meaning')).toContainText('Học kỳ');
+    // A visible button must also be inside the viewport and receive a real tap.
+    for (const button of await page.locator('.vocab-grades button').all()) {
+      const box = (await button.boundingBox())!;
+      expect(box.height).toBeGreaterThanOrEqual(44);
+      expect(box.y).toBeGreaterThanOrEqual(0);
+      expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
+      await button.click({ trial: true });
+    }
+    const meaning = (await page.locator('.vocab-meaning').boundingBox())!;
+    expect(meaning.y + meaning.height).toBeLessThanOrEqual((await dock.boundingBox())!.y);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+    await page.screenshot({ path: testInfo.outputPath(`mobile-${viewport.width}.png`) });
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+    await page.getByRole('button', { name: '4 · Rất chắc' }).click();
+    await expect(page.getByRole('region', { name: 'Tiến độ từ vựng' })).toContainText(
+      'Phiên: 1/10',
+    );
+    await expect(reveal).toBeVisible();
+    await expect(page.locator('.vocab-meaning')).toHaveCount(0);
+    await page.reload();
+    await expect(page.getByRole('region', { name: 'Tiến độ từ vựng' })).toContainText(
+      'Phiên: 1/10',
+    );
+  });
+}
+
+test('mobile configuration, recall and enlarged text do not trap or cover controls', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/vocabulary?lesson=1');
+  await page.getByRole('button', { name: 'Bộ học / Tìm từ' }).click();
+  await expect(page.locator('.vocab-study-controls')).toBeHidden();
+  await page.getByLabel('Số từ mỗi lượt').selectOption('5');
+  await page.getByRole('button', { name: 'Bắt đầu bộ đã chọn' }).click();
+  await expect(page.getByLabel('Tìm từ', { exact: true })).toBeHidden();
+  await page.getByRole('combobox', { name: 'Chế độ học', exact: true }).selectOption('recall');
+  await page.getByRole('button', { name: 'Học kỳ', exact: true }).click();
+  await page.getByRole('button', { name: 'Lưu và tiếp tục' }).click();
+  await expect(page.getByRole('region', { name: 'Tiến độ từ vựng' })).toContainText('Phiên: 1/5');
+  await page.getByRole('combobox', { name: 'Chế độ học', exact: true }).selectOption('list');
+  await expect(page.locator('.vocab-study-controls')).toHaveCount(0);
+  await page.getByRole('combobox', { name: 'Chế độ học', exact: true }).selectOption('context');
+  await expect(page.locator('.contextual-vocabulary')).toBeVisible();
+  await page.getByRole('combobox', { name: 'Chế độ học', exact: true }).selectOption('flashcard');
+  await page.getByRole('button', { name: 'Hiện nghĩa', exact: true }).click();
+  await page.addStyleTag({
+    content: '.vocab-study-controls .button { font-size: 24px !important; }',
+  });
+  await expect
+    .poll(async () => {
+      const height = (await page.locator('.vocab-study-controls').boundingBox())!.height;
+      return page
+        .locator('.vocabulary-lab')
+        .evaluate(
+          (element, expected) =>
+            Number.parseFloat(element.style.getPropertyValue('--vocab-dock-height')) >=
+            expected - 1,
+          height,
+        );
+    })
+    .toBe(true);
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  const stats = (await page.getByRole('button', { name: 'Xem hành trình ghi nhớ' }).boundingBox())!;
+  expect(stats.y + stats.height).toBeLessThanOrEqual(
+    (await page.locator('.vocab-study-controls').boundingBox())!.y,
+  );
+  await page.getByRole('button', { name: 'Xem hành trình ghi nhớ' }).click();
+  await expect(page.locator('.vocab-rail')).toBeVisible();
+  await page.getByRole('button', { name: '4 · Rất chắc' }).click();
+  await expect(page.getByRole('region', { name: 'Tiến độ từ vựng' })).toContainText('Phiên: 2/5');
+  await expect
+    .poll(async () => (await page.locator('.vocab-hangul').boundingBox())!.y)
+    .toBeGreaterThanOrEqual(0);
+});
+
+test('short mobile viewport allows long card content to scroll above the dock', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/vocabulary?lesson=1');
+  await page.getByRole('button', { name: 'Hiện nghĩa', exact: true }).click();
+  await page.getByText('Cụm liên quan', { exact: true }).click();
+  await page
+    .locator('.vocab-card__back')
+    .evaluate((element) => element.scrollIntoView({ block: 'start' }));
+  const meaning = (await page.locator('.vocab-meaning').boundingBox())!;
+  const dock = (await page.locator('.vocab-study-controls').boundingBox())!;
+  expect(meaning.y + meaning.height).toBeLessThanOrEqual(dock.y);
+  expect(dock.y).toBeGreaterThan(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole('button', { name: '3 · Nhớ được' }).click();
+  await expect(page.getByRole('region', { name: 'Tiến độ từ vựng' })).toContainText('Phiên: 1/10');
 });
