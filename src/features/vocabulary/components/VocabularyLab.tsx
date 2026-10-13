@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { COURSE_STRUCTURE } from '../../../data/course';
 import { adaptVocabulary } from '../../../domain/vocabulary/vocabulary.adapter';
@@ -40,6 +40,10 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
   const [guess, setGuess] = useState<string | null>(null);
   const [viewSessionId, setViewSessionId] = useState<string | null>(null);
   const card = useRef<HTMLDivElement>(null);
+  const lab = useRef<HTMLElement>(null);
+  const controls = useRef<HTMLDivElement>(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [statsOpen, setStatsOpen] = useState(false);
   const session = state.session;
   const entry = session
     ? entries.find((item) => item.id === session.itemIds[session.cursor])
@@ -69,6 +73,38 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
     setRevealed(false);
     setGuess(null);
   }
+  const previousCard = useRef(currentCardKey);
+  useEffect(() => {
+    const changed = previousCard.current !== currentCardKey;
+    previousCard.current = currentCardKey;
+    if (
+      changed &&
+      window.matchMedia?.('(max-width: 680px)').matches &&
+      card.current &&
+      card.current.getBoundingClientRect().top < 0
+    ) {
+      card.current.scrollIntoView({ block: 'start', behavior: 'auto' });
+    }
+  }, [currentCardKey]);
+  const hasEntry = !!entry;
+  // Reserve exactly the dock's height, including safe-area and enlarged text.
+  useEffect(() => {
+    const element = controls.current;
+    const root = lab.current;
+    if (!element || !root) return;
+    const measure = () =>
+      root.style.setProperty('--vocab-dock-height', `${element.offsetHeight}px`);
+    measure();
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
+    observer?.observe(element);
+    window.addEventListener('resize', measure);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', measure);
+      root.style.removeProperty('--vocab-dock-height');
+    };
+  }, [mode, hasEntry, complete, viewSessionId, requestedWord]);
+
   function changeMode(next: string) {
     const nextParams = new URLSearchParams(params);
     nextParams.set('mode', next);
@@ -111,6 +147,7 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
     const next = new URLSearchParams(params);
     next.delete('word');
     setParams(next, { replace: true });
+    setFiltersOpen(false);
     return state.start(ids, size);
   }
   const options = entry
@@ -125,10 +162,20 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
     : [];
 
   return (
-    <section className="page-panel vocabulary-lab">
+    <section
+      ref={lab}
+      className={`page-panel vocabulary-lab${filtersOpen ? ' vocabulary-lab--configuring' : ''}`}
+    >
       <PageHeader
         eyebrow={`Learn / Bài ${String(lessonId).padStart(2, '0')} / Vocabulary Lab`}
-        title="Học từ theo cách dễ nhớ hơn"
+        title={
+          <>
+            <span className="vocab-desktop-title">Học từ theo cách dễ nhớ hơn</span>
+            <span className="vocab-mobile-title">
+              Từ vựng · Bài {String(lessonId).padStart(2, '0')}
+            </span>
+          </>
+        }
         description="Một lượt 10 từ. Tự nhớ nghĩa, nghe phát âm và ôn lại đúng lúc."
         action={
           <Link className="button button--secondary button--md" to={`/learn/${lessonId}`}>
@@ -136,7 +183,33 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
           </Link>
         }
       />
-      <div className="vocab-filters">
+      <div className="vocab-mobile-toolbar">
+        <Button
+          className="vocab-mobile-toggle"
+          variant="secondary"
+          aria-expanded={filtersOpen}
+          aria-controls="vocab-filters"
+          onClick={() => setFiltersOpen((open) => !open)}
+        >
+          {filtersOpen ? 'Đóng bộ lọc' : 'Bộ học / Tìm từ'}
+        </Button>
+        <label className="vocab-mobile-mode" htmlFor="vocab-mobile-mode">
+          <span>Chế độ học</span>
+          <select
+            id="vocab-mobile-mode"
+            value={mode}
+            disabled={state.saving}
+            onChange={(event) => changeMode(event.target.value)}
+          >
+            {modes.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <div id="vocab-filters" className={`vocab-filters${filtersOpen ? ' is-open' : ''}`}>
         <label>
           Bài học
           <select
@@ -209,9 +282,9 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
       </div>
       <div className="vocab-progress" role="region" aria-label="Tiến độ từ vựng">
         <span>
-          Đã thao tác học {studied.length}/{lessonEntries.length} từ của bài
+          Đã học {studied.length}/{lessonEntries.length} từ của bài
         </span>
-        <span>
+        <span aria-live="polite" aria-atomic="true">
           Phiên: {done}/{session?.itemIds.length ?? 0} từ
         </span>
         <progress aria-label="Tiến độ phiên" value={done} max={session?.itemIds.length ?? 10} />
@@ -320,7 +393,7 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
             </div>
           ) : entry && session ? (
             <div ref={card} tabIndex={0} onKeyDown={keyboard} aria-label="Phím tắt thẻ từ vựng">
-              <p className="muted-copy">
+              <p className="vocab-card-position muted-copy" aria-live="polite" aria-atomic="true">
                 Thẻ {session.cursor + 1}/{session.itemIds.length} ·{' '}
                 {session.grades[entry.id] ? 'Đã đánh giá, chỉ xem lại' : 'Chưa đánh giá'}
               </p>
@@ -329,7 +402,7 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
                   <h3 className="vocab-hangul" lang="ko">
                     {entry.korean}
                   </h3>
-                  <KoreanSpeechControls key={entry.id} text={entry.korean} />
+                  <KoreanSpeechControls key={entry.id} text={entry.korean} compact />
                   <p>Chọn nghĩa đúng. Kết quả ghi vào SRS, không tính vào điểm bài thi.</p>
                   <div className="vocab-choices">
                     {options.map((option) => (
@@ -347,72 +420,82 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
                     ))}
                   </div>
                   {guess ? (
-                    <>
-                      <p role="status">
-                        {guess === entry.vietnamese ? 'Đúng nghĩa.' : `Đáp án: ${entry.vietnamese}`}
-                      </p>
-                      <Button
-                        disabled={state.saving}
-                        onClick={() =>
-                          void state.mutate({
-                            kind: 'grade',
-                            itemId: entry.id,
-                            confidence: guess === entry.vietnamese ? 3 : 1,
-                          })
-                        }
-                      >
-                        Lưu và tiếp tục
-                      </Button>
-                    </>
+                    <p role="status">
+                      {guess === entry.vietnamese ? 'Đúng nghĩa.' : `Đáp án: ${entry.vietnamese}`}
+                    </p>
                   ) : null}
                 </>
               ) : (
-                <>
-                  <VocabularyFlashcard
-                    entry={entry}
-                    revealed={revealed}
-                    onReveal={() => setRevealed((value) => !value)}
-                    disabled={state.saving}
-                  />
-                  {mode === 'context' ? (
-                    <p className="muted-copy">
-                      Chỉ câu đã được kiểm duyệt mới được dùng làm ví dụ học. Có thể tra từ trong
-                      phần Reading và lời thoại Listening đã hiện.
-                    </p>
-                  ) : null}
-                  {revealed ? (
-                    <div className="vocab-grades" role="group" aria-label="Tự đánh giá từ vựng">
-                      {confidenceLabels.map((label, index) => (
-                        <Button
-                          key={label}
-                          variant="secondary"
-                          disabled={state.saving || !!session.grades[entry.id]}
-                          onClick={() => grade((index + 1) as 1 | 2 | 3 | 4)}
-                        >
-                          {index + 1} · {label}
-                        </Button>
-                      ))}
-                    </div>
-                  ) : null}
-                </>
+                <VocabularyFlashcard entry={entry} revealed={revealed} />
               )}
-              <div className="vocab-actions">
-                <Button
-                  variant="secondary"
-                  disabled={state.saving || session.cursor === 0}
-                  onClick={() => move(-1)}
-                >
-                  Từ trước
-                </Button>
-                <Button
-                  variant="secondary"
-                  disabled={state.saving || session.cursor === session.itemIds.length - 1}
-                  onClick={() => move(1)}
-                >
-                  Từ tiếp
-                </Button>
+              <div ref={controls} className="vocab-study-controls" aria-label="Thao tác học từ">
+                {mode === 'recall' ? (
+                  guess && !session.grades[entry.id] ? (
+                    <Button
+                      disabled={state.saving}
+                      onClick={() =>
+                        void state.mutate({
+                          kind: 'grade',
+                          itemId: entry.id,
+                          confidence: guess === entry.vietnamese ? 3 : 1,
+                        })
+                      }
+                    >
+                      Lưu và tiếp tục
+                    </Button>
+                  ) : null
+                ) : (
+                  <>
+                    <Button
+                      className="vocab-reveal"
+                      variant={revealed ? 'ghost' : 'primary'}
+                      disabled={state.saving}
+                      onClick={() => setRevealed((value) => !value)}
+                      aria-expanded={revealed}
+                    >
+                      {revealed ? 'Ẩn nghĩa' : 'Hiện nghĩa'}
+                    </Button>
+                    {revealed ? (
+                      <div className="vocab-grades" role="group" aria-label="Tự đánh giá từ vựng">
+                        {confidenceLabels.map((label, index) => (
+                          <Button
+                            key={label}
+                            className={`vocab-grade vocab-grade--${index + 1}`}
+                            variant="secondary"
+                            disabled={state.saving || !!session.grades[entry.id]}
+                            onClick={() => grade((index + 1) as 1 | 2 | 3 | 4)}
+                          >
+                            {index + 1} · {label}
+                          </Button>
+                        ))}
+                      </div>
+                    ) : null}
+                  </>
+                )}
+                <div className="vocab-actions vocab-navigation">
+                  <Button
+                    variant="secondary"
+                    disabled={state.saving || session.cursor === 0}
+                    onClick={() => move(-1)}
+                  >
+                    Từ trước
+                  </Button>
+                  <span className="vocab-navigation-position">
+                    {session.cursor + 1}/{session.itemIds.length}
+                  </span>
+                  <Button
+                    variant="secondary"
+                    disabled={state.saving || session.cursor === session.itemIds.length - 1}
+                    onClick={() => move(1)}
+                  >
+                    Từ tiếp
+                  </Button>
+                </div>
+                <p className="vocab-touch-hint muted-copy">
+                  {state.saving ? 'Đang lưu…' : 'Đánh giá để lưu và tự chuyển từ tiếp theo.'}
+                </p>
               </div>
-              <p className="muted-copy">
+              <p className="vocab-keyboard-hint muted-copy">
                 Tab vào thẻ: Space lật nghĩa, ←/→ xem từ, 1–4 đánh giá sau khi lật. Xem từ không ghi
                 tiến độ.
               </p>
@@ -421,7 +504,16 @@ export function VocabularyLab({ lessonId }: { lessonId: number }) {
             <p>Phiên chưa tải được. Dùng “Tải lại phiên” hoặc kết nối lại bộ nhớ.</p>
           )}
         </section>
-        <aside className="vocab-rail card">
+        <Button
+          className="vocab-mobile-toggle"
+          variant="ghost"
+          aria-expanded={statsOpen}
+          aria-controls="vocab-stats"
+          onClick={() => setStatsOpen((open) => !open)}
+        >
+          {statsOpen ? 'Ẩn thống kê' : 'Xem hành trình ghi nhớ'}
+        </Button>
+        <aside id="vocab-stats" className={`vocab-rail card${statsOpen ? ' is-open' : ''}`}>
           <h2>Hành trình ghi nhớ</h2>
           <dl>
             <dt>Từ đến hạn ôn trong bài</dt>
