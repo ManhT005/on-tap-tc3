@@ -205,7 +205,8 @@ for (const viewport of [
       await button.click({ trial: true });
     }
     const meaning = (await page.locator('.vocab-meaning').boundingBox())!;
-    expect(meaning.y + meaning.height).toBeLessThanOrEqual((await dock.boundingBox())!.y);
+    // Leave breathing room for differences in browser font metrics, not just zero overlap.
+    expect(meaning.y + meaning.height + 8).toBeLessThanOrEqual((await dock.boundingBox())!.y);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );

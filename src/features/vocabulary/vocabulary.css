@@ -611,4 +611,13 @@
   .vocabulary-lab .vocab-card {
     padding-block: 4px;
   }
+  .vocabulary-lab .vocab-main {
+    padding-block: 8px;
+  }
+  .vocabulary-lab .vocab-hangul {
+    margin-block: 8px;
+  }
+  .vocabulary-lab .vocab-meaning {
+    margin-block: 8px;
+  }
 }
